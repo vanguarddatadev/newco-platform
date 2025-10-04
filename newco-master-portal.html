@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewCo Master Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5f4fd1;
+            --secondary: #00b894;
+            --danger: #d63031;
+            --warning: #fdcb6e;
+            --dark: #2d3436;
+            --gray: #636e72;
+            --light-gray: #f5f6fa;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-box h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .login-box .portal-type {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-logo img {
+            width: 120px;
+            height: auto;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo img {
+            width: 40px;
+            height: auto;
+        }
+
+        .login-box p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Admin Dashboard */
+        .admin-container {
+            display: none;
+        }
+
+        .admin-container.active {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .user-badge.admin {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-badge.sales {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .main-content {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        /* Form Elements */
+        .form-input,
+        .form-select {
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light-gray);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-badge.trial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.pending {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-badge.contacted {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Permission Badge */
+        .permission-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .permission-badge.admin {
+            background: var(--primary);
+            color: white;
+        }
+
+        .permission-badge.staff {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .permission-badge.read-only {
+            background: var(--gray);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .link-button {
+            padding: 0.5rem 1rem;
+            background: var(--light-gray);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .link-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="newco-logo.png" alt="NewCo Logo">
+            </div>
+            <div class="portal-type">Master Portal</div>
+            <p>Multi-Tenant Management</p>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="loginEmail" class="form-input" required style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" required style="width: 100%;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-container">
+        <div class="header">
+            <div class="header-logo">
+                <img src="newco-logo.png" alt="NewCo Logo">
+                <h1>Master Portal</h1>
+            </div>
+            <div class="user-info">
+                <span id="userName"></span>
+                <span id="userRole" class="user-badge"></span>
+                <button class="btn btn-small" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('clients')">Clients</button>
+                <button class="tab" onclick="switchTab('demos')">Demo Requests</button>
+                <button class="tab" onclick="switchTab('users')">Client Users</button>
+            </div>
+
+            <!-- Clients Tab -->
+            <div id="clientsTab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Clients</h3>
+                        <div class="stat-number" id="totalClients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Clients</h3>
+                        <div class="stat-number" id="activeClients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Trial Accounts</h3>
+                        <div class="stat-number" id="trialClients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Inactive</h3>
+                        <div class="stat-number" id="inactiveClients">0</div>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="filterStatus" class="form-select" onchange="filterClients()">
+                            <option value="">All Active</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tier</label>
+                        <select id="filterTier" class="form-select" onchange="filterClients()">
+                            <option value="">All</option>
+                            <option value="trial">Trial</option>
+                            <option value="basic">Basic</option>
+                            <option value="pro">Pro</option>
+                            <option value="enterprise">Enterprise</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="filterSearch" class="form-input" placeholder="Organization name..." onkeyup="filterClients()">
+                    </div>
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                    </div>
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" onclick="showCreateOrgModal()">+ Create Organization</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Organization</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Tier</th>
+                                <th>Created</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2rem;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Demo Requests Tab -->
+            <div id="demosTab" class="tab-content">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="filterDemoStatus" class="form-select" onchange="filterDemos()">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="filterDemoSearch" class="form-input" placeholder="Email or name..." onkeyup="filterDemos()">
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Organization</th>
+                                <th>Scheduled</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="demosTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Client Users Tab -->
+            <div id="usersTab" class="tab-content">
+                <div style="margin-bottom: 1.5rem;">
+                    <button class="btn btn-primary" onclick="showAddUserModal()">+ Add User to Client</button>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Client</label>
+                        <select id="filterUserClient" class="form-select" onchange="filterUsers()">
+                            <option value="">All Clients</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Permission</label>
+                        <select id="filterUserPermission" class="form-select" onchange="filterUsers()">
+                            <option value="">All</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                            <option value="read-only">Read-Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Client</th>
+                                <th>Permission</th>
+                                <th>Status</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Client Modal -->
+    <div id="editClientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Client</h2>
+                <button class="modal-close" onclick="closeModal('editClientModal')">&times;</button>
+            </div>
+            <form onsubmit="saveClient(event)">
+                <input type="hidden" id="editClientId">
+                <div class="form-group">
+                    <label class="form-label">Organization Name</label>
+                    <input type="text" id="editOrgName" class="form-input" style="width: 100%;" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="editStatus" class="form-select" style="width: 100%;">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tier</label>
+                    <select id="editTier" class="form-select" style="width: 100%;">
+                        <option value="trial">Trial</option>
+                        <option value="basic">Basic</option>
+                        <option value="pro">Pro</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subscription Expires</label>
+                    <input type="date" id="editExpires" class="form-input" style="width: 100%;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Demo Request Modal -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Demo Request Details</h2>
+                <button class="modal-close" onclick="closeModal('demoModal')">&times;</button>
+            </div>
+            <form onsubmit="saveDemoRequest(event)">
+                <input type="hidden" id="demoId">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="text" id="demoEmail" class="form-input" style="width: 100%;" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="demoStatus" class="form-select" style="width: 100%;">
+                        <option value="pending">Pending</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea id="demoNotes" class="form-textarea" style="width: 100%;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Convert to Account?</label>
+                    <button type="button" class="btn btn-secondary" onclick="convertToAccount()">Convert to Account</button>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add User to Client</h2>
+                <button class="modal-close" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            <form onsubmit="addClientUser(event)">
+                <div class="form-group">
+                    <label class="form-label">Client *</label>
+                    <select id="newUserClient" class="form-select" style="width: 100%;" required>
+                        <option value="">Select Client...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" id="newUserName" class="form-input" style="width: 100%;" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="newUserEmail" class="form-input" style="width: 100%;" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" id="newUserPassword" class="form-input" style="width: 100%;" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Permission Level *</label>
+                    <select id="newUserPermission" class="form-select" style="width: 100%;" required>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                        <option value="read-only">Read-Only</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Organization Modal -->
+    <div id="createOrgModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Organization</h2>
+                <button class="modal-close" onclick="closeModal('createOrgModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 2rem; color: var(--gray);">Choose how you want to create the organization:</p>
+
+                <div style="display: grid; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="selectCreateMethod('wizard')" style="padding: 1.5rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="font-size: 1.25rem; font-weight: 600;">🧙 Launch Wizard</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Step-by-step guided setup with hall designer</div>
+                    </button>
+
+                    <button class="btn btn-secondary" onclick="selectCreateMethod('automation')" style="padding: 1.5rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="font-size: 1.25rem; font-weight: 600;">📤 Upload JSON</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Automated setup from configuration file</div>
+                    </button>
+
+                    <button class="btn" onclick="selectCreateMethod('quick')" style="padding: 1.5rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem; background: white; border: 2px solid var(--light-gray);">
+                        <div style="font-size: 1.25rem; font-weight: 600;">⚡ Quick Create</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Create with name only, default structure</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Create Form Modal -->
+    <div id="quickCreateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Quick Create Organization</h2>
+                <button class="modal-close" onclick="closeModal('quickCreateModal')">&times;</button>
+            </div>
+            <form onsubmit="createQuickOrg(event)">
+                <div class="form-group">
+                    <label class="form-label">Organization Name</label>
+                    <input type="text" id="quickOrgName" class="form-input" required style="width: 100%;" placeholder="e.g., ABC Bingo Hall">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin Email</label>
+                    <input type="email" id="quickAdminEmail" class="form-input" required style="width: 100%;" placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Name</label>
+                    <input type="text" id="quickContactName" class="form-input" required style="width: 100%;" placeholder="John Smith">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('quickCreateModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Organization</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Automation Upload Modal -->
+    <div id="automationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload Configuration JSON</h2>
+                <button class="modal-close" onclick="closeModal('automationModal')">&times;</button>
+            </div>
+            <form onsubmit="createAutomationOrg(event)">
+                <div class="form-group">
+                    <label class="form-label">Organization Name</label>
+                    <input type="text" id="autoOrgName" class="form-input" required style="width: 100%;" placeholder="e.g., ABC Bingo Hall">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Admin Email</label>
+                    <input type="email" id="autoAdminEmail" class="form-input" required style="width: 100%;" placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Name</label>
+                    <input type="text" id="autoContactName" class="form-input" required style="width: 100%;" placeholder="John Smith">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Configuration File (JSON)</label>
+                    <input type="file" id="jsonFileInput" class="form-input" accept=".json" required style="width: 100%;">
+                    <small style="color: var(--gray); margin-top: 0.5rem; display: block;">
+                        <a href="newco-automation-template.json" download style="color: var(--primary);">Download template JSON</a>
+                    </small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('automationModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload & Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ufagkpdpzziuqiiudvmp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmYWdrcGRwenppdXFpaXVkdm1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NDAyNzUsImV4cCI6MjA3NTAxNjI3NX0.7zla3G9lPFRiJTOE2XOiqXoIU7_5lqr1hC4KcwsNzrA';
+
+        let currentUser = null;
+        let allClients = [];
+        let allDemos = [];
+        let allUsers = [];
+
+        // Login
+        async function login(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_staff?email=eq.${encodeURIComponent(email)}&select=*`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                const staff = await response.json();
+
+                if (staff && staff.length > 0) {
+                    const user = staff[0];
+                    // Verify password (simple base64 for demo)
+                    const passwordHash = btoa(password);
+                    if (user.password_hash !== passwordHash) {
+                        alert('Invalid email or password');
+                        return;
+                    }
+                    currentUser = user;
+
+                    // Update last login
+                    await fetch(`${SUPABASE_URL}/rest/v1/newco_staff?id=eq.${user.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({ last_login: new Date().toISOString() })
+                    });
+
+                    showDashboard();
+                } else {
+                    alert('Invalid email or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Error logging in');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminDashboard').classList.add('active');
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('userRole').className = `user-badge ${currentUser.role}`;
+
+            loadClients();
+            loadDemos();
+            loadUsers();
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Load Clients
+        async function loadClients() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/accounts?select=*&order=created_at.desc`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                allClients = await response.json();
+
+                // Filter out archived clients from default view
+                const activeClients = allClients.filter(c => c.subscription_status !== 'archived');
+
+                updateClientStats();
+                renderClients(activeClients);
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        function updateClientStats() {
+            // Exclude archived from stats
+            const activeOnly = allClients.filter(c => c.subscription_status !== 'archived');
+            document.getElementById('totalClients').textContent = activeOnly.length;
+            document.getElementById('activeClients').textContent = activeOnly.filter(c => c.subscription_status === 'active').length;
+            document.getElementById('trialClients').textContent = activeOnly.filter(c => c.subscription_tier === 'trial').length;
+            document.getElementById('inactiveClients').textContent = activeOnly.filter(c => c.subscription_status === 'inactive').length;
+        }
+
+        function renderClients(clients) {
+            const tbody = document.getElementById('clientsTableBody');
+
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No clients found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = clients.map(client => `
+                <tr>
+                    <td><strong>${client.organization_name}</strong></td>
+                    <td>${client.contact_name}</td>
+                    <td>${client.email}</td>
+                    <td><span class="status-badge ${client.subscription_status}">${client.subscription_status}</span></td>
+                    <td><span class="status-badge ${client.subscription_tier}">${client.subscription_tier}</span></td>
+                    <td>${new Date(client.created_at).toLocaleDateString()}</td>
+                    <td>${client.last_login ? new Date(client.last_login).toLocaleDateString() : 'Never'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-primary" onclick='editClient(${JSON.stringify(client)})'>Edit</button>
+                            <a href="newco-admin-v2.2.html?customer=${client.customer_id}" target="_blank" class="link-button">Open</a>
+                            ${client.subscription_status !== 'archived'
+                                ? `<button class="btn btn-small btn-danger" onclick='archiveClient(${JSON.stringify(client)})'>Archive</button>`
+                                : `<button class="btn btn-small btn-danger" onclick='deleteClient(${JSON.stringify(client)})' style="background: #dc2626;">Delete</button>`}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterClients() {
+            const status = document.getElementById('filterStatus').value;
+            const tier = document.getElementById('filterTier').value;
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+
+            // Exclude archived unless specifically selected
+            let filtered = status === 'archived'
+                ? allClients.filter(c => c.subscription_status === 'archived')
+                : allClients.filter(c => c.subscription_status !== 'archived');
+
+            if (status && status !== 'archived') {
+                filtered = filtered.filter(c => c.subscription_status === status);
+            }
+            if (tier) {
+                filtered = filtered.filter(c => c.subscription_tier === tier);
+            }
+            if (search) {
+                filtered = filtered.filter(c =>
+                    c.organization_name.toLowerCase().includes(search) ||
+                    c.contact_name.toLowerCase().includes(search) ||
+                    c.email.toLowerCase().includes(search)
+                );
+            }
+
+            renderClients(filtered);
+        }
+
+        function clearFilters() {
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterTier').value = '';
+            document.getElementById('filterSearch').value = '';
+            // Show only active (non-archived) when clearing filters
+            renderClients(allClients.filter(c => c.subscription_status !== 'archived'));
+        }
+
+        // Edit Client
+        function editClient(client) {
+            document.getElementById('editClientId').value = client.id;
+            document.getElementById('editOrgName').value = client.organization_name;
+            document.getElementById('editStatus').value = client.subscription_status;
+            document.getElementById('editTier').value = client.subscription_tier;
+            document.getElementById('editExpires').value = client.subscription_expires_at ? client.subscription_expires_at.split('T')[0] : '';
+
+            document.getElementById('editClientModal').classList.add('active');
+        }
+
+        async function saveClient(e) {
+            e.preventDefault();
+            const id = document.getElementById('editClientId').value;
+            const status = document.getElementById('editStatus').value;
+            const tier = document.getElementById('editTier').value;
+            const expires = document.getElementById('editExpires').value;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/accounts?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        subscription_status: status,
+                        subscription_tier: tier,
+                        subscription_expires_at: expires ? new Date(expires).toISOString() : null
+                    })
+                });
+
+                alert('Client updated successfully');
+                closeModal('editClientModal');
+                loadClients();
+            } catch (error) {
+                console.error('Error updating client:', error);
+                alert('Error updating client');
+            }
+        }
+
+        // Archive Client
+        async function archiveClient(client) {
+            const confirmed = confirm(
+                `⚠️ Archive Organization?\n\n` +
+                `Organization: ${client.organization_name}\n` +
+                `Customer ID: ${client.customer_id}\n\n` +
+                `This will:\n` +
+                `• Remove the organization from the active view\n` +
+                `• Set status to "archived"\n` +
+                `• Preserve all data (can be restored later)\n\n` +
+                `Continue?`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/accounts?id=eq.${client.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        subscription_status: 'archived'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to archive: ${response.status}`);
+                }
+
+                alert(`✓ ${client.organization_name} has been archived`);
+                loadClients();
+            } catch (error) {
+                console.error('Error archiving client:', error);
+                alert('Error archiving organization: ' + error.message);
+            }
+        }
+
+        // Delete Client (only for archived orgs)
+        async function deleteClient(client) {
+            const confirmed = confirm(
+                `⚠️ PERMANENTLY DELETE ORGANIZATION?\n\n` +
+                `Organization: ${client.organization_name}\n` +
+                `Customer ID: ${client.customer_id}\n\n` +
+                `THIS WILL:\n` +
+                `• DELETE the account from the database\n` +
+                `• DELETE all organization data (halls, packages, members, etc.)\n` +
+                `• THIS CANNOT BE UNDONE\n\n` +
+                `Type the organization name to confirm deletion:`
+            );
+
+            if (!confirmed) return;
+
+            const verification = prompt(`Type "${client.organization_name}" to confirm deletion:`);
+            if (verification !== client.organization_name) {
+                alert('Deletion cancelled - organization name did not match');
+                return;
+            }
+
+            try {
+                // Delete from accounts table
+                const accountResponse = await fetch(`${SUPABASE_URL}/rest/v1/accounts?id=eq.${client.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!accountResponse.ok) {
+                    throw new Error(`Failed to delete account: ${accountResponse.status}`);
+                }
+
+                // Delete all data from newco_data table
+                const dataResponse = await fetch(`${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${client.customer_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!dataResponse.ok) {
+                    throw new Error(`Failed to delete organization data: ${dataResponse.status}`);
+                }
+
+                // Delete all members from members table
+                const membersResponse = await fetch(`${SUPABASE_URL}/rest/v1/members?customer_id=eq.${client.customer_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!membersResponse.ok) {
+                    throw new Error(`Failed to delete members: ${membersResponse.status}`);
+                }
+
+                // Delete all client users from client_users table
+                const usersResponse = await fetch(`${SUPABASE_URL}/rest/v1/client_users?customer_id=eq.${client.customer_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!usersResponse.ok) {
+                    throw new Error(`Failed to delete client users: ${usersResponse.status}`);
+                }
+
+                alert(`✓ ${client.organization_name} has been permanently deleted`);
+                loadClients();
+            } catch (error) {
+                console.error('Error deleting client:', error);
+                alert('Error deleting organization: ' + error.message);
+            }
+        }
+
+        // Load Demos
+        async function loadDemos() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/demo_requests?select=*&order=created_at.desc`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                allDemos = await response.json();
+                renderDemos(allDemos);
+            } catch (error) {
+                console.error('Error loading demos:', error);
+            }
+        }
+
+        function renderDemos(demos) {
+            const tbody = document.getElementById('demosTableBody');
+
+            if (demos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No demo requests found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = demos.map(demo => `
+                <tr>
+                    <td>${demo.email}</td>
+                    <td>${demo.contact_name || '-'}</td>
+                    <td>${demo.organization_name || '-'}</td>
+                    <td>${new Date(demo.scheduled_time).toLocaleString()}</td>
+                    <td><span class="status-badge ${demo.status}">${demo.status}</span></td>
+                    <td>${new Date(demo.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick='editDemo(${JSON.stringify(demo)})'>Manage</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterDemos() {
+            const status = document.getElementById('filterDemoStatus').value;
+            const search = document.getElementById('filterDemoSearch').value.toLowerCase();
+
+            let filtered = allDemos;
+
+            if (status) {
+                filtered = filtered.filter(d => d.status === status);
+            }
+            if (search) {
+                filtered = filtered.filter(d =>
+                    d.email.toLowerCase().includes(search) ||
+                    (d.contact_name && d.contact_name.toLowerCase().includes(search)) ||
+                    (d.organization_name && d.organization_name.toLowerCase().includes(search))
+                );
+            }
+
+            renderDemos(filtered);
+        }
+
+        function editDemo(demo) {
+            document.getElementById('demoId').value = demo.id;
+            document.getElementById('demoEmail').value = demo.email;
+            document.getElementById('demoStatus').value = demo.status;
+            document.getElementById('demoNotes').value = demo.notes || '';
+
+            document.getElementById('demoModal').classList.add('active');
+        }
+
+        async function saveDemoRequest(e) {
+            e.preventDefault();
+            const id = document.getElementById('demoId').value;
+            const status = document.getElementById('demoStatus').value;
+            const notes = document.getElementById('demoNotes').value;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/demo_requests?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        status: status,
+                        notes: notes,
+                        contacted_by: currentUser.email,
+                        contacted_at: new Date().toISOString()
+                    })
+                });
+
+                alert('Demo request updated');
+                closeModal('demoModal');
+                loadDemos();
+            } catch (error) {
+                console.error('Error updating demo:', error);
+                alert('Error updating demo request');
+            }
+        }
+
+        async function convertToAccount() {
+            const email = document.getElementById('demoEmail').value;
+            const demoId = document.getElementById('demoId').value;
+
+            // Find the demo request
+            const demo = allDemos.find(d => d.id === demoId);
+            if (!demo) return;
+
+            const orgName = prompt('Enter organization name:', demo.organization_name || '');
+            if (!orgName) return;
+
+            const customerId = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+            try {
+                // Create account
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        organization_name: orgName,
+                        contact_name: demo.contact_name || 'Admin',
+                        email: email,
+                        password_hash: btoa('changeme123'), // Temp password
+                        phone: demo.phone,
+                        subscription_tier: 'trial',
+                        subscription_status: 'active',
+                        onboarding_completed: false,
+                        created_at: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    // Mark demo as converted
+                    await fetch(`${SUPABASE_URL}/rest/v1/demo_requests?id=eq.${demoId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            converted_to_account: true,
+                            converted_customer_id: customerId,
+                            status: 'completed'
+                        })
+                    });
+
+                    alert(`Account created! Customer ID: ${customerId}\nTemp password: changeme123`);
+                    closeModal('demoModal');
+                    loadClients();
+                    loadDemos();
+                } else {
+                    throw new Error('Failed to create account');
+                }
+            } catch (error) {
+                console.error('Error converting to account:', error);
+                alert('Error creating account');
+            }
+        }
+
+        // Load Users
+        async function loadUsers() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/client_users?select=*&order=created_at.desc`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                allUsers = await response.json();
+                renderUsers(allUsers);
+                populateClientDropdowns();
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        function populateClientDropdowns() {
+            const options = allClients.map(c =>
+                `<option value="${c.customer_id}">${c.organization_name}</option>`
+            ).join('');
+
+            document.getElementById('filterUserClient').innerHTML = '<option value="">All Clients</option>' + options;
+            document.getElementById('newUserClient').innerHTML = '<option value="">Select Client...</option>' + options;
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No users found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const client = allClients.find(c => c.customer_id === user.customer_id);
+                return `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${client ? client.organization_name : user.customer_id}</td>
+                        <td><span class="permission-badge ${user.permission_level}">${user.permission_level}</span></td>
+                        <td><span class="status-badge ${user.status}">${user.status}</span></td>
+                        <td>${user.created_by || '-'}</td>
+                        <td>
+                            <button class="btn btn-small btn-danger" onclick="deleteUser('${user.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsers() {
+            const client = document.getElementById('filterUserClient').value;
+            const permission = document.getElementById('filterUserPermission').value;
+
+            let filtered = allUsers;
+
+            if (client) {
+                filtered = filtered.filter(u => u.customer_id === client);
+            }
+            if (permission) {
+                filtered = filtered.filter(u => u.permission_level === permission);
+            }
+
+            renderUsers(filtered);
+        }
+
+        function showAddUserModal() {
+            document.getElementById('addUserModal').classList.add('active');
+        }
+
+        async function addClientUser(e) {
+            e.preventDefault();
+
+            const userData = {
+                customer_id: document.getElementById('newUserClient').value,
+                name: document.getElementById('newUserName').value,
+                email: document.getElementById('newUserEmail').value,
+                password_hash: btoa(document.getElementById('newUserPassword').value),
+                permission_level: document.getElementById('newUserPermission').value,
+                created_by: currentUser.email,
+                status: 'active',
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/client_users`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                if (response.ok) {
+                    alert('User added successfully');
+                    closeModal('addUserModal');
+                    loadUsers();
+                    document.getElementById('newUserName').value = '';
+                    document.getElementById('newUserEmail').value = '';
+                    document.getElementById('newUserPassword').value = '';
+                } else {
+                    throw new Error('Failed to add user');
+                }
+            } catch (error) {
+                console.error('Error adding user:', error);
+                alert('Error adding user');
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user?')) return;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/client_users?id=eq.${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                alert('User deleted');
+                loadUsers();
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Error deleting user');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modals on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Create Organization Functions
+        function showCreateOrgModal() {
+            document.getElementById('createOrgModal').classList.add('active');
+        }
+
+        function selectCreateMethod(method) {
+            closeModal('createOrgModal');
+
+            if (method === 'wizard') {
+                // Open wizard in new tab
+                window.open('newco-wizard-v2.2.html', '_blank');
+            } else if (method === 'automation') {
+                document.getElementById('automationModal').classList.add('active');
+            } else if (method === 'quick') {
+                document.getElementById('quickCreateModal').classList.add('active');
+            }
+        }
+
+        async function createQuickOrg(e) {
+            e.preventDefault();
+
+            const orgName = document.getElementById('quickOrgName').value;
+            const email = document.getElementById('quickAdminEmail').value;
+            const contactName = document.getElementById('quickContactName').value;
+
+            // Generate customer ID from org name
+            const customerId = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+            try {
+                // Create account
+                const accountResponse = await fetch(`${SUPABASE_URL}/rest/v1/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        organization_name: orgName,
+                        contact_name: contactName,
+                        email: email,
+                        password_hash: btoa('changeme123'),
+                        subscription_tier: 'trial',
+                        subscription_status: 'active',
+                        created_at: new Date().toISOString()
+                    })
+                });
+
+                if (!accountResponse.ok) {
+                    const errorText = await accountResponse.text();
+                    console.error('Account creation failed:', accountResponse.status, errorText);
+
+                    // Check for duplicate email error
+                    if (accountResponse.status === 409 && errorText.includes('accounts_email_key')) {
+                        alert(
+                            '❌ EMAIL ALREADY EXISTS\n\n' +
+                            `The email "${email}" is already registered to another organization.\n\n` +
+                            'Each organization requires a unique email address.\n\n' +
+                            'Please use a different email address or delete the existing organization with this email.'
+                        );
+                        return;
+                    }
+
+                    throw new Error(`Failed to create account (${accountResponse.status}): ${errorText}`);
+                }
+
+                // Initialize NewcoData with default structure
+                const defaultData = {
+                    organization: {
+                        name: orgName,
+                        email: email,
+                        type: 'bingo_hall',
+                        address: '',
+                        phone: '',
+                        website: '',
+                        tagline: 'Your Premier Bingo Destination',
+                        colors: {
+                            primary: '#00b894',
+                            secondary: '#f59e0b',
+                            accent: '#48bb78'
+                        }
+                    },
+                    halls: [],
+                    sessions: [],
+                    packages: [],
+                    salesItems: [],
+                    members: [],
+                    transactions: [],
+                    loyaltyItems: [],
+                    rewards: {
+                        items: [],
+                        coupons: [],
+                        pointsConfig: { dollarToPoints: 10, bonusRules: [] }
+                    },
+                    schedule: { weekly: {}, special: [] },
+                    settings: {
+                        timezone: 'America/Los_Angeles',
+                        currency: 'USD',
+                        dateFormat: 'MM/DD/YYYY',
+                        pointsCurrencyName: 'Points'
+                    },
+                    staff: [],
+                    additionalApps: {
+                        enableRedemptionApp: false,
+                        enableDesktopApp: false,
+                        enableFloorRunnerApp: false
+                    }
+                };
+
+                // Save each key to newco_data table
+                for (const [key, value] of Object.entries(defaultData)) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/newco_data`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            customer: customerId,
+                            key: key,
+                            value: value,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        })
+                    });
+                }
+
+                alert(`✓ Organization "${orgName}" created successfully!\n\nCustomer ID: ${customerId}\nTemp Password: changeme123`);
+                closeModal('quickCreateModal');
+                loadClients();
+
+                // Clear form
+                document.getElementById('quickOrgName').value = '';
+                document.getElementById('quickAdminEmail').value = '';
+                document.getElementById('quickContactName').value = '';
+            } catch (error) {
+                console.error('Error creating organization:', error);
+                alert('Error creating organization: ' + error.message);
+            }
+        }
+
+        async function createAutomationOrg(e) {
+            e.preventDefault();
+
+            const orgName = document.getElementById('autoOrgName').value;
+            const email = document.getElementById('autoAdminEmail').value;
+            const contactName = document.getElementById('autoContactName').value;
+            const fileInput = document.getElementById('jsonFileInput');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a JSON file');
+                return;
+            }
+
+            // Generate customer ID from org name
+            const customerId = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+            try {
+                // Read JSON file
+                const file = fileInput.files[0];
+                const text = await file.text();
+                const configData = JSON.parse(text);
+
+                // Create account
+                const accountResponse = await fetch(`${SUPABASE_URL}/rest/v1/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        organization_name: orgName,
+                        contact_name: contactName,
+                        email: email,
+                        password_hash: btoa('changeme123'),
+                        subscription_tier: 'trial',
+                        subscription_status: 'active',
+                        created_at: new Date().toISOString()
+                    })
+                });
+
+                if (!accountResponse.ok) {
+                    const errorText = await accountResponse.text();
+                    console.error('Account creation failed:', accountResponse.status, errorText);
+
+                    // Check for duplicate email error
+                    if (accountResponse.status === 409 && errorText.includes('accounts_email_key')) {
+                        alert(
+                            '❌ EMAIL ALREADY EXISTS\n\n' +
+                            `The email "${email}" is already registered to another organization.\n\n` +
+                            'Each organization requires a unique email address.\n\n' +
+                            'Please use a different email address or delete the existing organization with this email.'
+                        );
+                        return;
+                    }
+
+                    throw new Error(`Failed to create account (${accountResponse.status}): ${errorText}`);
+                }
+
+                // Override organization name and email in config with user input
+                if (configData.organization) {
+                    configData.organization.name = orgName;
+                    configData.organization.email = email; // Use account email, not JSON email
+                    configData.organization.contactName = contactName;
+                }
+
+                // Save all keys from JSON to newco_data table
+                for (const [key, value] of Object.entries(configData)) {
+                    await fetch(`${SUPABASE_URL}/rest/v1/newco_data`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            customer: customerId,
+                            key: key,
+                            value: value,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        })
+                    });
+                }
+
+                alert(`✓ Organization "${orgName}" created successfully from JSON!\n\nCustomer ID: ${customerId}\nTemp Password: changeme123`);
+                closeModal('automationModal');
+                loadClients();
+
+                // Clear form
+                document.getElementById('autoOrgName').value = '';
+                document.getElementById('autoAdminEmail').value = '';
+                document.getElementById('autoContactName').value = '';
+                fileInput.value = '';
+            } catch (error) {
+                console.error('Error creating organization:', error);
+                alert('Error creating organization: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

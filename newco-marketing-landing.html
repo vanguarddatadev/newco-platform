@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewCo - NewCo Platform - Raise More, Do More Good</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00b894;
+            --primary-dark: #00a084;
+            --secondary: #00b894;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --gray: #636e72;
+            --light-gray: #f5f6fa;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 5rem 0;
+            background: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--dark);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .benefit-card ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .benefit-card li {
+            padding: 0.75rem 0;
+            color: var(--gray);
+            position: relative;
+            padding-left: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .benefit-card li:last-child {
+            border-bottom: none;
+        }
+
+        .benefit-card li:before {
+            content: "▸";
+            color: var(--secondary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Social Proof */
+        .social-proof {
+            background: var(--light-gray);
+            padding: 5rem 0;
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-quote {
+            font-style: italic;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+            color: var(--dark);
+        }
+
+        .testimonial-author {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        /* Features */
+        .features {
+            padding: 5rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .feature-check {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Pricing */
+        .pricing {
+            background: var(--light-gray);
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .pricing-card {
+            background: white;
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .pricing-card h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            color: var(--gray);
+            border-bottom: 1px solid var(--light-gray);
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .pricing-features li:before {
+            content: "→";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--secondary) 0%, #00a084 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.125rem;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--secondary);
+        }
+
+        .btn-white:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--dark);
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Demo Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Trust Section */
+        .trust {
+            padding: 3rem 0;
+            background: white;
+        }
+
+        .trust-items {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        .demo-steps {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .step-indicator.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-indicator.completed {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">NewCo</div>
+                <div class="header-buttons">
+                    <button class="btn btn-secondary" onclick="playClick(); showLogin()">Login</button>
+                    <button class="btn btn-primary" onclick="playClick(); showDemo()">Request Demo</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Transform Your Bingo Night into a Fundraising Powerhouse</h1>
+            <p>Simple, modern tools that help charities raise more money and do more good</p>
+            <div class="cta-buttons">
+                <button class="btn btn-large btn-white" onclick="playClick(); showDemo()">Get Free Demo</button>
+                <button class="btn btn-large btn-outline" onclick="playClick(); showSignup()">Create Account</button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">40%</span>
+                    <span class="stat-label">Average Revenue Increase</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100+</span>
+                    <span class="stat-label">Charities Served</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">< 1hr</span>
+                    <span class="stat-label">Setup Time</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <h2 class="section-title">Everything You Need to Succeed</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h3>Boost Revenue Instantly</h3>
+                    <ul>
+                        <li>Package deals sell 3x more than traditional paper</li>
+                        <li>Loyalty rewards keep players coming back</li>
+                        <li>Seat selection maximizes capacity</li>
+                        <li>Best Value badges increase conversions</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Save Volunteer Time</h3>
+                    <ul>
+                        <li>Automated customer tracking</li>
+                        <li>Digital receipts and records</li>
+                        <li>Real-time inventory management</li>
+                        <li>No more manual paper counting</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Understand Your Players</h3>
+                    <ul>
+                        <li>Track what packages sell best</li>
+                        <li>Customer spending patterns</li>
+                        <li>Session performance analytics</li>
+                        <li>Data-driven decision making</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="container">
+            <h2 class="section-title">Join 100+ Charities Already Raising More</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-quote">"We raised $12,000 more in the first quarter alone. The package deals and loyalty program completely changed our revenue."</p>
+                    <p class="testimonial-author">— St. Mary's Community Foundation</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-quote">"Our volunteers love how easy it is. Setup took less than an hour and our players adapted immediately."</p>
+                    <p class="testimonial-author">— Veterans Support Network</p>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-quote">"Players keep coming back for the loyalty rewards. Our regular attendance is up 35% since we started."</p>
+                    <p class="testimonial-author">— Hope Community Services</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Complete Feature Set</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Custom Package Builder</strong>
+                        <p>Create Best Value bundles, seat selection packages, and day-specific deals</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Loyalty Rewards Program</strong>
+                        <p>Keep regulars engaged with points, tiers, and redeemable rewards</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Multi-Device Support</strong>
+                        <p>Works on web, tablets, and mobile - use any device you have</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Real-Time Sync</strong>
+                        <p>All terminals update instantly - no manual syncing needed</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Transaction History</strong>
+                        <p>Complete records and reporting for accounting and audits</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    <div>
+                        <strong>Secure Cloud Backup</strong>
+                        <p>Never lose data - automatic backups to secure cloud storage</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <div class="container">
+            <h2 class="section-title">Transparent Pricing That Makes Sense</h2>
+            <div class="pricing-card">
+                <h3>Simple Flat Rate</h3>
+                <ul class="pricing-features">
+                    <li>No percentage of proceeds</li>
+                    <li>No hidden costs or transaction fees</li>
+                    <li>Unlimited users and sessions</li>
+                    <li>All features included</li>
+                    <li>Free training and setup</li>
+                    <li>US-based support (real humans!)</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <button class="btn btn-primary btn-large" onclick="playClick(); showDemo()">Contact for Pricing</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Builders -->
+    <section class="trust">
+        <div class="container">
+            <div class="trust-items">
+                <div class="trust-item">
+                    <div class="trust-icon">🔒</div>
+                    <strong>Bank-Level Security</strong>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">📞</div>
+                    <strong>US-Based Support</strong>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <strong>< 1 Hour Setup</strong>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">📚</div>
+                    <strong>Free Training</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Focus on Your Mission. We'll Handle the Bingo.</h2>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem;">Join the charities that are raising more and doing more good</p>
+            <div class="cta-buttons">
+                <button class="btn btn-large btn-white" onclick="playClick(); showDemo()">Request Free Demo</button>
+                <button class="btn btn-large btn-outline" onclick="playClick(); showSignup()">Create Account</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NewCo. All rights reserved.</p>
+            <p style="margin-top: 1rem;">Built with ❤️ for charities making a difference</p>
+        </div>
+    </footer>
+
+    <!-- Demo Request Modal (2-step) -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Request a Free Demo</h2>
+                <button class="modal-close" onclick="closeModal('demoModal')">&times;</button>
+            </div>
+
+            <!-- Step indicators -->
+            <div class="demo-steps">
+                <div class="step-indicator active" id="step1Indicator">1</div>
+                <div class="step-indicator" id="step2Indicator">2</div>
+            </div>
+
+            <!-- Step 1: Email -->
+            <div id="demoStep1">
+                <p style="text-align: center; margin-bottom: 2rem; color: var(--gray);">Enter your email to get started</p>
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-input" id="demoEmail" required placeholder="you@charity.org">
+                </div>
+                <button class="btn btn-primary btn-large" style="width: 100%;" onclick="playClick(); nextDemoStep()">Continue</button>
+            </div>
+
+            <!-- Step 2: Schedule Time -->
+            <div id="demoStep2" style="display: none;">
+                <p style="text-align: center; margin-bottom: 2rem; color: var(--gray);">Choose a convenient time for your demo</p>
+                <div class="form-group">
+                    <label class="form-label">Preferred Date *</label>
+                    <input type="date" class="form-input" id="demoDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Preferred Time *</label>
+                    <select class="form-select" id="demoTime" required>
+                        <option value="">Select a time</option>
+                        <option value="09:00">9:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="13:00">1:00 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                        <option value="16:00">4:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Organization Name (optional)</label>
+                    <input type="text" class="form-input" id="demoOrgName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Name (optional)</label>
+                    <input type="text" class="form-input" id="demoContactName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone (optional)</label>
+                    <input type="tel" class="form-input" id="demoPhone">
+                </div>
+                <button class="btn btn-primary btn-large" style="width: 100%;" onclick="playClick(); submitDemo()">Schedule My Demo</button>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="playClick(); backDemoStep()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to Your Account</h2>
+                <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <form onsubmit="submitLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" onclick="playClick()">Login</button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--gray);">
+                    Don't have an account? <a href="#" onclick="closeModal('loginModal'); showSignup();" style="color: var(--primary);">Sign up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Your Account</h2>
+                <button class="modal-close" onclick="closeModal('signupModal')">&times;</button>
+            </div>
+            <form onsubmit="submitSignup(event)">
+                <div class="form-group">
+                    <label class="form-label">Organization Name *</label>
+                    <input type="text" class="form-input" id="signupOrgName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Name *</label>
+                    <input type="text" class="form-input" id="signupContactName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" class="form-input" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" class="form-input" id="signupPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" class="form-input" id="signupPhone">
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" onclick="playClick()">Create Account</button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--gray);">
+                    Already have an account? <a href="#" onclick="closeModal('signupModal'); showLogin();" style="color: var(--primary);">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://ufagkpdpzziuqiiudvmp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmYWdrcGRwenppdXFpaXVkdm1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NDAyNzUsImV4cCI6MjA3NTAxNjI3NX0.7zla3G9lPFRiJTOE2XOiqXoIU7_5lqr1hC4KcwsNzrA';
+
+        // Simple click sound using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playClick() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // Set minimum date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const minDate = tomorrow.toISOString().split('T')[0];
+
+        function showDemo() {
+            document.getElementById('demoModal').classList.add('active');
+            // Set min date when modal opens
+            setTimeout(() => {
+                const dateInput = document.getElementById('demoDate');
+                if (dateInput) {
+                    dateInput.min = minDate;
+                }
+            }, 100);
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showSignup() {
+            document.getElementById('signupModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            // Reset demo modal if it's the demo
+            if (modalId === 'demoModal') {
+                document.getElementById('demoStep1').style.display = 'block';
+                document.getElementById('demoStep2').style.display = 'none';
+                document.getElementById('step1Indicator').classList.add('active');
+                document.getElementById('step1Indicator').classList.remove('completed');
+                document.getElementById('step2Indicator').classList.remove('active');
+            }
+        }
+
+        function nextDemoStep() {
+            const email = document.getElementById('demoEmail').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            document.getElementById('demoStep1').style.display = 'none';
+            document.getElementById('demoStep2').style.display = 'block';
+            document.getElementById('step1Indicator').classList.remove('active');
+            document.getElementById('step1Indicator').classList.add('completed');
+            document.getElementById('step2Indicator').classList.add('active');
+        }
+
+        function backDemoStep() {
+            document.getElementById('demoStep1').style.display = 'block';
+            document.getElementById('demoStep2').style.display = 'none';
+            document.getElementById('step1Indicator').classList.add('active');
+            document.getElementById('step1Indicator').classList.remove('completed');
+            document.getElementById('step2Indicator').classList.remove('active');
+        }
+
+        async function submitDemo() {
+            const email = document.getElementById('demoEmail').value;
+            const date = document.getElementById('demoDate').value;
+            const time = document.getElementById('demoTime').value;
+
+            if (!date || !time) {
+                alert('Please select a date and time');
+                return;
+            }
+
+            const scheduledTime = new Date(date + 'T' + time + ':00').toISOString();
+
+            const demoRequest = {
+                email: email,
+                scheduled_time: scheduledTime,
+                organization_name: document.getElementById('demoOrgName').value || null,
+                contact_name: document.getElementById('demoContactName').value || null,
+                phone: document.getElementById('demoPhone').value || null,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+
+            // Save to Supabase
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/demo_requests`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(demoRequest)
+                });
+
+                if (response.ok) {
+                    alert('Thank you! Your demo has been scheduled. We will send you a confirmation email shortly.');
+                    closeModal('demoModal');
+                } else {
+                    throw new Error('Failed to save demo request');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Thank you for your interest! We will contact you within 24 hours to schedule your free demo.');
+                closeModal('demoModal');
+            }
+        }
+
+        async function submitLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                // Check if account exists
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/accounts?email=eq.${encodeURIComponent(email)}&select=*`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                const accounts = await response.json();
+
+                if (accounts && accounts.length > 0) {
+                    const account = accounts[0];
+
+                    // Verify password (base64 encoded for now - in production use proper hashing)
+                    const storedPasswordHash = account.password_hash;
+                    const enteredPasswordHash = btoa(password);
+
+                    if (storedPasswordHash !== enteredPasswordHash) {
+                        alert('Invalid email or password');
+                        return;
+                    }
+
+                    // Password is correct - proceed with login
+                    // Check if onboarding is completed
+                    if (account.onboarding_completed) {
+                        // Redirect to admin panel
+                        window.location.href = `newco-admin-v2.2.html?customer=${account.customer_id}`;
+                    } else {
+                        // Redirect to wizard at saved step
+                        const wizardStep = account.wizard_progress || 1;
+                        window.location.href = `newco-wizard-v2.2.html?customer=${account.customer_id}&email=${encodeURIComponent(email)}&step=${wizardStep}`;
+                    }
+                } else {
+                    alert('Invalid email or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Error logging in. Please try again.');
+            }
+        }
+
+        async function submitSignup(e) {
+            e.preventDefault();
+
+            const orgName = document.getElementById('signupOrgName').value;
+            const contactName = document.getElementById('signupContactName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const phone = document.getElementById('signupPhone').value;
+
+            // Create customer ID from org name
+            const customerId = orgName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+            const account = {
+                customer_id: customerId,
+                organization_name: orgName,
+                contact_name: contactName,
+                email: email,
+                password_hash: btoa(password), // In production, use proper hashing
+                phone: phone || null,
+                subscription_status: 'active',
+                subscription_tier: 'trial',
+                subscription_expires_at: null, // Trial has no expiration until upgraded
+                onboarding_completed: false,
+                wizard_progress: 1,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                // Check if email already exists
+                const checkResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/accounts?email=eq.${encodeURIComponent(email)}&select=id`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                const existing = await checkResponse.json();
+
+                if (existing && existing.length > 0) {
+                    alert('An account with this email already exists. Please login instead.');
+                    closeModal('signupModal');
+                    showLogin();
+                    return;
+                }
+
+                // Create account
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(account)
+                });
+
+                if (response.ok) {
+                    // Redirect to wizard
+                    window.location.href = `newco-wizard-v2.2.html?customer=${customerId}&email=${encodeURIComponent(email)}`;
+                } else {
+                    throw new Error('Failed to create account');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Error creating account. Please try again.');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1148 @@
+/* ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║                    BMS ADMIN STYLESHEET - COMPONENT LIBRARY               ║
+   ╠═══════════════════════════════════════════════════════════════════════════╣
+   ║ FILE: bms-admin.css (1,098 lines)                                         ║
+   ║ PURPOSE: Complete styling for BMS Admin Panel                             ║
+   ║ PAIRED WITH: bms-admin-new.html                                          ║
+   ╠═══════════════════════════════════════════════════════════════════════════╣
+   ║                                                                           ║
+   ║ STRUCTURE:                                                                ║
+   ║ • Lines 1-50:      Documentation & Variables                             ║
+   ║ • Lines 51-200:    Sidebar Navigation                                    ║
+   ║ • Lines 201-400:   Layout & Content Panels                               ║
+   ║ • Lines 401-600:   Cards & Components                                    ║
+   ║ • Lines 601-800:   Forms & Inputs                                        ║
+   ║ • Lines 801-950:   Tables & Data Display                                 ║
+   ║ • Lines 951-1098:  Modals & Overlays                                     ║
+   ║                                                                           ║
+   ║ COLOR SYSTEM:                                                             ║
+   ║ • --admin-primary:  #48bb78 (Green - Admin UI only)                      ║
+   ║ • --primary:        Dynamic (Organization branding)                       ║
+   ║ • --secondary:      Dynamic (Organization branding)                       ║
+   ║ • Status colors:    success/warning/danger                               ║
+   ║                                                                           ║
+   ║ COMPONENT CLASSES:                                                        ║
+   ║ • .sidebar          - Left navigation panel                              ║
+   ║ • .content-panel    - Main content sections                              ║
+   ║ • .stats-card       - Dashboard statistics                               ║
+   ║ • .form-group       - Form field wrapper                                 ║
+   ║ • .data-table       - Styled tables                                      ║
+   ║ • .modal            - Popup overlays                                     ║
+   ║ • .btn              - Button styles                                      ║
+   ║                                                                           ║
+   ║ RESPONSIVE BREAKPOINTS:                                                   ║
+   ║ • Mobile:  < 768px                                                       ║
+   ║ • Tablet:  768px - 1024px                                                ║
+   ║ • Desktop: > 1024px                                                       ║
+   ║                                                                           ║
+   ║ USED BY SECTIONS:                                                         ║
+   ║ • Dashboard:     Stats cards, quick actions                              ║
+   ║ • Organization:  Form inputs, color pickers                              ║
+   ║ • Staff:         Table layouts, badges                                   ║
+   ║ • Members:       Search bars, member cards                               ║
+   ║ • Halls:         Seat grid, visual designer                              ║
+   ║ • Sessions:      Calendar view, wizard steps                             ║
+   ║ • Packages:      Price cards, drag-drop ordering                         ║
+   ║ • Rewards:       Tier cards, points display                              ║
+   ║ • Transactions:  Data tables, filters                                    ║
+   ║ • Reports:       Charts containers, stats                                ║
+   ║                                                                           ║
+   ║ CSS VARIABLES:                                                            ║
+   ║ All colors use CSS custom properties for easy theming.                   ║
+   ║ Admin colors (--admin-*) are fixed.                                      ║
+   ║ Brand colors (--primary, --secondary) update dynamically.                ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [BASE-VARIABLES] - CSS Custom Properties & Root Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Fixed admin colors - not affected by branding */
+    --admin-primary: #48bb78;  /* Green */
+    --admin-primary-dark: #38a169;
+    --admin-primary-light: #c6f6d5;
+    
+    /* Branding colors for preview only */
+    --primary: #2ea3f2;
+    --primary-dark: #1a5f8a;
+    --primary-light: #e3f4fd;
+    --secondary: #9c27b0;
+    --success: #4CAF50;
+    --warning: #ff9800;
+    --danger: #f44336;
+    --dark: #1a1a1a;
+    --gray-dark: #333;
+    --gray: #666;
+    --gray-light: #999;
+    --gray-lighter: #f5f5f5;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-xl: 0 12px 48px rgba(0,0,0,0.15);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [SIDEBAR-NAV] - Sidebar Navigation
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 2rem 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.sidebar-header {
+    padding: 0 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-logo-icon {
+    width: auto;
+    min-width: 40px;
+    max-width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.sidebar-logo-icon img {
+    max-width: 100px;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.nav-section {
+    margin-bottom: 1rem;
+}
+
+.nav-section-title {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+.nav-item {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    padding-left: 2rem;
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 3px solid white;
+}
+
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: white;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [MAIN-CONTENT] - Main Content Area
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 2rem;
+}
+
+.header-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [BUTTONS] - Button Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: var(--admin-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--admin-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: var(--gray-lighter);
+    color: var(--gray-dark);
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--gray-light);
+    color: var(--gray-dark);
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [START-HERE] - Start Here Indicators
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.start-here-indicator {
+    position: absolute;
+    background: linear-gradient(135deg, #10b981, #065f46);
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 1000;
+    animation: flashGreen 2s infinite;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+@keyframes flashGreen {
+    0%, 50% { 
+        opacity: 1; 
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+    25% { 
+        opacity: 0.7; 
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
+    }
+}
+
+.start-here-indicator.clicked {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [CONTENT-SECTIONS] - Content Sections
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.content-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--gray-lighter);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.section-subtitle {
+    color: var(--gray);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [STATS-CARDS] - Dashboard Stats Cards
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--primary);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.stat-change {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.stat-change.positive {
+    color: var(--success);
+}
+
+.stat-change.negative {
+    color: var(--danger);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [FORMS] - Form Elements
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--gray-dark);
+    font-size: 0.875rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46, 163, 242, 0.1);
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [HALL-LAYOUT] - Hall Layout Designer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.layout-designer {
+    background: var(--gray-lighter);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.layout-tools {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tool-btn {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tool-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.tool-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.layout-grid {
+    display: grid;
+    gap: 2px;
+    background: #ddd;
+    padding: 2px;
+    border-radius: 8px;
+    overflow: auto;
+    max-width: 100%;
+}
+
+.grid-cell {
+    background: white;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.grid-cell:hover {
+    background: var(--primary-light);
+}
+
+.grid-cell.table {
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+.grid-cell.blocked {
+    background: #f44336;
+    color: white;
+}
+
+.grid-cell.entrance {
+    background: #2196F3;
+    color: white;
+}
+
+.grid-cell.restroom {
+    background: #9C27B0;
+    color: white;
+}
+
+.grid-cell.vip {
+    background: #FFD700;
+    color: #333;
+}
+
+.grid-cell.selected {
+    box-shadow: 0 0 0 2px var(--primary);
+    transform: scale(1.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [CARD-GRIDS] - Card Grids
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.offerings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.offering-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.offering-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.offering-card-header {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, var(--primary-light) 0%, rgba(255,255,255,0.95) 100%);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.offering-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.offering-card-art {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.offering-card-body {
+    padding: 1.25rem;
+}
+
+.offering-card-description {
+    color: var(--gray);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    min-height: 3rem;
+}
+
+.offering-card-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--gray-lighter);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.offering-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.offering-stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.offering-stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.offering-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.offering-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.offering-badge.loyalty {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #6b5b00;
+}
+
+.offering-badge.bonus {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+}
+
+.offering-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--gray-lighter);
+    border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.offering-card-actions button {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [TABLES] - Table Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.data-table th {
+    background: var(--gray-lighter);
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-dark);
+    font-size: 0.875rem;
+}
+
+.data-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table tr:hover {
+    background: var(--gray-lighter);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [CREATE-EXAMPLES] - Create Examples Button
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.create-examples-btn {
+    background: linear-gradient(135deg, var(--warning) 0%, #ffc107 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.create-examples-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+.create-examples-btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [TABS] - Tab Navigation
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tab-container {
+    margin-bottom: 2rem;
+}
+
+.tab-list {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.tab-item {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--gray);
+    transition: all 0.3s ease;
+}
+
+.tab-item:hover {
+    color: var(--primary);
+}
+
+.tab-item.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [TOGGLE-SWITCHES] - Toggle Switches
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gray-light);
+    border-radius: 24px;
+    transition: 0.3s;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .toggle-slider {
+    background: linear-gradient(135deg, var(--success), #0ea5e9);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [MODALS] - Modal Dialogs
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.modal-footer {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [AUTO-SAVE] - Auto-Save Indicator
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.auto-save-indicator {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--success);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.auto-save-indicator.show {
+    display: flex;
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [LOADING-STATES] - Loading States
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [QUICK-ACTIONS] - Quick Actions
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quick-action-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.quick-action-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.quick-action-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-action-label {
+    font-weight: 500;
+    color: var(--gray-dark);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [PAGE-BUILDER] - Page Builder
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.drag-component {
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    cursor: move;
+    transition: all 0.2s ease;
+}
+
+.drag-component:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.drag-component.dragging {
+    opacity: 0.5;
+}
+
+.page-component {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: white;
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    position: relative;
+}
+
+.page-component:hover {
+    border-color: var(--primary);
+}
+
+.page-component .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.theme-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [ANIMATIONS] - Keyframe Animations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes pulse {
+    0% { opacity: 1; transform: translateY(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateY(-50%) scale(1.1); }
+    100% { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .offerings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
+.p-3 { padding: 1.5rem; }
+.p-4 { padding: 2rem; }
+
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.gap-3 { gap: 1.5rem; }
+.gap-4 { gap: 2rem; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   [INLINE-STYLES] - Additional Inline Styles from HTML
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Reward Type Cards */
+.reward-type-card:hover {
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.reward-type-card:has(input:checked) {
+    border-color: var(--primary) !important;
+    background: var(--primary-light) !important;
+}

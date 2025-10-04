@@ -1,0 +1,3689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewCo - Setup Wizard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load Supabase adapter -->
+    <script src="newco-supabase.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ea3f2;
+            --primary-dark: #1a5f8a;
+            --primary-light: #e3f4fd;
+            --secondary: #9c27b0;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --dark: #1a1a1a;
+            --gray-dark: #333;
+            --gray: #666;
+            --gray-light: #999;
+            --gray-lighter: #f5f5f5;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-xl: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #f0f8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Background decoration */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(46, 163, 242, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        /* Main container */
+        .wizard-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .wizard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wizard-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo-container {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .wizard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .wizard-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        /* Progress */
+        .progress-container {
+            padding: 0 2rem;
+            margin-top: 2rem;
+            position: relative;
+        }
+        
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin: 1rem 0 2rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            border-radius: 10px;
+        }
+        
+        .progress-percentage {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: #4CAF50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            z-index: -1;
+        }
+
+        .progress-step.completed:not(:last-child)::after {
+            background: white;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active .step-circle,
+        .progress-step.completed .step-circle {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.3);
+        }
+
+        .step-label {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .progress-step.active .step-label,
+        .progress-step.completed .step-label {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        /* Content */
+        .wizard-content {
+            padding: 3rem 2rem;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .step-subtitle {
+            color: var(--gray);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        /* Form styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+        }
+
+        .form-label .required {
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 163, 242, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Input group */
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-light);
+            font-size: 1.2rem;
+        }
+
+        .input-with-icon {
+            padding-left: 3rem;
+        }
+
+        /* License input */
+        .license-input {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            background: var(--gray-lighter);
+        }
+
+        /* User cards */
+        .user-cards {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .user-card {
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, var(--success), #45a049);
+            color: white;
+        }
+
+        .role-manager {
+            background: linear-gradient(135deg, var(--warning), #f57c00);
+            color: white;
+        }
+
+        .role-staff {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        /* Schedule grid */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .schedule-day {
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .schedule-day:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .schedule-day.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .day-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-time {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Session times */
+        .session-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .time-slot {
+            background: var(--gray-lighter);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .time-slot-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .time-slot-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Event types */
+        .event-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .event-type-card {
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .event-type-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .event-type-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .event-type-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .event-type-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-type-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-type-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e8ed;
+            position: relative;
+        }
+        
+        /* Auto-save indicator */
+        .save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            display: none;
+            animation: fadeInOut 2s ease;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 163, 242, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-lighter);
+            color: var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e1e8ed;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-large {
+            font-size: 1.125rem;
+            padding: 1rem 2.5rem;
+        }
+
+        /* Success state */
+        .success-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--success), #45a049);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            font-size: 1.125rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Preview card */
+        .preview-card {
+            background: linear-gradient(135deg, var(--primary-light), #f0f8ff);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .preview-content {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Loading states */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hall cards */
+        .hall-card {
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .hall-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .hall-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .hall-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .hall-title {
+            flex: 1;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .hall-schedule-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--gray-lighter);
+            border-radius: 12px;
+        }
+
+        .hall-schedule-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hall-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .hall-info {
+            flex: 1;
+        }
+
+        .hall-name {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .hall-address {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .day-schedule {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .day-name-large {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.125rem;
+        }
+
+        .day-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .day-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .time-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .time-input-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* Hall Layout Grid */
+        .layout-designer {
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .layout-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .size-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .size-input {
+            width: 80px;
+        }
+
+        .tool-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .tool-btn {
+            padding: 0.5rem;
+            border: 2px solid #e1e8ed;
+            background: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            line-height: 1;
+            box-sizing: border-box;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .tool-btn span {
+            display: block;
+        }
+
+        .tool-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .tool-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .tool-btn.clear-active {
+            background: #d32f2f !important;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.3) !important;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hall-grid {
+            display: grid;
+            gap: 2px;
+            background: #e1e8ed;
+            padding: 2px;
+            border-radius: 8px;
+            max-width: 100%;
+            overflow: auto;
+            margin: 0 auto;
+        }
+
+        .grid-cell {
+            background: var(--white);
+            aspect-ratio: 1;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+
+        .grid-cell:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .grid-cell.blocked {
+            background: var(--gray-dark);
+            color: white;
+            cursor: not-allowed;
+            border: 2px solid #333;
+        }
+
+        .grid-cell.table {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            font-weight: 600;
+            border: 2px solid #388E3C;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+        }
+
+        .grid-cell.special {
+            background: linear-gradient(135deg, var(--warning), #f57c00);
+            color: white;
+            font-weight: 600;
+            border: 2px solid #E65100;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+        }
+        
+        .grid-cell.entrance {
+            background: #E3F2FD;
+            border: 3px solid #2196F3;
+            color: #1976D2;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .grid-cell.restroom {
+            background: #F3E5F5;
+            border: 3px solid #9C27B0;
+            color: #7B1FA2;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .grid-cell.merged {
+            grid-column: span var(--col-span, 1);
+            grid-row: span var(--row-span, 1);
+        }
+
+        .grid-cell.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .layout-legend {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .hall-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .hall-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .hall-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .hall-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .wizard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .step-title {
+                font-size: 1.5rem;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <!-- Header -->
+        <div class="wizard-header">
+            <div class="logo-container">
+                <div class="logo-icon">🎱</div>
+            </div>
+            <h1>NewCo</h1>
+            <p>Quick Setup Wizard</p>
+            
+            <!-- Progress -->
+            <div class="progress-container">
+                <div class="progress-percentage" id="progressPercent">0% Completed</div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="progress-step" data-step="1" style="display: none;">
+                        <div class="step-circle">🎉</div>
+                        <div class="step-label">Welcome</div>
+                    </div>
+                    <div class="progress-step active" data-step="2">
+                        <div class="step-circle">🏢</div>
+                        <div class="step-label">Organization</div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-circle">⚙️</div>
+                        <div class="step-label">Preferences</div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-circle">📱</div>
+                        <div class="step-label">Apps</div>
+                    </div>
+                    <div class="progress-step" data-step="5">
+                        <div class="step-circle">🏛️</div>
+                        <div class="step-label">Hall</div>
+                    </div>
+                    <div class="progress-step" data-step="6">
+                        <div class="step-circle">📅</div>
+                        <div class="step-label">Schedule</div>
+                    </div>
+                    <div class="progress-step" data-step="7">
+                        <div class="step-circle">📜</div>
+                        <div class="step-label">Layout</div>
+                    </div>
+                    <div class="progress-step" data-step="8">
+                        <div class="step-circle">🏆</div>
+                        <div class="step-label">Rewards</div>
+                    </div>
+                    <div class="progress-step" data-step="9">
+                        <div class="step-circle">🎨</div>
+                        <div class="step-label">Branding</div>
+                    </div>
+                    <div class="progress-step" data-step="10">
+                        <div class="step-circle">👥</div>
+                        <div class="step-label">Staff</div>
+                    </div>
+                    <div class="progress-step" data-step="11">
+                        <div class="step-circle">✅</div>
+                        <div class="step-label">Review</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="wizard-content">
+            <!-- Step 1: Welcome (HIDDEN - License skip) -->
+            <div class="step-content" data-step="1" style="display: none;">
+                <h2 class="step-title">🎉 Welcome to NewCo!</h2>
+                <p class="step-subtitle">Let's get your bingo hall set up in just a few minutes</p>
+                
+                <div class="form-group">
+                    <label class="form-label">🔑 License Key <span class="required">*</span></label>
+                    <input type="text" class="form-input license-input" id="licenseKey" 
+                           placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19">
+                    <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
+                        Enter your license key or use demo key: DEMO-2024-BING-O123
+                    </small>
+                </div>
+
+                <div class="button-group">
+                    <div></div>
+                    <button type="button" class="btn btn-primary btn-large" onclick="validateAndNext(1)">
+                        💾 Save & Get Started <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Organization Info -->
+            <div class="step-content active" data-step="2">
+                <h2 class="step-title">🏢 Organization Information</h2>
+                <p class="step-subtitle">Tell us about your bingo hall</p>
+                
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">🏢 Organization Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="orgName" 
+                               placeholder="e.g., Santa Clara Community Bingo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Organization Type <span class="required">*</span></label>
+                        <select class="form-select" id="orgType">
+                            <option value="">Select Type</option>
+                            <option value="nonprofit">Non-Profit Organization</option>
+                            <option value="veteran">Veterans Organization</option>
+                            <option value="religious">Religious Organization</option>
+                            <option value="fraternal">Fraternal Organization</option>
+                            <option value="civic">Civic/Community Group</option>
+                            <option value="commercial">Commercial Bingo Hall</option>
+                            <option value="tribal">Tribal Gaming</option>
+                            <option value="other">Other Licensed Organization</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">License Number</label>
+                        <input type="text" class="form-input" id="orgLicense" 
+                               placeholder="e.g., CA-BING-2024-0123">
+                        <small style="color: var(--gray); display: block; margin-top: 0.25rem;">
+                            State-issued bingo license number (optional)
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-input" id="orgAddress" 
+                               placeholder="123 Main Street">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" id="orgCity" 
+                               placeholder="Santa Clara">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <select class="form-select" id="orgState">
+                            <option value="">Select State</option>
+                            <option value="CA" selected>California</option>
+                            <option value="TX">Texas</option>
+                            <option value="FL">Florida</option>
+                            <option value="NY">New York</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">ZIP Code</label>
+                        <input type="text" class="form-input" id="orgZip" 
+                               placeholder="95050">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" id="orgPhone" 
+                               placeholder="(408) 555-1234">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📧 Email (Master Admin) <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="orgEmail" 
+                               placeholder="admin@yourbingo.com">
+                        <small style="color: var(--gray); display: block; margin-top: 0.25rem;">
+                            This will be the master administrator account
+                        </small>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(2)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(2)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: System Preferences -->
+            <div class="step-content" data-step="3">
+                <h2 class="step-title">⚙️ System Preferences</h2>
+                <p class="step-subtitle">Configure tax rates, payment methods, and system settings</p>
+                
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">Tax Configuration</h3>
+                        <div class="form-group">
+                            <label for="taxRate">Tax Rate (%)</label>
+                            <input type="number" id="taxRate" class="form-input" value="8.75" step="0.01" min="0" max="100">
+                            <small style="color: var(--gray);">Sales tax percentage for your location</small>
+                        </div>
+                        
+                        <div style="margin-top: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="taxExemptPackages" checked>
+                                <span>Bingo packages are tax-exempt</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="taxExemptItems" checked>
+                                <span>Sales items are tax-exempt</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="taxExemptRewards" checked>
+                                <span>Reward items are tax-exempt</span>
+                            </label>
+                            <small style="color: var(--gray); display: block; margin-top: 0.5rem;">Most charitable bingo organizations have tax-exempt status</small>
+                            <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 0.75rem; margin-top: 1rem;">
+                                <strong style="color: #856404;">📝 Note:</strong>
+                                <span style="color: #856404;">Be sure to flag merchandise offerings as taxable inside those offerings.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">Payment Methods</h3>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input type="checkbox" id="paymentCard" checked>
+                            <span>Accept Credit/Debit Cards</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input type="checkbox" id="paymentCash">
+                            <span>Accept Cash at Hall</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="paymentCheck">
+                            <span>Accept Checks</span>
+                        </label>
+                        <small style="color: var(--gray); display: block; margin-top: 0.5rem;">At least one payment method must be enabled</small>
+                    </div>
+                </div>
+                
+                <div class="form-grid" style="margin-top: 2rem;">
+                    <div class="form-group">
+                        <label for="seatLimit">Seat Limit Per Customer</label>
+                        <input type="number" id="seatLimit" class="form-input" value="1" min="1" max="10">
+                        <small style="color: var(--gray);">Maximum seats a customer can reserve per session</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timezone">Timezone</label>
+                        <select id="timezone" class="form-input">
+                            <option value="America/New_York">Eastern Time</option>
+                            <option value="America/Chicago">Central Time</option>
+                            <option value="America/Denver">Mountain Time</option>
+                            <option value="America/Los_Angeles" selected>Pacific Time</option>
+                            <option value="America/Phoenix">Arizona Time</option>
+                            <option value="Pacific/Honolulu">Hawaii Time</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currency">Currency</label>
+                        <select id="currency" class="form-input">
+                            <option value="USD" selected>USD ($)</option>
+                            <option value="CAD">CAD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(3)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(3)">
+                        Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Additional Apps -->
+            <div class="step-content" data-step="4">
+                <h2 class="step-title">📱 Additional Apps and Functions</h2>
+                <p class="step-subtitle">Enable companion applications to extend your bingo management system</p>
+                
+                <div class="form-section" style="max-width: 700px; margin: 0 auto;">
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; color: white;">
+                        <h3 style="margin: 0 0 0.5rem 0; color: white;">🚀 Expand Your System</h3>
+                        <p style="margin: 0; opacity: 0.95;">Enable specialized apps for different parts of your operation. These can be turned on/off anytime.</p>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                        <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
+                            <input type="checkbox" id="enableRedemptionApp" style="margin-top: 0.25rem;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">🛒 Redemption App</div>
+                                <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
+                                    Allow customers to redeem their online purchases at the hall. Staff can scan QR codes or enter confirmation numbers to validate and fulfill web orders.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                        <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
+                            <input type="checkbox" id="enableDesktopApp" style="margin-top: 0.25rem;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">💻 Purchase App</div>
+                                <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
+                                    Point-of-sale system for in-person transactions at the bingo hall. Process walk-in purchases, handle cash/card payments, and print receipts.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                        <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
+                            <input type="checkbox" id="enableFloorRunnerApp" style="margin-top: 0.25rem;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">🏃 Floor Runner Rewards App</div>
+                                <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
+                                    Mobile app for floor staff to scan member barcodes or enter member numbers to instantly award loyalty points during games. Perfect for bonus rounds and special promotions.
+                                </p>
+                                <div style="margin-top: 0.75rem; padding-left: 1rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <input type="checkbox" id="floorRunnerBarcode" checked>
+                                        <span style="font-size: 0.85rem;">Enable Barcode Scanning</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" id="floorRunnerMemberNumber" checked>
+                                        <span style="font-size: 0.85rem;">Enable Member Number Entry</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div style="background: #f0f4f8; border-radius: 8px; padding: 1rem; margin-top: 2rem;">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--gray);">
+                            <strong>Note:</strong> These apps will be available as separate downloads after setup. You can enable/disable them at any time from the Operations panel.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(4)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(4)">
+                        Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Bingo Hall -->
+            <div class="step-content" data-step="5">
+                <h2 class="step-title">🏛️ Bingo Hall Configuration</h2>
+                <p class="step-subtitle">Configure your main bingo hall</p>
+
+                <div class="form-group">
+                    <label class="form-label">Hall Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="hall-name-0" value="Main Hall" placeholder="Enter hall name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-input" id="hall-address-0" placeholder="Street address">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Capacity</label>
+                        <input type="number" class="form-input" id="hall-capacity-0" placeholder="Max capacity">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Seating Map Type</label>
+                    <select class="form-select" id="hall-seating-type-0" onchange="updateWizardSeatingMapType()">
+                        <option value="none" selected>No Seating Map</option>
+                        <option value="manual">Manual Configuration (Grid Designer)</option>
+                        <option value="prebuilt">Prebuilt Map (Import .js file)</option>
+                    </select>
+                    <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
+                        Choose how you want to configure seat selection. You can change this later in the admin panel.
+                    </small>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(5)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(5)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 6: Schedule -->
+            <div class="step-content" data-step="6">
+                <h2 class="step-title">📅 Operating Schedule</h2>
+                <p class="step-subtitle">Set the starting schedule for each hall</p>
+                
+                <div style="background: linear-gradient(135deg, var(--primary-light), #e3f4fd); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+                    <div style="color: var(--primary-dark); font-size: 0.95rem;">
+                        <strong>✨ Don't worry, everything can be changed later!</strong><br>
+                        <span style="color: var(--gray); font-size: 0.9rem;">This is just to get you started - you can adjust schedules anytime from the admin dashboard</span>
+                    </div>
+                </div>
+                
+                <div id="hallSchedulesContainer">
+                    <!-- Hall schedules will be generated here -->
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(6)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(6)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 7: Hall Layout -->
+            <div class="step-content" data-step="7">
+                <h2 class="step-title">📜 Hall Seating Map</h2>
+                <p class="step-subtitle" id="layoutSubtitle">Configure your seating map based on your selection</p>
+
+                <div id="layoutDesigners">
+                    <!-- Layout designer or upload will be generated here based on seating type -->
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(7)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="skipLayouts()">
+                        ⏭️ Skip This Step
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(7)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 8: Rewards -->
+            <div class="step-content" data-step="8">
+                <h2 class="step-title">🏆 Rewards & Loyalty Program</h2>
+                <p class="step-subtitle">Configure your customer rewards program</p>
+                
+                <div class="form-group">
+                    <div style="background: var(--gray-lighter); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; margin-bottom: 1rem;">
+                            <input type="checkbox" id="hasExistingRewards" onchange="toggleRewardsFields()" style="width: 20px; height: 20px;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--dark); font-size: 1.1rem;">Are you currently using a Rewards/Loyalty Program?</div>
+                                <div style="color: var(--gray); font-size: 0.9rem; margin-top: 0.25rem;">Check if you have an existing program in place</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div style="background: linear-gradient(135deg, var(--primary-light), #f0f8ff); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                            <input type="checkbox" id="enableRewards" checked onchange="toggleRewardsSettings()" style="width: 20px; height: 20px;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--dark); font-size: 1.1rem;">Do you want to enable Rewards/Loyalty Points?</div>
+                                <div style="color: var(--gray); font-size: 0.9rem; margin-top: 0.25rem;">Allow customers to earn and redeem points</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="rewardsSettings" style="transition: all 0.3s;">
+                    <div class="form-group">
+                        <label class="form-label">Rewards Points Name</label>
+                        <input type="text" class="form-input" id="rewardsName" 
+                               placeholder="Loyalty Points" value="Loyalty Points">
+                        <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
+                            What to call your points (e.g., "VIP Points", "Bingo Bucks", "Loyalty Points")
+                        </small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 12px; padding: 1.5rem;">
+                            <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
+                                <input type="checkbox" id="enablePartnerOffers" style="width: 20px; height: 20px; margin-top: 2px;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--dark); font-size: 1.1rem;">
+                                        Partner Rewards Network
+                                    </div>
+                                    <div style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">
+                                        Do you want to receive offers for rewards from XHS company partners?
+                                    </div>
+                                    <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+                                        <div style="font-weight: 500; margin-bottom: 0.5rem;">Benefits include:</div>
+                                        <ul style="margin: 0; padding-left: 1.5rem; color: var(--gray); font-size: 0.9rem;">
+                                            <li>Exclusive discounts from local businesses</li>
+                                            <li>Special promotional offers for your players</li>
+                                            <li>Cross-promotional opportunities</li>
+                                            <li>Additional revenue streams</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <div id="partnerApproval" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ffc107;">
+                                <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                                    <input type="checkbox" id="requireApproval" checked style="width: 18px; height: 18px;">
+                                    <span style="font-size: 0.95rem;">Require my approval before sending offers to customers</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(8)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(8)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 9: Branding -->
+            <div class="step-content" data-step="9">
+                <h2 class="step-title">🎨 Branding & Styling</h2>
+                <p class="step-subtitle">Customize the look and feel (optional)</p>
+                
+                <div class="preview-card" style="margin-bottom: 2rem;">
+                    <div class="preview-title">Live Preview</div>
+                    <div class="preview-content" id="brandingPreview" style="padding: 2rem; text-align: center;">
+                        <div id="previewLogo" style="width: 80px; height: 80px; margin: 0 auto 1rem; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">🎱</div>
+                        <h3 id="previewOrgName" style="margin-bottom: 0.5rem;">Your Organization</h3>
+                        <p id="previewTagline" style="color: var(--gray);">Your tagline here</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Logo</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <input type="file" class="form-input" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)" style="flex: 1;">
+                            <button type="button" class="btn btn-secondary" onclick="useDefaultLogo()">Use Default</button>
+                        </div>
+                        <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
+                            Upload your logo (PNG, JPG, SVG) or use our default
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Primary Color</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <input type="color" id="primaryColor" value="#2ea3f2" onchange="updateBrandColors()" style="width: 60px; height: 40px; border: 2px solid #e1e8ed; border-radius: 8px; cursor: pointer;">
+                            <input type="text" class="form-input" value="#2ea3f2" id="primaryColorText" onchange="updateBrandColors()" style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Accent Color</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <input type="color" id="accentColor" value="#9c27b0" onchange="updateBrandColors()" style="width: 60px; height: 40px; border: 2px solid #e1e8ed; border-radius: 8px; cursor: pointer;">
+                            <input type="text" class="form-input" value="#9c27b0" id="accentColorText" onchange="updateBrandColors()" style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Tagline</label>
+                        <input type="text" class="form-input" id="orgTagline" placeholder="e.g., Where Winners Play!" onchange="updateBrandPreview()">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Theme Style</label>
+                        <div class="event-types" style="margin-top: 1rem;">
+                            <div class="event-type-card selected" onclick="selectTheme(this, 'modern')" data-theme="modern" style="padding: 1rem;">
+                                <div class="event-type-name">Modern</div>
+                                <div class="event-type-desc">Clean and contemporary</div>
+                            </div>
+                            <div class="event-type-card" onclick="selectTheme(this, 'classic')" data-theme="classic" style="padding: 1rem;">
+                                <div class="event-type-name">Classic</div>
+                                <div class="event-type-desc">Traditional bingo hall</div>
+                            </div>
+                            <div class="event-type-card" onclick="selectTheme(this, 'fun')" data-theme="fun" style="padding: 1rem;">
+                                <div class="event-type-name">Fun</div>
+                                <div class="event-type-desc">Playful and energetic</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(9)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="skipBranding()">
+                        ⏭️ Skip This Step
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(9)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 10: Staff -->
+            <div class="step-content" data-step="10">
+                <h2 class="step-title">👥 Staff Setup</h2>
+                <p class="step-subtitle">Add your team members</p>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-input" id="staffName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="staffEmail" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" id="staffRole">
+                            <option value="admin">Administrator</option>
+                            <option value="manager">Manager</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" onclick="addStaff()">👥 Add Staff Member</button>
+                    </div>
+                </div>
+                
+                <div class="notice-box" style="margin-top: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.25rem;">📧</span>
+                        <strong>Automatic Invitations</strong>
+                    </div>
+                    <p style="margin: 0; font-size: 0.875rem; color: #6c757d;">
+                        When you add staff members, they'll automatically receive an email invitation 
+                        with a secure link to set up their account. You can customize the invitation 
+                        template in the admin panel later.
+                    </p>
+                </div>
+
+                <div class="user-cards" id="staffList">
+                    <!-- Staff members will be added here dynamically -->
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(10)">
+                        <span>←</span> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="validateAndNext(10)">
+                        💾 Save & Continue <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 11: Review & Launch -->
+            <div class="step-content" data-step="11">
+                <div class="success-container">
+                    <div class="success-icon">✓</div>
+                    <h2 class="success-title">✅ All Set! 🎉</h2>
+                    <p class="success-message">Your NewCo system is ready to go!</p>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">📋 Organization Details</div>
+                        <div class="preview-content" id="orgSummary">
+                            <!-- Organization summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">⚙️ System Preferences</div>
+                        <div class="preview-content" id="preferencesSummary">
+                            <!-- System preferences summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">📱 Additional Apps</div>
+                        <div class="preview-content" id="appsSummary">
+                            <!-- Apps configuration summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">🏛️ Bingo Halls</div>
+                        <div class="preview-content" id="hallsSummary">
+                            <!-- Halls summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">🎨 Branding & Style</div>
+                        <div class="preview-content" id="brandingSummary">
+                            <!-- Branding summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card" style="margin-bottom: 2rem;">
+                        <div class="preview-title">👥 Team Members</div>
+                        <div class="preview-content" id="staffSummary">
+                            <!-- Staff summary will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep(11)">
+                            <span>←</span> Back to Edit
+                        </button>
+                        <button type="button" class="btn btn-primary btn-large" onclick="launchDashboard()">
+                            🚀 💾 Save & Launch Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize NewcoData with customer from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const customer = urlParams.get('customer') || 'demo';
+        const userEmail = urlParams.get('email');
+        NewcoData.init(customer);
+
+        // Wizard data
+        // Check if returning to wizard with saved step
+        const savedStep = parseInt(urlParams.get('step')) || 2; // Start at step 2, skip license
+
+        let wizardData = {
+            license: 'FF-' + Math.random().toString(36).substring(2, 15).toUpperCase(), // Auto-generate license
+            organization: {},
+            halls: [],
+            schedules: {}, // Per-hall schedules
+            rewards: {
+                hasExisting: false,
+                enabled: true,
+                programName: 'Loyalty Points',
+                partnerOffers: false,
+                requireApproval: true
+            },
+            branding: {
+                logo: null,
+                primaryColor: '#2ea3f2',
+                accentColor: '#9c27b0',
+                tagline: '',
+                theme: 'modern'
+            },
+            staff: [],
+            currentStep: savedStep
+        };
+
+        // On page load, show the correct step and hide step 1 (license)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Always hide step 1 (license)
+            document.querySelector('.step-content[data-step="1"]')?.classList.remove('active');
+            document.querySelector('.step-content[data-step="1"]')?.style.setProperty('display', 'none');
+
+            // Hide step 1 from progress bar
+            document.querySelector('.progress-step[data-step="1"]')?.style.setProperty('display', 'none');
+
+            if (savedStep > 1) {
+                // Show saved step
+                document.querySelector(`.step-content[data-step="${savedStep}"]`)?.classList.add('active');
+
+                // Update progress indicators
+                document.querySelectorAll('.progress-step').forEach(s => {
+                    const stepNum = parseInt(s.dataset.step);
+                    if (stepNum < savedStep) {
+                        s.classList.add('completed');
+                        s.classList.remove('active');
+                    } else if (stepNum === savedStep) {
+                        s.classList.add('active');
+                    }
+                });
+
+                updateProgressBar(savedStep);
+            } else {
+                // Show step 2 by default
+                document.querySelector('.step-content[data-step="2"]')?.classList.add('active');
+                document.querySelector('.progress-step[data-step="2"]')?.classList.add('active');
+                updateProgressBar(2);
+            }
+        });
+
+        // Step navigation
+        function nextStep(step) {
+            const currentContent = document.querySelector(`.step-content[data-step="${step}"]`);
+            const nextContent = document.querySelector(`.step-content[data-step="${step + 1}"]`);
+            
+            if (currentContent && nextContent) {
+                currentContent.classList.remove('active');
+                nextContent.classList.add('active');
+                
+                // Update progress
+                document.querySelectorAll('.progress-step').forEach(s => {
+                    const stepNum = parseInt(s.dataset.step);
+                    if (stepNum < step + 1) {
+                        s.classList.add('completed');
+                        s.classList.remove('active');
+                    } else if (stepNum === step + 1) {
+                        s.classList.add('active');
+                    }
+                });
+                
+                wizardData.currentStep = step + 1;
+                updateProgressBar(step + 1);
+                saveProgress(); // Auto-save when moving forward
+                
+                // Scroll to top of page
+                window.scrollTo(0, 0);
+                
+                // Generate summary on last step
+                if (step + 1 === 11) {
+                    generateSummary();
+                }
+                
+                // Generate default hall form when moving to halls step
+                if (step + 1 === 5) {
+                    generateHallForms();
+                }
+                
+                // Generate hall schedules when moving to schedule step
+                if (step + 1 === 6) {
+                    generateHallSchedules();
+                }
+                
+                // Generate hall layouts when moving to layout step
+                if (step + 1 === 7) {
+                    generateHallLayouts();
+                }
+                
+                // Update branding preview when entering branding step
+                if (step + 1 === 9) {
+                    updateBrandPreview();
+                }
+            }
+        }
+
+        function previousStep(step) {
+            const currentContent = document.querySelector(`.step-content[data-step="${step}"]`);
+            const prevContent = document.querySelector(`.step-content[data-step="${step - 1}"]`);
+            
+            if (currentContent && prevContent) {
+                currentContent.classList.remove('active');
+                prevContent.classList.add('active');
+                
+                // Update progress
+                document.querySelectorAll('.progress-step').forEach(s => {
+                    const stepNum = parseInt(s.dataset.step);
+                    if (stepNum === step - 1) {
+                        s.classList.add('active');
+                        s.classList.remove('completed');
+                    } else if (stepNum === step) {
+                        s.classList.remove('active');
+                    }
+                });
+                
+                wizardData.currentStep = step - 1;
+                updateProgressBar(step - 1);
+                saveProgress(); // Auto-save when moving backward
+                
+                // Scroll to top of page
+                window.scrollTo(0, 0);
+                
+                // Generate default hall form when going back to halls step
+                if (step - 1 === 5) {
+                    generateHallForms();
+                }
+            }
+        }
+
+        // Validation
+        function validateAndNext(step) {
+            // Prevent any form submission
+            if (event) {
+                event.preventDefault();
+            }
+            
+            // Auto-save progress before moving to next step
+            saveProgress();
+            
+            let isValid = true;
+            
+            switch(step) {
+                case 1:
+                    const license = document.getElementById('licenseKey').value;
+                    if (!license) {
+                        alert('Please enter a license key');
+                        return;
+                    }
+                    wizardData.license = license;
+                    break;
+                    
+                case 2:
+                    const orgName = document.getElementById('orgName').value;
+                    const orgType = document.getElementById('orgType').value;
+                    const orgLicense = document.getElementById('orgLicense').value;
+                    const orgEmail = document.getElementById('orgEmail').value;
+                    
+                    if (!orgName || !orgType || !orgEmail) {
+                        alert('Please fill in all required fields');
+                        return;
+                    }
+                    
+                    wizardData.organization = {
+                        name: orgName,
+                        type: orgType,
+                        licenseNumber: orgLicense || '',
+                        address: document.getElementById('orgAddress').value,
+                        city: document.getElementById('orgCity').value,
+                        state: document.getElementById('orgState').value,
+                        zip: document.getElementById('orgZip').value,
+                        phone: document.getElementById('orgPhone').value,
+                        email: orgEmail
+                    };
+                    break;
+                    
+                case 3:
+                    // Save System Preferences
+                    wizardData.systemPreferences = {
+                        taxRate: parseFloat(document.getElementById('taxRate').value) || 8.75,
+                        taxExemptPackages: document.getElementById('taxExemptPackages').checked,
+                        taxExemptItems: document.getElementById('taxExemptItems').checked,
+                        taxExemptRewards: document.getElementById('taxExemptRewards').checked,
+                        paymentCard: document.getElementById('paymentCard').checked,
+                        paymentCash: document.getElementById('paymentCash').checked,
+                        paymentCheck: document.getElementById('paymentCheck').checked,
+                        seatLimit: parseInt(document.getElementById('seatLimit').value) || 1,
+                        timezone: document.getElementById('timezone').value,
+                        currency: document.getElementById('currency').value
+                    };
+                    
+                    // Validate at least one payment method
+                    if (!wizardData.systemPreferences.paymentCard && 
+                        !wizardData.systemPreferences.paymentCash && 
+                        !wizardData.systemPreferences.paymentCheck) {
+                        alert('Please enable at least one payment method');
+                        return;
+                    }
+                    break;
+                    
+                case 4:
+                    // Save Additional Apps settings
+                    wizardData.additionalApps = {
+                        enableRedemptionApp: document.getElementById('enableRedemptionApp').checked,
+                        enableDesktopApp: document.getElementById('enableDesktopApp').checked,
+                        enableFloorRunnerApp: document.getElementById('enableFloorRunnerApp').checked,
+                        floorRunnerBarcode: document.getElementById('floorRunnerBarcode').checked,
+                        floorRunnerMemberNumber: document.getElementById('floorRunnerMemberNumber').checked
+                    };
+                    break;
+                    
+                case 5:
+                    // Save single hall
+                    const hallName = document.getElementById('hall-name-0')?.value;
+                    if (!hallName) {
+                        alert('Please enter a hall name');
+                        return;
+                    }
+                    wizardData.halls = [{
+                        id: 'main-hall',
+                        name: hallName,
+                        address: document.getElementById('hall-address-0')?.value || '',
+                        capacity: parseInt(document.getElementById('hall-capacity-0')?.value) || 0,
+                        seatingMapType: document.getElementById('hall-seating-type-0')?.value || 'none',
+                        layout: {
+                            rows: 15,
+                            cols: 20,
+                            cells: {}
+                        }
+                    }];
+                    break;
+                    
+                case 6:
+                    // Save schedules for each hall
+                    wizardData.schedules = {};
+                    wizardData.halls.forEach(hall => {
+                        const hallSchedule = {};
+                        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
+                            const toggle = document.getElementById(`hall${hall.id}-${day}-toggle`);
+                            if (toggle?.checked) {
+                                hallSchedule[day] = {
+                                    open: true,
+                                    doors: document.getElementById(`hall${hall.id}-${day}-doors`)?.value || '17:00',
+                                    earlyBird: document.getElementById(`hall${hall.id}-${day}-early`)?.value || '18:00',
+                                    regular: document.getElementById(`hall${hall.id}-${day}-regular`)?.value || '18:30',
+                                    closing: document.getElementById(`hall${hall.id}-${day}-close`)?.value || '21:00'
+                                };
+                            } else {
+                                hallSchedule[day] = { open: false };
+                            }
+                        });
+                        wizardData.schedules[hall.id] = hallSchedule;
+                    });
+                    break;
+                    
+                case 7:
+                    // Save hall layouts - already saved during editing
+                    break;
+                    
+                case 8:
+                    // Save rewards settings
+                    wizardData.rewards.hasExisting = document.getElementById('hasExistingRewards').checked;
+                    wizardData.rewards.enabled = document.getElementById('enableRewards').checked;
+                    if (wizardData.rewards.enabled) {
+                        wizardData.rewards.programName = document.getElementById('rewardsName').value;
+                        wizardData.rewards.partnerOffers = document.getElementById('enablePartnerOffers').checked;
+                        wizardData.rewards.requireApproval = document.getElementById('requireApproval').checked;
+                    }
+                    break;
+                    
+                case 9:
+                    // Save branding
+                    wizardData.branding.primaryColor = document.getElementById('primaryColor').value;
+                    wizardData.branding.accentColor = document.getElementById('accentColor').value;
+                    wizardData.branding.tagline = document.getElementById('orgTagline').value;
+                    const selectedTheme = document.querySelector('.event-type-card.selected[data-theme]');
+                    if (selectedTheme) {
+                        wizardData.branding.theme = selectedTheme.dataset.theme;
+                    }
+                    break;
+                    
+                case 10:
+                    // Staff already saved when added
+                    break;
+            }
+            
+            if (isValid) {
+                nextStep(step);
+            }
+        }
+
+        // Toggle functions
+        function toggleDay(element) {
+            element.classList.toggle('active');
+            if (element.classList.contains('active')) {
+                element.querySelector('.day-time').textContent = '6:00 PM';
+            } else {
+                element.querySelector('.day-time').textContent = 'Closed';
+            }
+        }
+
+        function toggleEvent(element) {
+            element.classList.toggle('selected');
+        }
+
+        // Add staff
+        function addStaff() {
+            const name = document.getElementById('staffName').value;
+            const email = document.getElementById('staffEmail').value;
+            const role = document.getElementById('staffRole').value;
+            
+            if (name && email) {
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const roleClass = `role-${role}`;
+                
+                const staffCard = document.createElement('div');
+                staffCard.className = 'user-card';
+                staffCard.innerHTML = `
+                    <div class="user-avatar">${initials}</div>
+                    <div class="user-info">
+                        <div class="user-name">${name}</div>
+                        <div class="user-email">${email}</div>
+                    </div>
+                    <div class="user-role ${roleClass}">${role.toUpperCase()}</div>
+                `;
+                
+                document.getElementById('staffList').appendChild(staffCard);
+                
+                wizardData.staff.push({ name, email, role });
+                
+                // Show email invitation modal
+                showEmailInvitation(name, email, role);
+                
+                // Clear inputs
+                document.getElementById('staffName').value = '';
+                document.getElementById('staffEmail').value = '';
+            }
+        }
+        
+        // Show email invitation modal
+        function showEmailInvitation(name, email, role) {
+            // Create modal for email preview
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            const orgName = wizardData.organization?.name || 'Your Bingo Hall';
+            const inviteLink = `https://bingo.example.com/invite/${btoa(email)}`;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    animation: slideUp 0.3s ease;
+                ">
+                    <h2 style="margin-bottom: 1rem; color: var(--primary);">📧 Sending Invitation Email</h2>
+                    
+                    <div style="
+                        background: #f8f9fa;
+                        border: 1px solid #dee2e6;
+                        border-radius: 8px;
+                        padding: 1.5rem;
+                        margin: 1rem 0;
+                        font-family: monospace;
+                    ">
+                        <div style="margin-bottom: 1rem;">
+                            <strong>To:</strong> ${email}<br>
+                            <strong>Subject:</strong> You're invited to join ${orgName} staff!
+                        </div>
+                        
+                        <div style="
+                            background: white;
+                            padding: 1.5rem;
+                            border-radius: 6px;
+                            margin-top: 1rem;
+                        ">
+                            <h3 style="color: var(--primary); margin-bottom: 1rem;">Welcome to ${orgName}!</h3>
+                            
+                            <p>Hi ${name},</p>
+                            
+                            <p>You've been invited to join our team as a <strong>${role}</strong> at ${orgName}.</p>
+                            
+                            <p>Click the link below to set up your account and get started:</p>
+                            
+                            <div style="text-align: center; margin: 2rem 0;">
+                                <a href="${inviteLink}" style="
+                                    display: inline-block;
+                                    background: var(--primary);
+                                    color: white;
+                                    padding: 0.75rem 2rem;
+                                    border-radius: 8px;
+                                    text-decoration: none;
+                                    font-weight: bold;
+                                ">Accept Invitation</a>
+                            </div>
+                            
+                            <p style="color: #6c757d; font-size: 0.875rem;">
+                                This invitation link will expire in 7 days. If you need a new invitation, 
+                                please contact your administrator.
+                            </p>
+                            
+                            <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #dee2e6;">
+                            
+                            <p style="color: #6c757d; font-size: 0.75rem;">
+                                ${orgName} • Powered by NewCo
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="
+                        background: #d4edda;
+                        color: #155724;
+                        padding: 0.75rem;
+                        border-radius: 6px;
+                        margin: 1rem 0;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    ">
+                        <span style="font-size: 1.5rem;">✅</span>
+                        <span>Email queued for delivery! The invitation will be sent shortly.</span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" style="
+                            padding: 0.5rem 1.5rem;
+                            background: #6c757d;
+                            color: white;
+                            border: none;
+                            border-radius: 6px;
+                            cursor: pointer;
+                        ">Close</button>
+                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" style="
+                            padding: 0.5rem 1.5rem;
+                            background: var(--primary);
+                            color: white;
+                            border: none;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: bold;
+                        ">Done</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Auto-close after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(modal)) {
+                    modal.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => modal.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // Generate summary - moved to line 2772
+
+        // Launch dashboard
+        async function launchDashboard() {
+            // Save data to localStorage
+            // Save setup data to NewcoData
+            NewcoData.set('setup', wizardData);
+            saveProgress();
+            
+            // Redirect to dashboard
+            // Final save to NewcoData
+            saveProgress();
+
+            // Mark wizard as complete
+            NewcoData.set('wizardComplete', true);
+
+            // Mark onboarding complete in accounts table
+            if (userEmail) {
+                try {
+                    await fetch(`${SUPABASE_URL}/rest/v1/accounts?email=eq.${encodeURIComponent(userEmail)}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            onboarding_completed: true,
+                            wizard_progress: 11
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error marking onboarding complete:', error);
+                }
+            }
+
+            // Redirect to new admin panel
+            window.location.href = `newco-admin-v2.2.html?customer=${customer}`;
+        }
+
+        // License key formatting
+        document.getElementById('licenseKey').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            let formatted = value.match(/.{1,4}/g)?.join('-') || value;
+            e.target.value = formatted.substring(0, 19);
+        });
+
+        // Generate hall forms
+        // No longer needed - single hall with static HTML
+        function generateHallForms() {
+            // Function kept for compatibility but does nothing
+            // Hall form is now static HTML in step 5
+        }
+
+        function updateWizardSeatingMapType() {
+            // Update subtitle based on selection
+            const seatingType = document.getElementById('hall-seating-type-0')?.value || 'none';
+            const subtitle = document.getElementById('layoutSubtitle');
+
+            if (subtitle) {
+                if (seatingType === 'none') {
+                    subtitle.textContent = 'No seating map needed - skip to next step';
+                } else if (seatingType === 'manual') {
+                    subtitle.textContent = 'Design your hall layout using the grid designer in the next step';
+                } else if (seatingType === 'prebuilt') {
+                    subtitle.textContent = 'Upload your prebuilt seating map file in the next step';
+                }
+            }
+        }
+
+        // Generate hall schedules
+        function generateHallSchedules() {
+            const container = document.getElementById('hallSchedulesContainer');
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            
+            let html = '';
+            wizardData.halls.forEach(hall => {
+                html += `
+                    <div class="hall-schedule-section">
+                        <div class="hall-schedule-header">
+                            <div class="hall-icon">🏢</div>
+                            <div class="hall-info">
+                                <div class="hall-name">${hall.name}</div>
+                                <div class="hall-address">${hall.address}, ${hall.city}</div>
+                            </div>
+                        </div>
+                        
+                        ${days.map(day => `
+                            <div class="day-schedule">
+                                <div class="day-header">
+                                    <div class="day-name-large">${day}</div>
+                                    <div class="day-toggle">
+                                        <span>Open</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="hall${hall.id}-${day.toLowerCase()}-toggle" 
+                                                   onchange="toggleDaySchedule(${hall.id}, '${day.toLowerCase()}')"
+                                                   ${['wednesday', 'friday', 'saturday', 'sunday'].includes(day.toLowerCase()) ? 'checked' : ''}>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="day-times" id="hall${hall.id}-${day.toLowerCase()}-times" 
+                                     style="${['wednesday', 'friday', 'saturday', 'sunday'].includes(day.toLowerCase()) ? '' : 'display: none;'}">
+                                    <div class="time-input-group">
+                                        <label class="time-input-label">Doors Open</label>
+                                        <input type="time" class="form-input" id="hall${hall.id}-${day.toLowerCase()}-doors" value="17:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label class="time-input-label">Early Bird</label>
+                                        <input type="time" class="form-input" id="hall${hall.id}-${day.toLowerCase()}-early" value="18:00">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label class="time-input-label">Regular Session</label>
+                                        <input type="time" class="form-input" id="hall${hall.id}-${day.toLowerCase()}-regular" value="18:30">
+                                    </div>
+                                    <div class="time-input-group">
+                                        <label class="time-input-label">Closing Time</label>
+                                        <input type="time" class="form-input" id="hall${hall.id}-${day.toLowerCase()}-close" value="21:00">
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Toggle day schedule
+        function toggleDaySchedule(hallId, day) {
+            const toggle = document.getElementById(`hall${hallId}-${day}-toggle`);
+            const times = document.getElementById(`hall${hallId}-${day}-times`);
+            if (toggle.checked) {
+                times.style.display = 'grid';
+            } else {
+                times.style.display = 'none';
+            }
+        }
+
+        // Branding functions
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    wizardData.branding.logo = e.target.result;
+                    document.getElementById('previewLogo').innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function useDefaultLogo() {
+            wizardData.branding.logo = null;
+            document.getElementById('previewLogo').innerHTML = '🎱';
+            document.getElementById('logoUpload').value = '';
+        }
+
+        function updateBrandColors() {
+            const primary = document.getElementById('primaryColor').value;
+            const accent = document.getElementById('accentColor').value;
+            
+            document.getElementById('primaryColorText').value = primary;
+            document.getElementById('accentColorText').value = accent;
+            
+            document.getElementById('previewLogo').style.background = primary;
+            
+            // Update CSS variables
+            document.documentElement.style.setProperty('--primary', primary);
+            document.documentElement.style.setProperty('--secondary', accent);
+        }
+
+        function updateBrandPreview() {
+            const orgName = wizardData.organization.name || 'Your Organization';
+            const tagline = document.getElementById('orgTagline')?.value || 'Your tagline here';
+            
+            document.getElementById('previewOrgName').textContent = orgName;
+            document.getElementById('previewTagline').textContent = tagline;
+        }
+
+        function selectTheme(element, theme) {
+            document.querySelectorAll('[data-theme]').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            wizardData.branding.theme = theme;
+        }
+
+        function skipBranding() {
+            // Keep default branding and move to next step
+            validateAndNext(9);
+        }
+        
+        function skipLayouts() {
+            // Skip layout design and move to next step
+            validateAndNext(7);
+        }
+        
+        // Toggle rewards fields
+        function toggleRewardsFields() {
+            // Just visual feedback - doesn't disable the enable checkbox
+        }
+        
+        function toggleRewardsSettings() {
+            const enabled = document.getElementById('enableRewards').checked;
+            const settings = document.getElementById('rewardsSettings');
+            if (enabled) {
+                settings.style.opacity = '1';
+                settings.style.pointerEvents = 'auto';
+            } else {
+                settings.style.opacity = '0.5';
+                settings.style.pointerEvents = 'none';
+            }
+        }
+        
+        // Toggle partner offers approval
+        document.addEventListener('DOMContentLoaded', function() {
+            const partnerCheckbox = document.getElementById('enablePartnerOffers');
+            if (partnerCheckbox) {
+                partnerCheckbox.addEventListener('change', function() {
+                    const approvalDiv = document.getElementById('partnerApproval');
+                    if (this.checked) {
+                        approvalDiv.style.display = 'block';
+                    } else {
+                        approvalDiv.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Hall Layout Functions
+        let currentHallLayout = 1;
+        let layoutTool = 'select';
+        let selectedCells = new Set();
+        let hallLayouts = {};
+        let tableCounters = {};
+        let clearMode = false;
+        
+        function generateHallLayouts() {
+            const designersContainer = document.getElementById('layoutDesigners');
+
+            // Single hall - no tabs needed
+            const hall = wizardData.halls[0];
+            if (!hall) return;
+
+            const seatingType = hall.seatingMapType || 'none';
+
+            // Generate appropriate UI based on seating map type
+            let designersHtml = '';
+
+            if (seatingType === 'none') {
+                designersHtml = `
+                    <div style="padding: 3rem; text-align: center; background: var(--gray-lighter); border-radius: 12px;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
+                        <h3 style="margin-bottom: 0.5rem;">No Seating Map Required</h3>
+                        <p style="color: var(--gray);">
+                            You selected "No Seating Map" option. Click "Save & Continue" to proceed.
+                        </p>
+                    </div>
+                `;
+            } else if (seatingType === 'prebuilt') {
+                designersHtml = `
+                    <div style="padding: 2rem; background: var(--gray-lighter); border-radius: 12px;">
+                        <h3 style="margin-bottom: 1rem;">Upload Prebuilt Seating Map</h3>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Upload .js Map File:</label>
+                            <input type="file" id="wizard-prebuilt-map-file" accept=".js" onchange="loadWizardPrebuiltMapFile()"
+                                   style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 8px; width: 100%; max-width: 500px;">
+                            <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray);">
+                                Select a JavaScript file containing a seating map function (e.g., milpitas-grid-map.js)
+                            </p>
+                        </div>
+                        <div id="wizard-map-preview" style="margin-top: 1.5rem;"></div>
+                    </div>
+                `;
+            } else if (seatingType === 'manual') {
+                // Show manual grid designer
+                wizardData.halls.forEach((hall, index) => {
+                designersHtml += `
+                    <div class="layout-designer" id="layout-hall-${hall.id}" 
+                         style="${index === 0 ? '' : 'display: none;'}">
+                        <div class="layout-controls">
+                            <div class="size-controls">
+                                <label>Width:</label>
+                                <input type="number" class="form-input size-input" 
+                                       id="width-${hall.id}" value="10" min="5" max="30"
+                                       onchange="updateGridSize(${hall.id})">
+                                <label>Height:</label>
+                                <input type="number" class="form-input size-input" 
+                                       id="height-${hall.id}" value="8" min="5" max="20"
+                                       onchange="updateGridSize(${hall.id})">
+                            </div>
+                            <div class="tool-buttons">
+                                <div class="tool-buttons">
+                                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                                        <button class="tool-btn" onclick="saveAsTable(${hall.id})" style="background: #4CAF50; color: white;" title="Create a table from selected cells">
+                                            <span>💺</span>
+                                            <span style="font-size: 0.75rem;">Table</span>
+                                        </button>
+                                        <button class="tool-btn" onclick="saveAsSpecial(${hall.id})" style="background: #ff9800; color: white;" title="Create a special area">
+                                            <span>🎤</span>
+                                            <span style="font-size: 0.75rem;">Special</span>
+                                        </button>
+                                        <button class="tool-btn" onclick="saveAsBlocked(${hall.id})" style="background: #666; color: white;" title="Block selected cells">
+                                            <span>🚫</span>
+                                            <span style="font-size: 0.75rem;">Block</span>
+                                        </button>
+                                        <button class="tool-btn" id="clear-btn-${hall.id}" onclick="toggleClearMode(${hall.id})" style="background: #f44336; color: white;" title="Remove items - click to activate">
+                                            <span>❌</span>
+                                            <span style="font-size: 0.75rem;">Remove</span>
+                                        </button>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem;">
+                                        <button class="tool-btn" onclick="markAsEntrance(${hall.id})" style="background: #2196F3; color: white;" title="Mark as entrance">
+                                            <span>🚪</span>
+                                            <span style="font-size: 0.75rem;">Entrance</span>
+                                        </button>
+                                        <button class="tool-btn" onclick="markAsRestroom(${hall.id})" style="background: #9C27B0; color: white;" title="Mark as restroom">
+                                            <span>🚽</span>
+                                            <span style="font-size: 0.75rem;">Restroom</span>
+                                        </button>
+                                        <button class="tool-btn" onclick="fillAllEmpty(${hall.id})" style="background: #2196F3; color: white;" title="Fill all empty cells as tables">
+                                            <span>⚡</span>
+                                            <span style="font-size: 0.75rem;">Fill All</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin: 1rem 0;">
+                            <div style="flex: 1; background: #e3f2fd; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #2196F3;">
+                                <strong style="color: #1565C0;">Step 1:</strong> Click cells to select them (they turn blue)
+                            </div>
+                            <div style="flex: 1; background: #e8f5e9; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #4CAF50;">
+                                <strong style="color: #2E7D32;">Step 2:</strong> Click a button to save your selection
+                            </div>
+                        </div>
+                        
+                        <div class="hall-grid" id="grid-${hall.id}">
+                            <!-- Grid will be generated here -->
+                        </div>
+                        
+                        <div class="layout-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: white;"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: var(--gray-dark);"></div>
+                                <span>Blocked</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #4CAF50;"></div>
+                                <span>Table</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: var(--warning);"></div>
+                                <span>Special (Caller, Stage, etc.)</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-lighter); border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">📌 Examples:</div>
+                            <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: var(--gray);">
+                                <li><strong>2-seat table:</strong> Select 2 cells → Click "Save as Table"</li>
+                                <li><strong>4-seat table:</strong> Select 4 cells → Click "Save as Table"</li>
+                                <li><strong>20-seat long table:</strong> Select 20 cells → Click "Save as Table"</li>
+                                <li><strong>Caller Station:</strong> Select 4-6 cells → Click "Save as Special" → Name it</li>
+                                <li><strong>Stage area:</strong> Select any number of cells → Click "Save as Special"</li>
+                                <li><strong>Pillar:</strong> Select 1 cell → Click "Save as Blocked"</li>
+                            </ul>
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd; display: flex; justify-content: space-around;">
+                                <div>
+                                    <strong>Tables:</strong> <span id="table-count-${hall.id}" style="color: var(--primary); font-size: 1.1rem;">0</span>
+                                </div>
+                                <div>
+                                    <strong>Total Spots:</strong> <span id="spot-count-${hall.id}" style="color: #4CAF50; font-size: 1.1rem;">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Initialize layout data
+                if (!hallLayouts[hall.id]) {
+                    hallLayouts[hall.id] = {
+                        width: 10,
+                        height: 8,
+                        cells: {},
+                        tables: []
+                    };
+                    tableCounters[hall.id] = 0;
+                }
+                });
+            }
+
+            designersContainer.innerHTML = designersHtml;
+
+            // Generate initial grids only for manual mode
+            if (seatingType === 'manual') {
+                wizardData.halls.forEach(hall => {
+                    updateGridSize(hall.id);
+                });
+                currentHallLayout = wizardData.halls[0]?.id || 'main-hall';
+            }
+        }
+
+        function loadWizardPrebuiltMapFile() {
+            const fileInput = document.getElementById('wizard-prebuilt-map-file');
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const code = e.target.result;
+
+                // Extract function name from code
+                const functionMatch = code.match(/function\s+(\w+)\s*\(/) || code.match(/window\.(\w+)\s*=/);
+                const functionName = functionMatch ? functionMatch[1] : null;
+
+                if (!functionName) {
+                    alert('Could not find a valid function in the uploaded file. Please ensure the file contains a seating map function.');
+                    return;
+                }
+
+                // Store in wizard data
+                if (wizardData.halls[0]) {
+                    wizardData.halls[0].prebuiltMapCode = code;
+                    wizardData.halls[0].prebuiltMapFunction = functionName;
+                }
+
+                // Show preview
+                try {
+                    eval(code);
+                    const previewContainer = document.getElementById('wizard-map-preview');
+                    previewContainer.innerHTML = `
+                        <div style="padding: 1rem; background: white; border-radius: 8px; border: 2px solid var(--success);">
+                            <h5 style="color: var(--success); margin-bottom: 0.5rem;">✅ Prebuilt Map Loaded</h5>
+                            <p style="margin-bottom: 0.5rem;"><strong>Function Name:</strong> ${functionName}</p>
+                            <div id="wizard-map-preview-render" style="margin-top: 1rem; max-height: 400px; overflow: auto;"></div>
+                        </div>
+                    `;
+
+                    if (window[functionName]) {
+                        window[functionName]('wizard-map-preview-render');
+                    }
+                } catch (error) {
+                    console.error('Error rendering prebuilt map:', error);
+                    document.getElementById('wizard-map-preview').innerHTML = `
+                        <p style="color: var(--danger); padding: 1rem; background: #ffebee; border-radius: 8px;">
+                            Error loading map: ${error.message}
+                        </p>
+                    `;
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function switchHallLayout(hallId) {
+            // Update tabs
+            document.querySelectorAll('.hall-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.hall == hallId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update designers
+            document.querySelectorAll('.layout-designer').forEach(designer => {
+                designer.style.display = 'none';
+            });
+            document.getElementById(`layout-hall-${hallId}`).style.display = 'block';
+            
+            // Reset clear mode when switching halls
+            if (clearMode) {
+                clearMode = false;
+                const btn = document.getElementById(`clear-btn-${currentHallLayout}`);
+                if (btn) {
+                    btn.style.background = '#f44336';
+                    btn.style.boxShadow = 'none';
+                }
+            }
+            
+            currentHallLayout = hallId;
+        }
+        
+        function setTool(tool, button) {
+            layoutTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            if (tool !== 'select') {
+                selectedCells.clear();
+                updateGridDisplay(currentHallLayout);
+            }
+        }
+        
+        function updateGridSize(hallId) {
+            const width = parseInt(document.getElementById(`width-${hallId}`).value);
+            const height = parseInt(document.getElementById(`height-${hallId}`).value);
+            
+            hallLayouts[hallId].width = width;
+            hallLayouts[hallId].height = height;
+            
+            const grid = document.getElementById(`grid-${hallId}`);
+            grid.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
+            
+            let html = '';
+            for (let row = 0; row < height; row++) {
+                for (let col = 0; col < width; col++) {
+                    const cellId = `${row}-${col}`;
+                    const cellData = hallLayouts[hallId].cells[cellId] || {};
+                    
+                    // Don't skip any cells - show them all
+                    
+                    let cellClass = 'grid-cell';
+                    if (cellData.type) cellClass += ` ${cellData.type}`;
+                    if (cellData.marker) cellClass += ` ${cellData.marker}`;
+                    
+                    // Display content based on type
+                    let displayContent = cellData.name || '';
+                    if (cellData.marker === 'entrance') {
+                        displayContent = '🚪';
+                    } else if (cellData.marker === 'restroom') {
+                        displayContent = '🚽';
+                    }
+                    
+                    html += `
+                        <div class="${cellClass}" 
+                             id="cell-${hallId}-${cellId}"
+                             data-row="${row}" data-col="${col}"
+                             onclick="handleCellClick(${hallId}, ${row}, ${col})">
+                            ${displayContent}
+                        </div>
+                    `;
+                }
+            }
+            grid.innerHTML = html;
+            updateTableCount(hallId);
+        }
+        
+        function handleCellClick(hallId, row, col) {
+            const cellId = `${row}-${col}`;
+            const cell = document.getElementById(`cell-${hallId}-${cellId}`);
+            const cellData = hallLayouts[hallId].cells[cellId] || {};
+            
+            // If in clear mode, remove the item
+            if (clearMode) {
+                if (cellData.type) {
+                    // If it's a table, remove all cells with the same table number
+                    if (cellData.type === 'table' && cellData.tableNumber) {
+                        const tableNum = cellData.tableNumber;
+                        // Find and clear all cells with this table number
+                        for (let r = 0; r < hallLayouts[hallId].height; r++) {
+                            for (let c = 0; c < hallLayouts[hallId].width; c++) {
+                                const checkId = `${r}-${c}`;
+                                const checkData = hallLayouts[hallId].cells[checkId];
+                                if (checkData && checkData.tableNumber === tableNum) {
+                                    delete hallLayouts[hallId].cells[checkId];
+                                }
+                            }
+                        }
+                        showSaveNotification(`Removed Table ${tableNum}`);
+                    } else {
+                        // Remove single item
+                        delete hallLayouts[hallId].cells[cellId];
+                        showSaveNotification('Item removed');
+                    }
+                    updateGridSize(hallId);
+                    wizardData.hallLayouts = hallLayouts;
+                    
+                    // Auto-disable clear mode after removal
+                    clearMode = false;
+                    const btn = document.getElementById(`clear-btn-${hallId}`);
+                    if (btn) {
+                        btn.style.background = '#f44336';
+                        btn.style.boxShadow = 'none';
+                    }
+                    const grid = document.getElementById(`grid-${hallId}`);
+                    if (grid) {
+                        grid.style.cursor = 'default';
+                    }
+                    showSaveNotification('Remove mode OFF - item removed');
+                }
+                return;
+            }
+            
+            // Normal selection mode
+            if (selectedCells.has(cellId)) {
+                selectedCells.delete(cellId);
+                cell.classList.remove('selected');
+            } else {
+                selectedCells.add(cellId);
+                cell.classList.add('selected');
+            }
+            
+            wizardData.hallLayouts = hallLayouts;
+        }
+        
+        function mergeCells(hallId) {
+            if (selectedCells.size < 2) return;
+            
+            // Find bounds of selected cells
+            let minRow = Infinity, maxRow = -1, minCol = Infinity, maxCol = -1;
+            selectedCells.forEach(cellId => {
+                const [row, col] = cellId.split('-').map(Number);
+                minRow = Math.min(minRow, row);
+                maxRow = Math.max(maxRow, row);
+                minCol = Math.min(minCol, col);
+                maxCol = Math.max(maxCol, col);
+            });
+            
+            // Mark the top-left cell as merged
+            const mainCellId = `${minRow}-${minCol}`;
+            hallLayouts[hallId].cells[mainCellId] = {
+                type: 'merged',
+                colspan: maxCol - minCol + 1,
+                rowspan: maxRow - minRow + 1,
+                span: true
+            };
+            
+            // Hide other cells in the merge
+            for (let r = minRow; r <= maxRow; r++) {
+                for (let c = minCol; c <= maxCol; c++) {
+                    if (r !== minRow || c !== minCol) {
+                        const cellId = `${r}-${c}`;
+                        const cell = document.getElementById(`cell-${hallId}-${cellId}`);
+                        if (cell) cell.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Update main cell
+            const mainCell = document.getElementById(`cell-${hallId}-${mainCellId}`);
+            mainCell.classList.add('merged');
+            mainCell.style.setProperty('--col-span', maxCol - minCol + 1);
+            mainCell.style.setProperty('--row-span', maxRow - minRow + 1);
+            
+            selectedCells.clear();
+            updateGridDisplay(hallId);
+        }
+        
+        
+        function updateGridDisplay(hallId) {
+            document.querySelectorAll(`#grid-${hallId} .grid-cell`).forEach(cell => {
+                cell.classList.remove('selected');
+            });
+        }
+        
+        // Save selected cells as a table
+        function saveAsTable(hallId) {
+            if (selectedCells.size === 0) {
+                alert('Please select cells first (Step 1)');
+                return;
+            }
+            
+            console.log('Creating table from cells:', Array.from(selectedCells));
+            createTableFromSelection(hallId);
+        }
+        
+        // Save selected cells as a special area
+        function saveAsSpecial(hallId) {
+            if (selectedCells.size === 0) {
+                alert('Please select cells first (Step 1)');
+                return;
+            }
+            
+            const name = prompt('Enter name for this special area:', 'Caller Station');
+            if (!name) return;
+            
+            // Mark each selected cell as special (simpler approach like the test)
+            selectedCells.forEach(cellId => {
+                hallLayouts[hallId].cells[cellId] = {
+                    type: 'special',
+                    name: name
+                };
+            });
+            
+            selectedCells.clear();
+            updateGridSize(hallId);
+            wizardData.hallLayouts = hallLayouts;
+            showSaveNotification(`Special area "${name}" created and saved!`);
+        }
+        
+        // Save selected cells as blocked
+        function saveAsBlocked(hallId) {
+            if (selectedCells.size === 0) {
+                alert('Please select cells first (Step 1)');
+                return;
+            }
+            
+            selectedCells.forEach(cellId => {
+                hallLayouts[hallId].cells[cellId] = { type: 'blocked' };
+            });
+            
+            const count = selectedCells.size;
+            selectedCells.clear();
+            updateGridSize(hallId);
+            wizardData.hallLayouts = hallLayouts;
+            showSaveNotification(`${count} cell${count > 1 ? 's' : ''} blocked and saved!`);
+        }
+        
+        // Toggle clear/remove mode
+        function toggleClearMode(hallId) {
+            clearMode = !clearMode;
+            const btn = document.getElementById(`clear-btn-${hallId}`);
+            
+            if (clearMode) {
+                btn.style.background = '#d32f2f';
+                btn.style.boxShadow = '0 0 0 3px rgba(211, 47, 47, 0.3)';
+                showSaveNotification('Remove mode ON - click items to remove');
+                
+                // Clear any selection
+                selectedCells.clear();
+                updateGridDisplay(hallId);
+                
+                // Add visual indicator to grid
+                const grid = document.getElementById(`grid-${hallId}`);
+                grid.style.cursor = 'crosshair';
+            } else {
+                btn.style.background = '#f44336';
+                btn.style.boxShadow = 'none';
+                showSaveNotification('Remove mode OFF');
+                
+                // Reset grid cursor
+                const grid = document.getElementById(`grid-${hallId}`);
+                grid.style.cursor = 'default';
+            }
+        }
+        
+        // Clear saved items from selected cells
+        function clearSavedItems(hallId) {
+            if (selectedCells.size === 0) {
+                // If no selection, switch to clear mode
+                setTool('clear', document.querySelector('.tool-btn'));
+                return;
+            }
+            
+            selectedCells.forEach(cellId => {
+                const cellData = hallLayouts[hallId].cells[cellId];
+                if (cellData) {
+                    // If it's a table, remove from tables array
+                    if (cellData.tableNumber) {
+                        hallLayouts[hallId].tables = hallLayouts[hallId].tables.filter(
+                            t => t.number !== cellData.tableNumber
+                        );
+                    }
+                    
+                    // If it's a merged cell, clear all related cells
+                    if (cellData.span) {
+                        const [baseRow, baseCol] = cellId.split('-').map(Number);
+                        for (let r = 0; r < (cellData.rowspan || 1); r++) {
+                            for (let c = 0; c < (cellData.colspan || 1); c++) {
+                                delete hallLayouts[hallId].cells[`${baseRow + r}-${baseCol + c}`];
+                            }
+                        }
+                    } else {
+                        delete hallLayouts[hallId].cells[cellId];
+                    }
+                }
+            });
+            
+            selectedCells.clear();
+            updateGridSize(hallId);
+            wizardData.hallLayouts = hallLayouts;
+        }
+        
+        // Create a table from selected cells
+        function createTableFromSelection(hallId) {
+            console.log('createTableFromSelection called with cells:', Array.from(selectedCells));
+            if (selectedCells.size === 0) {
+                alert('Please select cells first');
+                return;
+            }
+            
+            tableCounters[hallId] = (tableCounters[hallId] || 0) + 1;
+            const tableNumber = tableCounters[hallId];
+            const tableName = `Table ${tableNumber}`;
+            
+            // Mark each selected cell as part of the table (simpler approach)
+            if (selectedCells.size >= 1) {
+                selectedCells.forEach(cellId => {
+                    hallLayouts[hallId].cells[cellId] = {
+                        type: 'table',
+                        name: tableName,
+                        tableNumber: tableNumber
+                    };
+                });
+            } else {
+                // Single cell table
+                const cellId = Array.from(selectedCells)[0];
+                hallLayouts[hallId].cells[cellId] = {
+                    type: 'table',
+                    name: tableName,
+                    tableNumber: tableNumber
+                };
+            }
+            
+            // Add to tables array
+            hallLayouts[hallId].tables.push({
+                number: tableNumber,
+                name: tableName,
+                cells: Array.from(selectedCells)
+            });
+            
+            // Clear selection and update display
+            selectedCells.clear();
+            updateGridSize(hallId);
+            updateTableCount(hallId);
+            
+            // Save to wizard data
+            wizardData.hallLayouts = hallLayouts;
+            
+            // Show success feedback
+            showSaveNotification(`${tableName} created and saved!`);
+        }
+        
+        // Fill all empty cells as individual tables
+        function fillAllEmpty(hallId) {
+            const layout = hallLayouts[hallId];
+            let addedTables = 0;
+            
+            for (let row = 0; row < layout.height; row++) {
+                for (let col = 0; col < layout.width; col++) {
+                    const cellId = `${row}-${col}`;
+                    
+                    // Skip if cell already has a type
+                    if (!layout.cells[cellId] || (!layout.cells[cellId].type && !layout.cells[cellId].hidden)) {
+                        tableCounters[hallId] = (tableCounters[hallId] || 0) + 1;
+                        const tableNumber = tableCounters[hallId];
+                        
+                        layout.cells[cellId] = {
+                            type: 'table',
+                            name: `T${tableNumber}`,
+                            tableNumber: tableNumber
+                        };
+                        
+                        layout.tables.push({
+                            number: tableNumber,
+                            name: `T${tableNumber}`,
+                            cells: [cellId]
+                        });
+                        
+                        addedTables++;
+                    }
+                }
+            }
+            
+            // Update display
+            updateGridSize(hallId);
+            updateTableCount(hallId);
+            
+            // Save to wizard data
+            wizardData.hallLayouts = hallLayouts;
+            
+            if (addedTables > 0) {
+                showSaveNotification(`Added ${addedTables} individual tables!`);
+            } else {
+                showSaveNotification('No empty cells to fill');
+            }
+        }
+        
+        // Update table and spot count display
+        function updateTableCount(hallId) {
+            const layout = hallLayouts[hallId];
+            let tableCount = 0;
+            let spotCount = 0;
+            const countedTables = new Set();
+            
+            // Count unique tables and spots
+            for (let row = 0; row < layout.height; row++) {
+                for (let col = 0; col < layout.width; col++) {
+                    const cellId = `${row}-${col}`;
+                    const cellData = layout.cells[cellId];
+                    
+                    if (cellData && cellData.type === 'table') {
+                        // Count spots (each cell with table type)
+                        spotCount++;
+                        
+                        // Count unique tables (by table number)
+                        if (cellData.tableNumber && !countedTables.has(cellData.tableNumber)) {
+                            countedTables.add(cellData.tableNumber);
+                            tableCount++;
+                        }
+                    }
+                }
+            }
+            
+            // Update display
+            const tableElement = document.getElementById(`table-count-${hallId}`);
+            if (tableElement) {
+                tableElement.textContent = tableCount;
+            }
+            
+            const spotElement = document.getElementById(`spot-count-${hallId}`);
+            if (spotElement) {
+                spotElement.textContent = spotCount;
+            }
+        }
+        
+        // Name selected area (for special areas)
+        function nameSelectedArea(hallId) {
+            const name = document.getElementById(`special-name-${hallId}`).value;
+            if (!name || selectedCells.size === 0) {
+                alert('Please select cells and enter a name');
+                return;
+            }
+            
+            selectedCells.forEach(cellId => {
+                const cellData = hallLayouts[hallId].cells[cellId] || {};
+                cellData.name = name;
+                hallLayouts[hallId].cells[cellId] = cellData;
+            });
+            
+            selectedCells.clear();
+            updateGridSize(hallId);
+            
+            // Save to wizard data
+            wizardData.hallLayouts = hallLayouts;
+        }
+        
+        // Update generate summary
+        function generateSummary() {
+            const orgTypeLabels = {
+                'nonprofit': 'Non-Profit',
+                'veteran': 'Veterans Org',
+                'religious': 'Religious Org',
+                'fraternal': 'Fraternal Org',
+                'civic': 'Civic Group',
+                'commercial': 'Commercial',
+                'tribal': 'Tribal Gaming',
+                'other': 'Other Licensed'
+            };
+            
+            // Organization Summary
+            const orgSummary = `
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>Name:</strong> <span>${wizardData.organization.name || 'N/A'}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>Type:</strong> <span>${orgTypeLabels[wizardData.organization.type] || wizardData.organization.type || 'N/A'}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>License Number:</strong> <span>${wizardData.organization.licenseNumber || 'N/A'}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>Master Admin:</strong> <span>${wizardData.organization.email || 'N/A'}</span>
+                    </div>
+                </div>
+            `;
+            if (document.getElementById('orgSummary')) {
+                document.getElementById('orgSummary').innerHTML = orgSummary;
+            }
+            
+            // System Preferences Summary
+            if (wizardData.systemPreferences && document.getElementById('preferencesSummary')) {
+                const prefs = wizardData.systemPreferences;
+                const paymentMethods = [];
+                if (prefs.paymentCard) paymentMethods.push('Credit/Debit Cards');
+                if (prefs.paymentCash) paymentMethods.push('Cash at Hall');
+                if (prefs.paymentCheck) paymentMethods.push('Checks');
+                
+                const preferencesSummary = `
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Tax Rate:</strong> <span>${prefs.taxRate}%</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Payment Methods:</strong> <span>${paymentMethods.join(', ') || 'None'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Seat Limit Per Customer:</strong> <span>${prefs.seatLimit}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Timezone:</strong> <span>${prefs.timezone.replace('America/', '').replace('_', ' ')}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>Tax Exemptions:</strong> 
+                            <span style="font-size: 0.9rem;">
+                                ${prefs.taxExemptPackages ? '✓ Packages' : ''} 
+                                ${prefs.taxExemptItems ? '✓ Items' : ''} 
+                                ${prefs.taxExemptRewards ? '✓ Rewards' : ''}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('preferencesSummary').innerHTML = preferencesSummary;
+            }
+            
+            // Additional Apps Summary
+            if (wizardData.additionalApps && document.getElementById('appsSummary')) {
+                const apps = wizardData.additionalApps;
+                const enabledApps = [];
+                if (apps.enableRedemptionApp) enabledApps.push('🛒 Redemption App');
+                if (apps.enableDesktopApp) enabledApps.push('💻 Purchase App');
+                if (apps.enableFloorRunnerApp) {
+                    let floorRunner = '🏃 Floor Runner Rewards App';
+                    const features = [];
+                    if (apps.floorRunnerBarcode) features.push('Barcode');
+                    if (apps.floorRunnerMemberNumber) features.push('Member #');
+                    if (features.length) floorRunner += ` (${features.join(' + ')})`;
+                    enabledApps.push(floorRunner);
+                }
+                
+                const appsSummary = `
+                    <div style="display: grid; gap: 0.75rem;">
+                        ${enabledApps.length > 0 ? 
+                            enabledApps.map(app => `
+                                <div style="padding: 0.75rem; background: var(--gray-lighter); border-radius: 8px; display: flex; align-items: center;">
+                                    <span style="color: var(--success); margin-right: 0.5rem;">✓</span>
+                                    <span>${app}</span>
+                                </div>
+                            `).join('') :
+                            '<div style="color: var(--gray);">No additional apps enabled</div>'
+                        }
+                    </div>
+                `;
+                document.getElementById('appsSummary').innerHTML = appsSummary;
+            }
+            
+            // Halls Summary
+            let hallsList = '<div style="display: grid; gap: 1rem;">';
+            if (wizardData.halls && wizardData.halls.length > 0) {
+                wizardData.halls.forEach(hall => {
+                    hallsList += `
+                        <div style="padding: 1rem; background: var(--gray-lighter); border-radius: 8px;">
+                            <strong>${hall.name}</strong><br>
+                            <small style="color: var(--gray);">${hall.address}, ${hall.city}, ${hall.state} ${hall.zip}</small>
+                        </div>
+                    `;
+                });
+            } else {
+                hallsList += '<div>No halls configured</div>';
+            }
+            hallsList += '</div>';
+            if (document.getElementById('hallsSummary')) {
+                document.getElementById('hallsSummary').innerHTML = hallsList;
+            }
+            
+            // Branding Summary
+            const brandingSummary = `
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong>Theme:</strong> <span>${wizardData.branding.theme}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong>Primary Color:</strong> 
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 30px; height: 30px; background: ${wizardData.branding.primaryColor}; border-radius: 4px; border: 1px solid #ddd;"></div>
+                            <span>${wizardData.branding.primaryColor}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong>Accent Color:</strong> 
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 30px; height: 30px; background: ${wizardData.branding.accentColor}; border-radius: 4px; border: 1px solid #ddd;"></div>
+                            <span>${wizardData.branding.accentColor}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>Tagline:</strong> <span>${wizardData.branding.tagline || 'Not set'}</span>
+                    </div>
+                </div>
+            `;
+            if (document.getElementById('brandingSummary')) {
+                document.getElementById('brandingSummary').innerHTML = brandingSummary;
+            }
+            
+            // Staff Summary
+            let staffList = '<div style="display: grid; gap: 1rem;">';
+            // Add master admin
+            staffList += `
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--gray-lighter); border-radius: 8px;">
+                    <div>
+                        <strong>${wizardData.organization.name || 'Master Admin'}</strong><br>
+                        <small style="color: var(--gray);">${wizardData.organization.email || 'N/A'}</small>
+                    </div>
+                    <span class="badge" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.8rem;">MASTER ADMIN</span>
+                </div>
+            `;
+            
+            if (wizardData.staff && wizardData.staff.length > 0) {
+                wizardData.staff.forEach(member => {
+                    const roleColor = member.role === 'admin' ? 'var(--success)' : member.role === 'manager' ? 'var(--warning)' : 'var(--gray)';
+                    staffList += `
+                        <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--gray-lighter); border-radius: 8px;">
+                            <div>
+                                <strong>${member.name}</strong><br>
+                                <small style="color: var(--gray);">${member.email}</small>
+                            </div>
+                            <span class="badge" style="background: ${roleColor}; color: white; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.8rem;">${member.role.toUpperCase()}</span>
+                        </div>
+                    `;
+                });
+            }
+            staffList += '</div>';
+            if (document.getElementById('staffSummary')) {
+                document.getElementById('staffSummary').innerHTML = staffList;
+            }
+            
+            // Legacy summary support (if old element exists)
+            if (document.getElementById('summaryContent')) {
+                const summary = `
+                    <div style="display: grid; gap: 1rem;">
+                        <div><strong>Organization:</strong> ${wizardData.organization.name || 'N/A'}</div>
+                        <div><strong>Type:</strong> ${orgTypeLabels[wizardData.organization.type] || wizardData.organization.type || 'N/A'}</div>
+                        <div><strong>Halls:</strong> ${wizardData.halls.length} location${wizardData.halls.length !== 1 ? 's' : ''}</div>
+                        <div><strong>Staff:</strong> ${wizardData.staff.length + 1} team members</div>
+                    </div>
+                `;
+                document.getElementById('summaryContent').innerHTML = summary;
+            }
+        }
+        
+        // Update progress bar
+        function updateProgressBar(step) {
+            // Step 11 (Review) should be 100% complete
+            const totalSteps = 11;
+            const percentage = step === totalSteps ? 100 : Math.round(((step - 1) / (totalSteps - 1)) * 100);
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
+            }
+            if (progressPercent) {
+                progressPercent.textContent = percentage + '% Completed';
+            }
+        }
+        
+        // Save progress to localStorage
+        async function saveProgress() {
+            // Save to NewcoData system
+            NewcoData.set('wizardProgress', wizardData);
+            NewcoData.set('wizardStep', wizardData.currentStep);
+
+            // Save wizard progress to accounts table
+            if (userEmail) {
+                try {
+                    await fetch(`${SUPABASE_URL}/rest/v1/accounts?email=eq.${encodeURIComponent(userEmail)}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            wizard_progress: wizardData.currentStep
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error saving wizard progress:', error);
+                }
+            }
+            
+            // Also update the main data structures
+            if (wizardData.organization) {
+                NewcoData.updateOrganization(wizardData.organization);
+            }
+            
+            // Save System Preferences (compatible with admin panel format)
+            if (wizardData.systemPreferences) {
+                const settings = NewcoData.get('settings') || {};
+                settings.taxRate = wizardData.systemPreferences.taxRate;
+                settings.taxExemptPackages = wizardData.systemPreferences.taxExemptPackages;
+                settings.taxExemptItems = wizardData.systemPreferences.taxExemptItems;
+                settings.taxExemptRewards = wizardData.systemPreferences.taxExemptRewards;
+                settings.paymentCard = wizardData.systemPreferences.paymentCard;
+                settings.paymentCash = wizardData.systemPreferences.paymentCash;
+                settings.paymentCheck = wizardData.systemPreferences.paymentCheck;
+                settings.seatLimit = wizardData.systemPreferences.seatLimit;
+                settings.timezone = wizardData.systemPreferences.timezone;
+                settings.currency = wizardData.systemPreferences.currency;
+                NewcoData.set('settings', settings);
+            }
+            
+            // Save Additional Apps settings
+            if (wizardData.additionalApps) {
+                const appsConfig = NewcoData.get('additionalApps') || {};
+                appsConfig.enableRedemptionApp = wizardData.additionalApps.enableRedemptionApp;
+                appsConfig.enableDesktopApp = wizardData.additionalApps.enableDesktopApp;
+                appsConfig.enableFloorRunnerApp = wizardData.additionalApps.enableFloorRunnerApp;
+                appsConfig.floorRunnerBarcode = wizardData.additionalApps.floorRunnerBarcode;
+                appsConfig.floorRunnerMemberNumber = wizardData.additionalApps.floorRunnerMemberNumber;
+                NewcoData.set('additionalApps', appsConfig);
+            }
+            
+            // Save Rewards Configuration
+            if (wizardData.rewards && wizardData.rewards.enabled) {
+                const rewardsConfig = NewcoData.get('rewardsConfig') || {
+                    rewardType: 'lifetime',
+                    basicSettings: {}
+                };
+                // Save the points currency name from wizard
+                rewardsConfig.basicSettings.pointsCurrencyName = wizardData.rewards.programName || 'Loyalty Points';
+                // Set default values if not already set
+                rewardsConfig.basicSettings.webPointsPerDollar = rewardsConfig.basicSettings.webPointsPerDollar || 10;
+                rewardsConfig.basicSettings.floorPointsPerDollar = rewardsConfig.basicSettings.floorPointsPerDollar || 10;
+                rewardsConfig.basicSettings.birthdayBonusPoints = rewardsConfig.basicSettings.birthdayBonusPoints || 500;
+                rewardsConfig.basicSettings.signupBonusPoints = rewardsConfig.basicSettings.signupBonusPoints || 100;
+                rewardsConfig.basicSettings.pointsExpiration = rewardsConfig.basicSettings.pointsExpiration || 'never';
+                rewardsConfig.basicSettings.minPointsRedeem = rewardsConfig.basicSettings.minPointsRedeem || 100;
+                NewcoData.set('rewardsConfig', rewardsConfig);
+            }
+            
+            if (wizardData.halls && wizardData.halls.length > 0) {
+                NewcoData.set('halls', wizardData.halls);
+            }
+            if (wizardData.schedules) {
+                NewcoData.set('schedules', wizardData.schedules);
+            }
+            if (wizardData.branding) {
+                const org = NewcoData.get("organization");
+                org.tagline = wizardData.branding.tagline;
+                org.colors = {
+                    primary: wizardData.branding.primaryColor,
+                    secondary: wizardData.branding.accentColor
+                };
+                NewcoData.updateOrganization(org);
+            }
+            if (wizardData.staff && wizardData.staff.length > 0) {
+                NewcoData.set('staff', wizardData.staff);
+            }
+            if (wizardData.hallLayouts) {
+                wizardData.halls.forEach((hall, index) => {
+                    if (wizardData.hallLayouts[hall.id]) {
+                        hall.layout = wizardData.hallLayouts[hall.id];
+                    }
+                });
+                NewcoData.set('halls', wizardData.halls);
+            }
+            // Show subtle save indicator instead of notification on auto-save
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                progressBar.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.8)';
+                setTimeout(() => {
+                    progressBar.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
+                }, 500);
+            }
+        }
+        
+        // Mark cells as entrance
+        function markAsEntrance(hallId) {
+            if (selectedCells.size === 0) {
+                alert('Please select a cell for the entrance');
+                return;
+            }
+            
+            selectedCells.forEach(cellId => {
+                hallLayouts[hallId].cells[cellId] = {
+                    ...hallLayouts[hallId].cells[cellId],
+                    marker: 'entrance'
+                };
+            });
+            
+            selectedCells.clear();
+            updateGridSize(hallId);
+            wizardData.hallLayouts = hallLayouts;
+            showSaveNotification('Entrance marked!');
+        }
+        
+        // Mark cells as restroom
+        function markAsRestroom(hallId) {
+            if (selectedCells.size === 0) {
+                alert('Please select cells for the restroom');
+                return;
+            }
+            
+            selectedCells.forEach(cellId => {
+                hallLayouts[hallId].cells[cellId] = {
+                    ...hallLayouts[hallId].cells[cellId],
+                    marker: 'restroom'
+                };
+            });
+            
+            selectedCells.clear();
+            updateGridSize(hallId);
+            wizardData.hallLayouts = hallLayouts;
+            showSaveNotification('Restroom marked!');
+        }
+        
+        // Show save notification  
+        function showSaveNotification(message) {
+            // Remove any existing notification
+            const existing = document.querySelector('.save-notification');
+            if (existing) {
+                existing.remove();
+            }
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'save-notification';
+            notification.innerHTML = `
+                <span style="margin-right: 0.5rem;">✅</span>
+                <span>${message}</span>
+            `;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Add animation styles if not already present
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

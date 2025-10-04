@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewCo Apps - Redemption & Desktop</title>
+    
+    <!-- 
+    ╔═══════════════════════════════════════════════════════════════════╗
+    ║         NEWCO REDEMPTION - IN-STORE POS & REWARDS SYSTEM           ║
+    ╠═══════════════════════════════════════════════════════════════════╣
+    ║ FILE: newco-redemption.html                                         ║
+    ║ PURPOSE: Staff-facing POS for in-person sales & redemptions      ║
+    ╠═══════════════════════════════════════════════════════════════════╣
+    ║                                                                   ║
+    ║ FUNCTIONALITY:                                                    ║
+    ║ • In-person package/session sales                                ║
+    ║ • Points redemption for rewards                                  ║
+    ║ • Hybrid payment (points + cash)                                 ║
+    ║ • Member lookup via barcode/search                               ║
+    ║ • Real-time seat selection                                       ║
+    ║ • Receipt printing support                                       ║
+    ║                                                                   ║
+    ║ SYSTEM INTERCONNECTIONS:                                         ║
+    ║ • READS FROM:                                                     ║
+    ║   - newco_organization (settings, branding)                   ║
+    ║   - newco_sessions (availability, pricing)                    ║
+    ║   - newco_packages (products for sale)                        ║
+    ║   - newco_members (points balance, history)                   ║
+    ║   - newco_rewards (available rewards catalog)                 ║
+    ║   - newco_halls (seat availability)                           ║
+    ║                                                                   ║
+    ║ • WRITES TO:                                                      ║
+    ║   - newco_transactions (all sales records)                    ║
+    ║   - newco_members (points deduction/addition)                 ║
+    ║   - newco_sessions (seat reservations)                        ║
+    ║                                                                   ║
+    ║ • STAFF ACCESS:                                                   ║
+    ║   - No login required (assumes staff terminal)                   ║
+    ║   - All transactions tagged with terminal ID                     ║
+    ║   - Manager functions via special keys                           ║
+    ║                                                                   ║
+    ║ KEY SECTIONS (use Ctrl+F):                                       ║
+    ║ • [MEMBER-LOOKUP]   - Barcode scan & search                      ║
+    ║ • [CART-MANAGEMENT] - Add/remove items                           ║
+    ║ • [PAYMENT-CALC]    - Points/cash calculation                    ║
+    ║ • [SEAT-PICKER]     - Interactive seat selection                 ║
+    ║ • [RECEIPT-GEN]     - Receipt formatting                         ║
+    ║ • [REWARDS-CATALOG] - Browse redeemable items                    ║
+    ║                                                                   ║
+    ║ TRANSACTION FLOW:                                                ║
+    ║ 1. Scan/search member → Load balance                            ║
+    ║ 2. Add items to cart (sessions/packages/rewards)                 ║
+    ║ 3. Select seats if required                                      ║
+    ║ 4. Choose payment method (cash/points/mixed)                     ║
+    ║ 5. Complete sale → Update all systems                            ║
+    ║                                                                   ║
+    ║ INTEGRATIONS:                                                     ║
+    ║ • Works alongside newco-floor-runner for cash rewards              ║
+    ║ • Shares transaction format with newco-customer-demo               ║
+    ║ • Uses same member database as all systems                       ║
+    ║                                                                   ║
+    ║ TECHNICAL NOTES:                                                 ║
+    ║ • Transactions marked as source: 'floor'                         ║
+    ║ • Points redemption creates negative point transaction           ║
+    ║ • Supports offline mode with sync later                          ║
+    ║ • Print CSS for receipt formatting                               ║
+    ║                                                                   ║
+    ║ DEPLOYMENT:                                                       ║
+    ║ • Intended for tablet/desktop staff terminals                    ║
+    ║ • Requires barcode scanner integration                           ║
+    ║ • Should be on secure staff network only                         ║
+    ╚═══════════════════════════════════════════════════════════════════╝
+    -->
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5a4fd8;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --pending: #fd79a8;
+            --dark: #2d3436;
+            --gray: #636e72;
+            --light: #f5f5f5;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Login Screen */
+        .login-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .error-message {
+            background: #fee;
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: var(--light);
+            flex-direction: column;
+        }
+
+        .app-header {
+            background: var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-title h1 {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .app-mode {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-role {
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+
+        /* Main Content */
+        .app-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Search Bar */
+        .search-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-search {
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .payment-method-btn {
+            flex: 1;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .payment-method-btn:hover {
+            border-color: var(--primary);
+        }
+        
+        .payment-method-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .member-result-card {
+            padding: 1rem;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .member-result-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Transaction Cards */
+        .transactions-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .transaction-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .transaction-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .status-indicator {
+            width: 80px;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-purchased {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-received {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .transaction-details h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .transaction-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .transaction-items {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .item-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .transaction-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-receive {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-process {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        /* Create Transaction Form */
+        .create-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-card {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .app-header {
+                padding: 1rem;
+            }
+
+            .app-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-header">
+            <h1 id="orgName">NewCo Apps</h1>
+            <p>Staff Portal</p>
+        </div>
+        
+        <div class="error-message" id="loginError"></div>
+        
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-input" id="username" placeholder="Enter your email address">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="password" placeholder="Enter your password">
+            <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
+                If no password was set, use your email address
+            </small>
+        </div>
+        
+        <button class="btn" onclick="login()">Sign In</button>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appScreen">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="app-title">
+                <h1 id="appOrgName">NewCo Apps</h1>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="app-mode" id="appModeLabel">Redemption</span>
+                    <span id="modeBubble" onclick="toggleMode()" style="
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        padding: 0.35rem 0.75rem;
+                        border-radius: 12px;
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                    " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                        Switch to Purchasing
+                    </span>
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-role" id="userInfo">Admin</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="app-content">
+            <!-- Create Transaction (Purchases Mode Only) -->
+            <div class="create-section" id="createSection">
+                <!-- Expandable Header Section -->
+                <div style="margin-bottom: 1rem;">
+                    <button onclick="toggleHeaderSection()" style="width: 100%; padding: 0.75rem; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; font-weight: 600; color: #333;">
+                        <span>📊 Stats & Member Lookup</span>
+                        <span id="headerToggleIcon">▼</span>
+                    </button>
+                </div>
+
+                <!-- Collapsible Header Content -->
+                <div id="headerSection" style="display: none; margin-bottom: 1.5rem;">
+                    <!-- Stats -->
+                    <div class="stats-grid" style="margin-bottom: 1.5rem;">
+                        <div class="stat-card">
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value" id="pendingCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Purchased</div>
+                            <div class="stat-value" id="purchasedCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Today's Received</div>
+                            <div class="stat-value" id="receivedCount">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Value</div>
+                            <div class="stat-value" id="totalValue">$0</div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Search Bar -->
+                    <div class="search-section" style="margin-bottom: 1.5rem;">
+                        <div class="search-grid">
+                            <input type="text" class="search-input" id="searchName" placeholder="Search by member name...">
+                            <input type="text" class="search-input" id="searchId" placeholder="Transaction ID or scan barcode...">
+                            <button class="btn-search" onclick="searchTransactions()">Search</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="margin-bottom: 1rem; display: flex; gap: 1rem;">
+                        <button class="btn" onclick="toggleMemberLookup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            👤 Member Lookup
+                        </button>
+                        <div id="selectedMemberBadge" style="display: none; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                            <div>
+                                <strong id="selectedMemberNameBadge"></strong>
+                                <div style="font-size: 0.875rem; opacity: 0.9;" id="selectedMemberPointsBadge"></div>
+                            </div>
+                            <button onclick="clearSelectedMember()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- Member Search Section (Hidden by default) -->
+                    <div class="search-section" id="memberSearchSection" style="display: none; margin-bottom: 1rem; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h3 style="margin: 0 0 1rem 0;">Search for Member</h3>
+                        <div class="search-grid">
+                            <input type="text" class="search-input" id="memberSearchName" placeholder="Search by member name..." onkeypress="if(event.key==='Enter') searchMembersForPurchase()">
+                            <input type="text" class="search-input" id="memberSearchId" placeholder="Member ID or scan barcode..." onkeypress="if(event.key==='Enter') searchMembersForPurchase()">
+                            <button class="btn-search" onclick="searchMembersForPurchase()">Search</button>
+                        </div>
+                        <!-- Search Results -->
+                        <div id="memberSearchResults" style="display: none; margin-top: 1rem;">
+                            <div id="memberResultsList">
+                                <!-- Results will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-Column Layout: Packages (Left) | Cart (Right) -->
+                <div style="display: grid; grid-template-columns: 1fr 350px; gap: 1.5rem;">
+                    <!-- Left Column: Packages & Items -->
+                    <div>
+                        <!-- Purchasing Options Grid (6x5) -->
+                        <div id="purchasingGrid" style="margin-bottom: 1.5rem;">
+                            <div id="packagesList" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem; max-width: 100%;">
+                                <!-- Purchasing options will load here -->
+                            </div>
+                        </div>
+
+                        <!-- Hidden: Sales Items (keeping for compatibility) -->
+                        <div id="salesItems" style="display: none; margin: 2rem 0;">
+                            <h2 style="margin-bottom: 1.5rem; color: #333; font-size: 1.75rem; font-weight: 600;">Additional Items</h2>
+                            <div id="itemsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+                                <!-- Items will load here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Cart Summary -->
+                    <div id="cartSummary" style="padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 1rem;">
+                        <h3 style="margin: 0 0 1rem 0;">Cart Summary</h3>
+                        <div id="cartItems" style="min-height: 50px;">
+                            <p style="color: #999;">No items in cart</p>
+                        </div>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold;">
+                            <span>Total:</span>
+                            <span id="cartTotal" style="color: #2ea3f2;">$0.00</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="createTransaction()" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" id="checkoutBtn">
+                            Complete Purchase
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section (for Redemption mode) -->
+            <div class="search-section" id="transactionSearchSection" style="display: none;">
+                <div class="search-grid">
+                    <input type="text" class="search-input" id="searchNameRedemption" placeholder="Search by member name...">
+                    <input type="text" class="search-input" id="searchIdRedemption" placeholder="Transaction ID or scan barcode...">
+                    <button class="btn-search" onclick="searchTransactions()">Search</button>
+                </div>
+            </div>
+
+            <!-- Transactions List -->
+            <div class="transactions-grid" id="transactionsList">
+                <div class="loading">Loading transactions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase NewcoData Integration -->
+    <script src="newco-supabase.js"></script>
+
+    <script>
+        // Initialize NewcoData with customer ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const customer = urlParams.get('customer') || 'demo';
+
+        // Initialize asynchronously and wait for it to complete
+        (async () => {
+            await NewcoData.init(customer);
+            console.log('Redemption App initialized for:', customer);
+
+            // Load app after data is ready
+            checkForExistingSession();
+        })();
+
+        // Current user session
+        let currentUser = null;
+        let currentMode = 'redemption';
+
+        // Check for existing session on load
+        function checkForExistingSession() {
+            // Check URL parameters for mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeParam = urlParams.get('mode');
+            
+            // Check if apps are merged
+            const purchasingSettings = NewcoData.get('purchasingSettings') || {};
+            const isMerged = purchasingSettings.mergeWithRedemption;
+            
+            // Set initial mode based on URL or merge setting
+            if (modeParam === 'purchasing') {
+                currentMode = 'purchasing';
+            } else if (modeParam === 'redemption') {
+                currentMode = 'redemption';
+            }
+
+            // Load organization branding
+            const org = NewcoData.get('organization') || {};
+            if (org.name) {
+                document.getElementById('orgName').textContent = org.name;
+            }
+            
+            // Apply organization colors
+            if (org.colors) {
+                const root = document.documentElement;
+                if (org.colors.primary) {
+                    root.style.setProperty('--primary', org.colors.primary);
+                    // Update gradient background
+                    document.body.style.background = `linear-gradient(135deg, ${org.colors.primary} 0%, ${org.colors.secondary || org.colors.accent || '#764ba2'} 100%)`;
+                }
+                if (org.colors.secondary || org.colors.accent) {
+                    root.style.setProperty('--primary-dark', org.colors.secondary || org.colors.accent);
+                }
+            }
+            
+            const session = sessionStorage.getItem('newco_app_user');
+            if (session) {
+                currentUser = JSON.parse(session);
+                showApp();
+            }
+        };
+
+        // Login function
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (!username || !password) {
+                showError('Please enter username/email and password');
+                return;
+            }
+
+            // Get staff data
+            const staff = NewcoData.get('staff') || [];
+
+            // Get customer ID from URL to look up super admin from accounts table (single source of truth)
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('customer') || 'demo';
+
+            console.log('Checking login for:', username);
+
+            let user = null;
+            let superAdmin = null;
+
+            // Get super admin from accounts table (SINGLE SOURCE OF TRUTH)
+            try {
+                const accountResponse = await fetch(
+                    `${NewcoData.supabaseUrl}/rest/v1/accounts?customer_id=eq.${customerId}&select=email,organization_name`,
+                    {
+                        headers: {
+                            'apikey': NewcoData.supabaseKey,
+                            'Authorization': `Bearer ${NewcoData.supabaseKey}`
+                        }
+                    }
+                );
+                const accounts = await accountResponse.json();
+                if (accounts && accounts.length > 0) {
+                    superAdmin = {
+                        email: accounts[0].email,
+                        name: accounts[0].organization_name
+                    };
+                    console.log('Super admin:', superAdmin.email);
+                }
+            } catch (err) {
+                console.error('Error fetching super admin:', err);
+            }
+
+            // Check if it's the super admin
+            if (superAdmin && superAdmin.email === username) {
+                // No password stored - accept email as password for super admin
+                if (superAdmin.email === password) {
+                    user = {
+                        email: superAdmin.email,
+                        name: superAdmin.name || 'Administrator',
+                        role: 'Admin',
+                        username: superAdmin.email.split('@')[0]
+                    };
+                }
+            }
+            // Otherwise check staff array
+            else {
+                user = staff.find(u => {
+                    if (u.email !== username) return false;
+                    
+                    // Check password - if no password field, use email as password
+                    if (u.password) {
+                        return u.password === password;
+                    } else {
+                        // No password set - use email as default password
+                        return u.email === password;
+                    }
+                });
+            }
+
+            if (user) {
+                // Check URL parameters for mode
+                const urlParams = new URLSearchParams(window.location.search);
+                const modeParam = urlParams.get('mode');
+                
+                // Check permissions based on mode
+                const redemptionSettings = NewcoData.get('redemptionSettings') || {};
+                const purchasingSettings = NewcoData.get('purchasingSettings') || {};
+                
+                // Define role hierarchy
+                const roleHierarchy = {
+                    'Cashier': 1,
+                    'Staff': 2,
+                    'Manager': 3,
+                    'Admin': 4,
+                    'Owner': 5
+                };
+                
+                const userRoleLevel = roleHierarchy[user.role] || 0;
+                
+                // Check redemption permissions
+                if (modeParam === 'redemption' && redemptionSettings.enabled) {
+                    const requiredLevel = roleHierarchy[redemptionSettings.permissionLevel] || 2;
+                    if (userRoleLevel < requiredLevel) {
+                        showError(`Redemption requires ${redemptionSettings.permissionLevel} role or higher`);
+                        return;
+                    }
+                }
+                
+                // Check purchasing permissions
+                if (modeParam === 'purchasing' && purchasingSettings.enabled) {
+                    const requiredLevel = roleHierarchy[purchasingSettings.permissionLevel] || 1;
+                    if (userRoleLevel < requiredLevel) {
+                        showError(`Purchasing requires ${purchasingSettings.permissionLevel} role or higher`);
+                        return;
+                    }
+                }
+                
+                // For merged mode, check both permissions
+                if (!modeParam && purchasingSettings.mergeWithRedemption) {
+                    const redemptionLevel = roleHierarchy[redemptionSettings.permissionLevel] || 2;
+                    const purchasingLevel = roleHierarchy[purchasingSettings.permissionLevel] || 1;
+                    const minRequired = Math.min(redemptionLevel, purchasingLevel);
+                    
+                    if (userRoleLevel < minRequired) {
+                        showError('You do not have permission to access this app');
+                        return;
+                    }
+                }
+
+                // Save session
+                currentUser = user;
+                sessionStorage.setItem('newco_app_user', JSON.stringify(user));
+                
+                // Show app
+                showApp();
+            } else {
+                showError('Invalid username or password');
+            }
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'flex';
+
+            // Load organization info for app header
+            const org = NewcoData.get('organization') || {};
+            document.getElementById('appOrgName').textContent = org.name || 'NewCo Apps';
+
+            // Apply organization color to header
+            if (org.colors && org.colors.primary) {
+                document.querySelector('.app-header').style.background = org.colors.primary;
+            }
+
+            // Update user info - combine username and role
+            let displayName = currentUser.name || currentUser.username || currentUser.email;
+            // If it's the admin and name is "Administrator", use email username instead
+            if (currentUser.role === 'Admin' && displayName === 'Administrator' && currentUser.username) {
+                displayName = currentUser.username;
+            }
+            document.getElementById('userInfo').textContent = `${displayName} • ${currentUser.role}`;
+
+            // Check URL and merge settings for initial mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeParam = urlParams.get('mode');
+            const purchasingSettings = NewcoData.get('purchasingSettings') || {};
+            const isMerged = purchasingSettings.mergeWithRedemption;
+
+            // Update mode label and bubble
+            document.getElementById('appModeLabel').textContent =
+                currentMode === 'redemption' ? 'Redemption' : 'Purchasing';
+            document.getElementById('modeBubble').textContent =
+                currentMode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+
+            if (currentMode === 'purchasing') {
+                document.getElementById('createSection').style.display = 'block';
+                document.getElementById('transactionSearchSection').style.display = 'none';
+                // Load packages immediately
+                loadPackagesAndItems();
+            } else {
+                // Redemption mode
+                document.getElementById('createSection').style.display = 'none';
+                document.getElementById('transactionSearchSection').style.display = 'block';
+                // Load transactions in redemption mode
+                loadTransactions();
+            }
+        }
+        
+        function loadMembers() {
+            const members = NewcoData.get('members') || [];
+            const select = document.getElementById('createMember');
+            
+            if (select) {
+                select.innerHTML = '<option value="">Select Member...</option>';
+                members.forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member.id;
+                    option.textContent = `${member.firstName} ${member.lastName} (${member.email})`;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('newco_app_user');
+            currentUser = null;
+            location.reload();
+        }
+
+        function toggleMode() {
+            // Toggle between redemption and purchasing
+            const newMode = currentMode === 'redemption' ? 'purchasing' : 'redemption';
+            switchMode(newMode);
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+
+            // Update mode label and bubble
+            document.getElementById('appModeLabel').textContent =
+                mode === 'redemption' ? 'Redemption' : 'Purchasing';
+            document.getElementById('modeBubble').textContent =
+                mode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+
+            // Show/hide sections based on mode
+            const createSection = document.getElementById('createSection');
+            const transactionSearchSection = document.getElementById('transactionSearchSection');
+
+            if (mode === 'purchasing' || mode === 'desktop') {
+                createSection.style.display = 'block';
+                transactionSearchSection.style.display = 'none';
+                // Load packages when switching to purchasing
+                if (mode === 'purchasing') {
+                    clearSelectedMember();
+                    loadPackagesAndItems();
+                }
+            } else {
+                createSection.style.display = 'none';
+                transactionSearchSection.style.display = 'block';
+            }
+
+            // Only load transactions if in redemption mode
+            if (mode === 'redemption') {
+                loadTransactions();
+            } else {
+                // Clear transactions list in purchasing mode
+                document.getElementById('transactionsList').innerHTML = '';
+            }
+        }
+
+        function loadTransactions() {
+            const transactions = NewcoData.get('transactions') || [];
+            const container = document.getElementById('transactionsList');
+            
+            console.log('Loading transactions:', transactions.length, 'total');
+            console.log('Current mode:', currentMode);
+            
+            // Filter based on mode
+            let filtered = transactions;
+            if (currentMode === 'redemption') {
+                // Show Purchased and Pending only
+                filtered = transactions.filter(t => 
+                    t.status === 'Purchased' || t.status === 'Pending'
+                );
+            }
+            
+            // Sort by date
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Update stats
+            updateStats(transactions);
+            
+            // Display transactions
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="loading">No transactions to display</div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(t => createTransactionCard(t)).join('');
+        }
+
+        function createTransactionCard(transaction) {
+            // Handle old transactions with 'completed' status
+            if (transaction.status === 'completed') {
+                transaction.status = 'Received';
+            }
+            
+            const statusClass = `status-${transaction.status.toLowerCase()}`;
+            const date = new Date(transaction.date);
+            
+            let actions = '';
+            if (transaction.status === 'Purchased') {
+                actions = '<button class="btn-action btn-receive" onclick="markReceived(\'' + transaction.id + '\')">Mark Received</button>';
+            } else if (transaction.status === 'Pending') {
+                actions = `
+                    <button class="btn-action btn-process" onclick="processCashPayment('${transaction.id}')">Process Payment</button>
+                    <button class="btn-action btn-receive" onclick="markReceived('${transaction.id}')">Mark Received</button>
+                `;
+            }
+            
+            const items = transaction.items.map(item => 
+                `<div class="item-line">
+                    <span>${item.quantity}x ${item.name}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>`
+            ).join('');
+            
+            return `
+                <div class="transaction-card">
+                    <div class="status-indicator ${statusClass}">
+                        ${transaction.status}
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <h3>${transaction.memberName || 'Guest'}</h3>
+                        <div class="transaction-meta">
+                            <span>ID: ${transaction.id}</span>
+                            <span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span>
+                            <span>${transaction.paymentMethod?.toUpperCase() || 'CASH'}</span>
+                            <span style="font-weight: 600;">$${transaction.finalTotal?.toFixed(2) || transaction.total?.toFixed(2)}</span>
+                        </div>
+                        <div class="transaction-items">
+                            ${items}
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-actions">
+                        ${actions}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateStats(transactions) {
+            const today = new Date().toDateString();
+            
+            const pending = transactions.filter(t => t.status === 'Pending').length;
+            const purchased = transactions.filter(t => t.status === 'Purchased').length;
+            const received = transactions.filter(t => 
+                t.status === 'Received' && 
+                new Date(t.receivedDate || t.date).toDateString() === today
+            ).length;
+            
+            const total = transactions.reduce((sum, t) => 
+                sum + (t.finalTotal || t.total || 0), 0
+            );
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('purchasedCount').textContent = purchased;
+            document.getElementById('receivedCount').textContent = received;
+            document.getElementById('totalValue').textContent = '$' + total.toFixed(2);
+        }
+
+        function markReceived(transactionId) {
+            const transactions = NewcoData.get('transactions') || [];
+            const index = transactions.findIndex(t => t.id === transactionId);
+            
+            if (index !== -1) {
+                const memberName = transactions[index].memberName || 'Customer';
+                transactions[index].status = 'Received';
+                transactions[index].receivedDate = new Date().toISOString();
+                transactions[index].receivedBy = currentUser.email || currentUser.username;
+                
+                NewcoData.set('transactions', transactions);
+                loadTransactions();
+                
+                // Show success message
+                showSuccessMessage(`✓ ${memberName}'s order marked as received`);
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            // Create or update success popup
+            let popup = document.getElementById('successPopup');
+            if (!popup) {
+                popup = document.createElement('div');
+                popup.id = 'successPopup';
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    z-index: 9999;
+                    font-weight: 500;
+                    animation: slideIn 0.3s ease;
+                `;
+                document.body.appendChild(popup);
+            }
+            
+            popup.textContent = message;
+            popup.style.display = 'block';
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 3000);
+        }
+
+        function processCashPayment(transactionId) {
+            const transactions = NewcoData.get('transactions') || [];
+            const index = transactions.findIndex(t => t.id === transactionId);
+            
+            if (index !== -1) {
+                const memberName = transactions[index].memberName || 'Customer';
+                transactions[index].status = 'Purchased';
+                transactions[index].paidDate = new Date().toISOString();
+                transactions[index].processedBy = currentUser.email || currentUser.username;
+                
+                NewcoData.set('transactions', transactions);
+                loadTransactions();
+                
+                // Show success message
+                showSuccessMessage(`✓ ${memberName}'s payment processed`);
+            }
+        }
+
+        function searchTransactions() {
+            const nameSearch = document.getElementById('searchName').value.toLowerCase();
+            const idSearch = document.getElementById('searchId').value.toLowerCase();
+            
+            const transactions = NewcoData.get('transactions') || [];
+            let filtered = transactions;
+            
+            if (nameSearch) {
+                filtered = filtered.filter(t => 
+                    t.memberName?.toLowerCase().includes(nameSearch)
+                );
+            }
+            
+            if (idSearch) {
+                filtered = filtered.filter(t => 
+                    t.id?.toLowerCase().includes(idSearch)
+                );
+            }
+            
+            // Apply mode filter
+            if (currentMode === 'redemption') {
+                filtered = filtered.filter(t => 
+                    t.status === 'Purchased' || t.status === 'Pending'
+                );
+            }
+            
+            // Display results
+            const container = document.getElementById('transactionsList');
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="loading">No transactions found</div>';
+            } else {
+                container.innerHTML = filtered.map(t => createTransactionCard(t)).join('');
+            }
+        }
+
+        // Cart state for purchases mode
+        let purchaseCart = {
+            items: [],
+            subtotal: 0
+        };
+
+        // Global variables for purchasing
+        let selectedMember = null;
+        let selectedPaymentMethod = 'cash';
+        
+        // ═══════════════════════════════════════════════════════════
+        // [MEMBER-LOOKUP] - Barcode Scan & Member Search
+        // ═══════════════════════════════════════════════════════════
+        
+        function searchMembersForPurchase() {
+            const nameSearch = document.getElementById('memberSearchName').value.trim().toLowerCase();
+            const idSearch = document.getElementById('memberSearchId').value.trim().toLowerCase();
+            
+            if (!nameSearch && !idSearch) {
+                notify.error('Please enter a name or ID to search');
+                return;
+            }
+            
+            const members = NewcoData.get('members') || [];
+            
+            // Search by name, ID, or barcode
+            const results = members.filter(member => {
+                if (nameSearch) {
+                    const fullName = `${member.firstName} ${member.lastName}`.toLowerCase();
+                    if (!fullName.includes(nameSearch)) return false;
+                }
+                
+                if (idSearch) {
+                    const memberId = (member.id || '').toLowerCase();
+                    const barcode = (member.barcode || '').toLowerCase();
+                    const email = (member.email || '').toLowerCase();
+                    
+                    if (!memberId.includes(idSearch) && 
+                        barcode !== idSearch && 
+                        !email.includes(idSearch)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            displayMemberSearchResults(results);
+        }
+        
+        function displayMemberSearchResults(results) {
+            const resultsSection = document.getElementById('memberSearchResults');
+            const resultsList = document.getElementById('memberResultsList');
+            
+            if (results.length === 0) {
+                resultsList.innerHTML = '<div class="loading">No members found</div>';
+                resultsSection.style.display = 'block';
+            } else if (results.length === 1) {
+                // Auto-select if only one result
+                selectMember(results[0].id);
+                resultsSection.style.display = 'none';
+                return;
+            } else {
+                resultsList.innerHTML = results.map(member => `
+                    <div class="transaction-card" onclick="selectMember('${member.id}')" style="cursor: pointer;">
+                        <div class="transaction-header">
+                            <div class="transaction-info">
+                                <div class="transaction-id">${member.firstName} ${member.lastName}</div>
+                                <div class="transaction-date">ID: ${member.id} • ${member.email || 'No email'}</div>
+                            </div>
+                            <div class="transaction-status">
+                                <div style="font-size: 0.875rem; color: #666;">Loyalty Points</div>
+                                <div style="font-size: 1.25rem; font-weight: 600; color: var(--primary);">${(member.loyaltyPoints || 0).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        ${member.barcode ? `<div style="padding: 0.5rem 1rem; color: #666; font-size: 0.875rem;">Barcode: ${member.barcode}</div>` : ''}
+                    </div>
+                `).join('');
+                resultsSection.style.display = 'block';
+            }
+        }
+        
+        function toggleHeaderSection() {
+            const headerSection = document.getElementById('headerSection');
+            const icon = document.getElementById('headerToggleIcon');
+            if (headerSection.style.display === 'none') {
+                headerSection.style.display = 'block';
+                icon.textContent = '▲';
+            } else {
+                headerSection.style.display = 'none';
+                icon.textContent = '▼';
+            }
+        }
+
+        function toggleMemberLookup() {
+            const searchSection = document.getElementById('memberSearchSection');
+            searchSection.style.display = searchSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function selectMember(memberId) {
+            const members = NewcoData.get('members') || [];
+
+            // Always expect member ID as string
+            selectedMember = members.find(m => m.id === memberId);
+
+            if (!selectedMember) {
+                showError('Member not found');
+                return;
+            }
+
+            // Hide search section and show badge
+            document.getElementById('memberSearchSection').style.display = 'none';
+            document.getElementById('memberSearchResults').style.display = 'none';
+            document.getElementById('selectedMemberBadge').style.display = 'flex';
+
+            // Update badge
+            document.getElementById('selectedMemberNameBadge').textContent = `${selectedMember.firstName} ${selectedMember.lastName}`;
+            document.getElementById('selectedMemberPointsBadge').textContent = `${(selectedMember.loyaltyPoints || 0).toLocaleString()} points`;
+
+            showSuccess('Member selected: ' + selectedMember.firstName + ' ' + selectedMember.lastName);
+        }
+
+        function clearSelectedMember() {
+            selectedMember = null;
+            document.getElementById('memberSearchSection').style.display = 'none';
+            document.getElementById('selectedMemberBadge').style.display = 'none';
+            document.getElementById('memberSearchName').value = '';
+            document.getElementById('memberSearchId').value = '';
+            document.getElementById('memberSearchResults').style.display = 'none';
+            document.getElementById('memberResultsList').innerHTML = '';
+        }
+        
+        // ═══════════════════════════════════════════════════════════
+        // [PAYMENT-CALC] - Payment Method & Points Calculation
+        // ═══════════════════════════════════════════════════════════
+        
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            document.querySelectorAll('.payment-method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelector(`.payment-method-btn[data-method="${method}"]`).classList.add('active');
+        }
+        
+        function loadTodaySessionInfo() {
+            const today = new Date();
+            const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            const schedules = NewcoData.get('schedules') || {};
+            const halls = NewcoData.get('halls') || [];
+            
+            let sessionInfo = '';
+            let hasSession = false;
+            
+            for (const hall of halls) {
+                const hallSchedule = schedules[hall.id]?.[dayName];
+                if (hallSchedule?.open) {
+                    hasSession = true;
+                    sessionInfo += `
+                        <div style="margin-bottom: 0.5rem;">
+                            <strong>${hall.name}</strong> - 
+                            Doors: ${hallSchedule.doors || '5:00 PM'} | 
+                            Early Bird: ${hallSchedule.early || '6:00 PM'} | 
+                            Regular: ${hallSchedule.regular || '6:30 PM'}
+                        </div>
+                    `;
+                }
+            }
+            
+            const sessionDetails = document.getElementById('sessionDetails');
+            if (!hasSession) {
+                sessionDetails.innerHTML = '<span style="color: #dc2626;">No sessions scheduled for today</span>';
+            } else {
+                sessionDetails.innerHTML = sessionInfo;
+            }
+        }
+        
+        // ═══════════════════════════════════════════════════════════
+        // [REWARDS-CATALOG] - Package & Rewards Display
+        // ═══════════════════════════════════════════════════════════
+        
+        function loadPackagesAndItems() {
+            // Load packages and sales items
+            const packages = NewcoData.get('packages') || [];
+            const salesItems = NewcoData.get('salesItems') || [];
+            const packagesList = document.getElementById('packagesList');
+
+            // Combine packages and sales items (up to 30 total)
+            const allItems = [];
+
+            // Add packages (only if they have valid prices)
+            packages.forEach(pkg => {
+                if (pkg.price != null && pkg.price !== undefined) {
+                    allItems.push({
+                        id: pkg.id,
+                        type: 'package',
+                        name: pkg.name,
+                        price: parseFloat(pkg.price) || 0
+                    });
+                }
+            });
+
+            // Add sales items (only if they have valid prices)
+            salesItems.forEach(item => {
+                if (item.price != null && item.price !== undefined) {
+                    allItems.push({
+                        id: item.id,
+                        type: 'item',
+                        name: item.name,
+                        price: parseFloat(item.price) || 0
+                    });
+                }
+            });
+
+            // Limit to 30 items
+            const displayItems = allItems.slice(0, 30);
+
+            // Color palette for top bars (matching reference image)
+            const colors = [
+                '#f39c12', // orange
+                '#e74c3c', // pink/red
+                '#e67e22', // coral
+                '#9b59b6', // purple
+                '#7f8c8d', // gray
+                '#3498db'  // blue
+            ];
+
+            if (packagesList) {
+                if (displayItems.length === 0) {
+                    packagesList.innerHTML = '<div style="color: #666; grid-column: 1 / -1; text-align: center; padding: 2rem;">No packages or items available</div>';
+                } else {
+                    packagesList.innerHTML = displayItems.map((item, index) => {
+                        const colorIndex = index % colors.length;
+                        const barColor = colors[colorIndex];
+                        const clickHandler = item.type === 'package'
+                            ? `addPackageToCart('${item.id}')`
+                            : `addItemToCart('${item.id}')`;
+
+                        return `
+                        <button onclick="${clickHandler}" style="
+                            background: white;
+                            border: 1px solid #e0e0e0;
+                            border-radius: 6px;
+                            padding: 0;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            overflow: hidden;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 80px;
+                            text-align: center;
+                            position: relative;
+                        " onmouseover="this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                            <div style="width: 100%; height: 6px; background: ${barColor}; position: absolute; top: 0; left: 0;"></div>
+                            <div style="padding: 1rem 0.75rem; padding-top: 1.25rem; width: 100%;">
+                                <div style="font-weight: 600; color: #333; font-size: 0.95rem; margin-bottom: 0.25rem; line-height: 1.2;">
+                                    ${item.name}
+                                </div>
+                                <div style="font-weight: 700; color: #2c3e50; font-size: 0.9rem;">
+                                    $${item.price.toFixed(2)}
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                    }).join('');
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // [CART-MANAGEMENT] - Shopping Cart Operations
+        // ═══════════════════════════════════════════════════════════
+        
+        function addPackageToCart(packageId) {
+            const packages = NewcoData.get('packages') || [];
+            const pkg = packages.find(p => p.id === packageId);
+            if (pkg) {
+                const existingItem = purchaseCart.items.find(i => i.id === packageId && i.type === 'package');
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    purchaseCart.items.push({
+                        id: packageId,
+                        type: 'package',
+                        name: pkg.name,
+                        price: pkg.price,
+                        quantity: 1,
+                        requiresSeat: pkg.seatSelection || false
+                    });
+                }
+                updatePurchaseCartDisplay();
+            }
+        }
+
+        function addItemToCart(itemId) {
+            const salesItems = NewcoData.get('salesItems') || [];
+            const item = salesItems.find(i => i.id === itemId);
+            if (item) {
+                const existingItem = purchaseCart.items.find(i => i.id === itemId && i.type === 'item');
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    purchaseCart.items.push({
+                        id: itemId,
+                        type: 'item',
+                        name: item.name,
+                        price: item.price,
+                        quantity: 1
+                    });
+                }
+                updatePurchaseCartDisplay();
+            }
+        }
+
+        function updatePurchaseCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            if (purchaseCart.items.length === 0) {
+                cartItems.innerHTML = '<p style="color: #999;">No items in cart</p>';
+                purchaseCart.subtotal = 0;
+                if (checkoutBtn) checkoutBtn.disabled = true;
+            } else {
+                purchaseCart.subtotal = 0;
+                cartItems.innerHTML = purchaseCart.items.map(item => {
+                    const itemTotal = item.price * item.quantity;
+                    purchaseCart.subtotal += itemTotal;
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #eee;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: #333;">${item.name}</div>
+                                <div style="color: #666; font-size: 0.875rem; margin-top: 0.25rem;">${item.quantity}x @ $${item.price.toFixed(2)}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-weight: 600; color: #333;">$${itemTotal.toFixed(2)}</span>
+                                <button onclick="removeFromPurchaseCart('${item.id}', '${item.type}')" style="background: #dc3545; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">× Remove</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                if (checkoutBtn) checkoutBtn.disabled = false;
+            }
+            
+            cartTotal.textContent = `$${purchaseCart.subtotal.toFixed(2)}`;
+        }
+
+        function removeFromPurchaseCart(itemId, type) {
+            purchaseCart.items = purchaseCart.items.filter(i => !(i.id === itemId && i.type === type));
+            updatePurchaseCartDisplay();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // [RECEIPT-GEN] - Transaction Processing & Receipt
+        // ═══════════════════════════════════════════════════════════
+        
+        function createTransaction() {
+            // Purchases mode - create in-person transaction
+            if (!selectedMember) {
+                showError('Please select a member first');
+                return;
+            }
+            
+            if (purchaseCart.items.length === 0) {
+                notify.warning('Please add items to the cart');
+                return;
+            }
+            
+            // Create transaction
+            const transaction = {
+                id: 'TXN-' + Date.now(),
+                date: new Date().toISOString(),
+                memberName: `${selectedMember.firstName} ${selectedMember.lastName}`,
+                memberEmail: selectedMember.email,
+                memberId: selectedMember.id,
+                items: purchaseCart.items,
+                subtotal: purchaseCart.subtotal,
+                tax: 0, // Would calculate based on settings
+                finalTotal: purchaseCart.subtotal,
+                paymentMethod: selectedPaymentMethod,
+                status: 'Received', // In-person purchases are immediately received
+                source: 'desktop',
+                salesperson: currentUser.name || currentUser.email,
+                loyaltyPointsEarned: 0 // Would calculate based on rewards config
+            };
+            
+            // Calculate loyalty points if eligible
+            const rewardsConfig = NewcoData.get('rewardsConfig') || {};
+            if (rewardsConfig.rewardType && rewardsConfig.basicSettings) {
+                const pointsPerDollar = rewardsConfig.basicSettings.floorPointsPerDollar || 10;
+                transaction.loyaltyPointsEarned = Math.floor(transaction.finalTotal * pointsPerDollar);
+                
+                // Update member points
+                selectedMember.loyaltyPoints = (selectedMember.loyaltyPoints || 0) + transaction.loyaltyPointsEarned;
+                selectedMember.lifetimePoints = (selectedMember.lifetimePoints || 0) + transaction.loyaltyPointsEarned;
+                
+                const members = NewcoData.get('members') || [];
+                const updatedMembers = members.map(m => m.id === selectedMember.id ? selectedMember : m);
+                NewcoData.set('members', updatedMembers);
+            }
+            
+            // Save transaction
+            const transactions = NewcoData.get('transactions') || [];
+            transactions.push(transaction);
+            NewcoData.set('transactions', transactions);
+            
+            // Clear cart
+            purchaseCart = { items: [], subtotal: 0 };
+            updatePurchaseCartDisplay();
+            
+            // Show success
+            showSuccessMessage(`✓ Purchase completed for ${member.name}`);
+            
+            // Reset form
+            document.getElementById('createMember').value = '';
+            document.getElementById('createPayment').value = 'cash';
+        }
+
+        // Auto refresh every 30 seconds (only for redemption mode)
+        setInterval(() => {
+            if (currentUser && currentMode === 'redemption') {
+                loadTransactions();
+            }
+        }, 30000);
+
+        // Listen for Enter key on login
+        document.getElementById('password')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+        
+        // Make functions available globally for onclick handlers
+        window.selectMember = selectMember;
+        window.clearSelectedMember = clearSelectedMember;
+        window.selectPaymentMethod = selectPaymentMethod;
+        window.searchMembersForPurchase = searchMembersForPurchase;
+        window.addPackageToCart = addPackageToCart;
+        window.addItemToCart = addItemToCart;
+        window.removeFromPurchaseCart = removeFromPurchaseCart;
+        window.createTransaction = createTransaction;
+        window.searchTransactions = searchTransactions;
+        window.switchMode = switchMode;
+        window.logout = logout;
+        window.markReceived = markReceived;
+        window.processCashPayment = processCashPayment;
+    </script>
+</body>
+</html>
