@@ -1134,7 +1134,9 @@
         <!-- Header -->
         <div class="wizard-header">
             <div class="logo-container">
-                <div class="logo-icon">🎱</div>
+                <div class="logo-icon">
+                    <img src="newco-logo.png" alt="NewCo Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
             </div>
             <h1>NewCo</h1>
             <p>Quick Setup Wizard</p>
@@ -1290,11 +1292,11 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">📧 Email (Master Admin) <span class="required">*</span></label>
-                        <input type="email" class="form-input" id="orgEmail" 
+                        <label class="form-label">📧 Email (Super Admin) <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="orgEmail"
                                placeholder="admin@yourbingo.com">
                         <small style="color: var(--gray); display: block; margin-top: 0.25rem;">
-                            This will be the master administrator account
+                            This will be the super administrator account
                         </small>
                     </div>
                 </div>
@@ -1447,11 +1449,11 @@
                                 </p>
                                 <div style="margin-top: 0.75rem; padding-left: 1rem;">
                                     <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                        <input type="checkbox" id="floorRunnerBarcode" checked>
+                                        <input type="checkbox" id="floorRunnerBarcode">
                                         <span style="font-size: 0.85rem;">Enable Barcode Scanning</span>
                                     </label>
                                     <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <input type="checkbox" id="floorRunnerMemberNumber" checked>
+                                        <input type="checkbox" id="floorRunnerMemberNumber">
                                         <span style="font-size: 0.85rem;">Enable Member Number Entry</span>
                                     </label>
                                 </div>
@@ -1498,16 +1500,11 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Seating Map Type</label>
-                    <select class="form-select" id="hall-seating-type-0" onchange="updateWizardSeatingMapType()">
-                        <option value="none" selected>No Seating Map</option>
-                        <option value="manual">Manual Configuration (Grid Designer)</option>
-                        <option value="prebuilt">Prebuilt Map (Import .js file)</option>
-                    </select>
-                    <small style="color: var(--gray); display: block; margin-top: 0.5rem;">
-                        Choose how you want to configure seat selection. You can change this later in the admin panel.
-                    </small>
+                <div style="padding: 1rem; background: var(--primary-light); border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <strong style="color: var(--primary-dark);">💺 Seating Map Configuration</strong>
+                    <p style="margin: 0.5rem 0 0; color: var(--gray); font-size: 0.9rem;">
+                        You can configure your seating map and seat selection in the admin portal after completing setup.
+                    </p>
                 </div>
 
                 <div class="button-group">
@@ -1546,21 +1543,22 @@
                 </div>
             </div>
 
-            <!-- Step 7: Hall Layout -->
+            <!-- Step 7: Hall Layout (Auto-skipped) -->
             <div class="step-content" data-step="7">
                 <h2 class="step-title">📜 Hall Seating Map</h2>
-                <p class="step-subtitle" id="layoutSubtitle">Configure your seating map based on your selection</p>
+                <p class="step-subtitle">Configure your seating map in the admin portal after setup</p>
 
-                <div id="layoutDesigners">
-                    <!-- Layout designer or upload will be generated here based on seating type -->
+                <div style="padding: 3rem; text-align: center; background: var(--gray-lighter); border-radius: 12px;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
+                    <h3 style="margin-bottom: 0.5rem;">Seating Map Configuration</h3>
+                    <p style="color: var(--gray); max-width: 500px; margin: 0 auto;">
+                        You can configure your seating map and seat selection in the admin portal after completing setup. This step will be automatically skipped.
+                    </p>
                 </div>
 
                 <div class="button-group">
                     <button type="button" class="btn btn-secondary" onclick="previousStep(7)">
                         <span>←</span> Back
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="skipLayouts()">
-                        ⏭️ Skip This Step
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(7)">
                         💾 Save & Continue <span>→</span>
@@ -1705,11 +1703,13 @@
                                 <div class="event-type-name">Modern</div>
                                 <div class="event-type-desc">Clean and contemporary</div>
                             </div>
-                            <div class="event-type-card" onclick="selectTheme(this, 'classic')" data-theme="classic" style="padding: 1rem;">
+                            <div class="event-type-card" onclick="showUnderConstruction()" data-theme="classic" style="padding: 1rem; opacity: 0.6; position: relative;">
+                                <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ff9800; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">🚧 Under Construction</div>
                                 <div class="event-type-name">Classic</div>
                                 <div class="event-type-desc">Traditional bingo hall</div>
                             </div>
-                            <div class="event-type-card" onclick="selectTheme(this, 'fun')" data-theme="fun" style="padding: 1rem;">
+                            <div class="event-type-card" onclick="showUnderConstruction()" data-theme="fun" style="padding: 1rem; opacity: 0.6; position: relative;">
+                                <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ff9800; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">🚧 Under Construction</div>
                                 <div class="event-type-name">Fun</div>
                                 <div class="event-type-desc">Playful and energetic</div>
                             </div>
@@ -1721,9 +1721,6 @@
                     <button type="button" class="btn btn-secondary" onclick="previousStep(9)">
                         <span>←</span> Back
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="skipBranding()">
-                        ⏭️ Skip This Step
-                    </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(9)">
                         💾 Save & Continue <span>→</span>
                     </button>
@@ -1734,7 +1731,22 @@
             <div class="step-content" data-step="10">
                 <h2 class="step-title">👥 Staff Setup</h2>
                 <p class="step-subtitle">Add your team members</p>
-                
+
+                <!-- Super Admin Info -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                        <span style="font-size: 2rem;">👑</span>
+                        <div>
+                            <div style="font-size: 0.875rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">Super Admin</div>
+                            <div style="font-size: 1.25rem; font-weight: 600;" id="superAdminName">Loading...</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; padding-left: 3rem;">
+                        <span style="opacity: 0.9;">📧</span>
+                        <span id="superAdminEmail" style="opacity: 0.9;">Loading...</span>
+                    </div>
+                </div>
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Name</label>
@@ -1879,8 +1891,67 @@
             currentStep: savedStep
         };
 
+        // Store account data globally
+        let accountData = null;
+
+        // Load account data from Supabase
+        async function loadAccountData() {
+            try {
+                const response = await fetch(
+                    `${NewcoData.supabaseUrl}/rest/v1/accounts?customer_id=eq.${customer}&select=*`,
+                    {
+                        headers: {
+                            'apikey': NewcoData.supabaseKey,
+                            'Authorization': `Bearer ${NewcoData.supabaseKey}`
+                        }
+                    }
+                );
+
+                const accounts = await response.json();
+
+                if (accounts && accounts.length > 0) {
+                    accountData = accounts[0];
+
+                    // Pre-populate wizard data object
+                    wizardData.organization.name = accountData.organization_name || '';
+                    wizardData.organization.contactName = accountData.contact_name || '';
+                    wizardData.organization.email = accountData.email || '';
+                    wizardData.organization.phone = accountData.phone || '';
+
+                    // Try to populate fields (will work if already rendered)
+                    populateOrganizationFields();
+                }
+            } catch (error) {
+                console.error('Error loading account data:', error);
+            }
+        }
+
+        // Populate organization fields (called after fields exist)
+        function populateOrganizationFields() {
+            if (!accountData) return;
+
+            // Note: Field IDs are camelCase (orgName, not org-name)
+            const orgNameField = document.getElementById('orgName');
+            if (orgNameField && accountData.organization_name) {
+                orgNameField.value = accountData.organization_name;
+            }
+
+            const emailField = document.getElementById('orgEmail');
+            if (emailField && accountData.email) {
+                emailField.value = accountData.email;
+            }
+
+            const phoneField = document.getElementById('orgPhone');
+            if (phoneField && accountData.phone) {
+                phoneField.value = accountData.phone;
+            }
+        }
+
         // On page load, show the correct step and hide step 1 (license)
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Load account data from Supabase and pre-populate wizard
+            await loadAccountData();
+
             // Always hide step 1 (license)
             document.querySelector('.step-content[data-step="1"]')?.classList.remove('active');
             document.querySelector('.step-content[data-step="1"]')?.style.setProperty('display', 'none');
@@ -1910,6 +1981,9 @@
                 document.querySelector('.progress-step[data-step="2"]')?.classList.add('active');
                 updateProgressBar(2);
             }
+
+            // Populate fields now that step 2 is visible
+            setTimeout(() => populateOrganizationFields(), 100);
         });
 
         // Step navigation
@@ -1954,14 +2028,23 @@
                     generateHallSchedules();
                 }
                 
-                // Generate hall layouts when moving to layout step
+                // Auto-skip hall layouts step (moved to admin portal)
                 if (step + 1 === 7) {
-                    generateHallLayouts();
+                    // Auto-advance to next step after a brief moment
+                    setTimeout(() => {
+                        validateAndNext(7);
+                    }, 100);
                 }
-                
+
                 // Update branding preview when entering branding step
                 if (step + 1 === 9) {
                     updateBrandPreview();
+                }
+
+                // Populate super admin info when entering staff step
+                if (step + 1 === 10) {
+                    document.getElementById('superAdminName').textContent = wizardData.organization.name || 'Not Set';
+                    document.getElementById('superAdminEmail').textContent = wizardData.organization.email || 'Not Set';
                 }
             }
         }
@@ -2528,6 +2611,10 @@
             wizardData.branding.theme = theme;
         }
 
+        function showUnderConstruction() {
+            alert('🚧 This theme is currently under construction and will be available in a future update. Please use the Modern theme for now.');
+        }
+
         function skipBranding() {
             // Keep default branding and move to next step
             validateAndNext(9);
@@ -2616,110 +2703,93 @@
                     </div>
                 `;
             } else if (seatingType === 'manual') {
-                // Show manual grid designer
+                // Show manual grid designer (same as admin)
                 wizardData.halls.forEach((hall, index) => {
                 designersHtml += `
-                    <div class="layout-designer" id="layout-hall-${hall.id}" 
+                    <div class="layout-designer" id="layout-hall-${index}"
                          style="${index === 0 ? '' : 'display: none;'}">
-                        <div class="layout-controls">
-                            <div class="size-controls">
-                                <label>Width:</label>
-                                <input type="number" class="form-input size-input" 
-                                       id="width-${hall.id}" value="10" min="5" max="30"
-                                       onchange="updateGridSize(${hall.id})">
-                                <label>Height:</label>
-                                <input type="number" class="form-input size-input" 
-                                       id="height-${hall.id}" value="8" min="5" max="20"
-                                       onchange="updateGridSize(${hall.id})">
+                        <div class="layout-tools" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1rem;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <button class="tool-btn active" onclick="selectLayoutTool('seat', ${index})" title="Place seats">
+                                    💺 Place Seat
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('directional', ${index})" title="Place directional seats">
+                                    🪑 Place Directional Seat
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('blocked', ${index})" title="Block areas">
+                                    🚫 Blocked
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('entrance', ${index})" title="Mark entrances">
+                                    🚪 Entrance
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('restroom', ${index})" title="Mark restrooms">
+                                    🚻 Restroom
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('vip', ${index})" title="VIP areas">
+                                    ⭐ VIP
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('custom', ${index})" title="Create custom area">
+                                    🎨 Custom Area
+                                </button>
+                                <button class="tool-btn" onclick="selectLayoutTool('clear', ${index})" title="Clear cells">
+                                    🗑️ Clear
+                                </button>
                             </div>
-                            <div class="tool-buttons">
-                                <div class="tool-buttons">
-                                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-                                        <button class="tool-btn" onclick="saveAsTable(${hall.id})" style="background: #4CAF50; color: white;" title="Create a table from selected cells">
-                                            <span>💺</span>
-                                            <span style="font-size: 0.75rem;">Table</span>
-                                        </button>
-                                        <button class="tool-btn" onclick="saveAsSpecial(${hall.id})" style="background: #ff9800; color: white;" title="Create a special area">
-                                            <span>🎤</span>
-                                            <span style="font-size: 0.75rem;">Special</span>
-                                        </button>
-                                        <button class="tool-btn" onclick="saveAsBlocked(${hall.id})" style="background: #666; color: white;" title="Block selected cells">
-                                            <span>🚫</span>
-                                            <span style="font-size: 0.75rem;">Block</span>
-                                        </button>
-                                        <button class="tool-btn" id="clear-btn-${hall.id}" onclick="toggleClearMode(${hall.id})" style="background: #f44336; color: white;" title="Remove items - click to activate">
-                                            <span>❌</span>
-                                            <span style="font-size: 0.75rem;">Remove</span>
-                                        </button>
-                                    </div>
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem;">
-                                        <button class="tool-btn" onclick="markAsEntrance(${hall.id})" style="background: #2196F3; color: white;" title="Mark as entrance">
-                                            <span>🚪</span>
-                                            <span style="font-size: 0.75rem;">Entrance</span>
-                                        </button>
-                                        <button class="tool-btn" onclick="markAsRestroom(${hall.id})" style="background: #9C27B0; color: white;" title="Mark as restroom">
-                                            <span>🚽</span>
-                                            <span style="font-size: 0.75rem;">Restroom</span>
-                                        </button>
-                                        <button class="tool-btn" onclick="fillAllEmpty(${hall.id})" style="background: #2196F3; color: white;" title="Fill all empty cells as tables">
-                                            <span>⚡</span>
-                                            <span style="font-size: 0.75rem;">Fill All</span>
-                                        </button>
+
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <label style="font-size: 0.875rem;">Width:</label>
+                                <input type="number" id="grid-width-${index}" min="5" max="30" value="${hall.layout?.width || hall.layout?.cols || 20}"
+                                       style="width: 60px; padding: 0.25rem;" onchange="updateGridSize(${index})">
+                                <label style="font-size: 0.875rem;">Height:</label>
+                                <input type="number" id="grid-height-${index}" min="5" max="30" value="${hall.layout?.height || hall.layout?.rows || 15}"
+                                       style="width: 60px; padding: 0.25rem;" onchange="updateGridSize(${index})">
+                            </div>
+                        </div>
+
+                        <div id="seat-count-${index}" style="margin-bottom: 1rem; padding: 0.75rem; background: var(--primary-light); border-radius: 4px; display: inline-block;">
+                            <strong>Seats in Layout:</strong> <span id="seat-count-value-${index}">0</span>
+                        </div>
+
+                        <div id="custom-area-info-${index}" style="padding: 1rem; background: var(--primary-light); border-radius: 8px; margin: 0.5rem 0; display: none;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong>Creating Custom Area</strong>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                                <input type="text" id="custom-area-name-${index}" placeholder="Area name (e.g., Stage, Caller)" style="flex: 1; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 4px;">
+                                <input type="color" id="custom-area-color-${index}" value="#ff6b6b" style="width: 60px; height: 38px; border: 1px solid var(--gray-light); border-radius: 4px;">
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <span id="custom-area-count-${index}">0 cells selected</span>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <strong style="display: block; margin-bottom: 0.5rem;">Text Orientation:</strong>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <button onclick="updateCustomAreaOrientation(${index}, 'horizontal')" id="orient-horizontal-${index}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        →
+                                    </button>
+                                    <button onclick="updateCustomAreaOrientation(${index}, 'vertical-left')" id="orient-vertical-left-${index}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        ↓
+                                    </button>
+                                    <button onclick="updateCustomAreaOrientation(${index}, 'vertical-right')" id="orient-vertical-right-${index}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        ↑
+                                    </button>
+                                    <div id="orientation-example-${index}" style="width: 80px; padding: 0.35rem; background: white; border-radius: 4px; font-size: 0.65rem; text-align: center; border: 1px solid var(--gray-light); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                        Custom Area
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 0.5rem; margin: 1rem 0;">
-                            <div style="flex: 1; background: #e3f2fd; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #2196F3;">
-                                <strong style="color: #1565C0;">Step 1:</strong> Click cells to select them (they turn blue)
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                <button class="btn btn-secondary" onclick="cancelCustomArea(${index})" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    Cancel
+                                </button>
+                                <button class="btn btn-primary" onclick="confirmCustomArea(${index})" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    ✓ Confirm Area
+                                </button>
                             </div>
-                            <div style="flex: 1; background: #e8f5e9; padding: 0.75rem; border-radius: 6px; border-left: 4px solid #4CAF50;">
-                                <strong style="color: #2E7D32;">Step 2:</strong> Click a button to save your selection
-                            </div>
                         </div>
-                        
-                        <div class="hall-grid" id="grid-${hall.id}">
+
+                        <div id="layout-grid-${index}" class="layout-grid">
                             <!-- Grid will be generated here -->
-                        </div>
-                        
-                        <div class="layout-legend">
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: white;"></div>
-                                <span>Available</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--gray-dark);"></div>
-                                <span>Blocked</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: #4CAF50;"></div>
-                                <span>Table</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color" style="background: var(--warning);"></div>
-                                <span>Special (Caller, Stage, etc.)</span>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-lighter); border-radius: 8px;">
-                            <div style="font-weight: 600; margin-bottom: 0.5rem;">📌 Examples:</div>
-                            <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem; color: var(--gray);">
-                                <li><strong>2-seat table:</strong> Select 2 cells → Click "Save as Table"</li>
-                                <li><strong>4-seat table:</strong> Select 4 cells → Click "Save as Table"</li>
-                                <li><strong>20-seat long table:</strong> Select 20 cells → Click "Save as Table"</li>
-                                <li><strong>Caller Station:</strong> Select 4-6 cells → Click "Save as Special" → Name it</li>
-                                <li><strong>Stage area:</strong> Select any number of cells → Click "Save as Special"</li>
-                                <li><strong>Pillar:</strong> Select 1 cell → Click "Save as Blocked"</li>
-                            </ul>
-                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd; display: flex; justify-content: space-around;">
-                                <div>
-                                    <strong>Tables:</strong> <span id="table-count-${hall.id}" style="color: var(--primary); font-size: 1.1rem;">0</span>
-                                </div>
-                                <div>
-                                    <strong>Total Spots:</strong> <span id="spot-count-${hall.id}" style="color: #4CAF50; font-size: 1.1rem;">0</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -3289,7 +3359,7 @@
                         <strong>License Number:</strong> <span>${wizardData.organization.licenseNumber || 'N/A'}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <strong>Master Admin:</strong> <span>${wizardData.organization.email || 'N/A'}</span>
+                        <strong>Super Admin:</strong> <span>${wizardData.organization.email || 'N/A'}</span>
                     </div>
                 </div>
             `;
@@ -3417,10 +3487,10 @@
             staffList += `
                 <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--gray-lighter); border-radius: 8px;">
                     <div>
-                        <strong>${wizardData.organization.name || 'Master Admin'}</strong><br>
+                        <strong>${wizardData.organization.name || 'Super Admin'}</strong><br>
                         <small style="color: var(--gray);">${wizardData.organization.email || 'N/A'}</small>
                     </div>
-                    <span class="badge" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.8rem;">MASTER ADMIN</span>
+                    <span class="badge" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.8rem;">SUPER ADMIN</span>
                 </div>
             `;
             

@@ -536,6 +536,13 @@
     </script>
     <!-- External CSS -->
     <link rel="stylesheet" href="newco-admin.css">
+    <style>
+        /* Fix for content width - override to use full available space */
+        .main-content {
+            width: calc(100% - 280px) !important;
+            max-width: 100% !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Login Screen -->
@@ -598,7 +605,7 @@
     </div>
 
     <!-- Main Admin Panel (hidden until login) -->
-    <div id="adminMainPanel" style="display: none;">
+    <div id="adminMainPanel" style="display: none; flex-direction: row; width: 100%; min-height: 100vh;">
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -640,7 +647,7 @@
                 <a href="#purchasing" class="nav-item" data-section="purchasing">
                     🛍️ Purchasing
                 </a>
-                <a href="#floor-rewards" class="nav-item" data-section="floor-rewards">
+                <a href="#floor-rewards" class="nav-item" data-section="floor-rewards" style="display: none;">
                     ⭐ Floor Rewards
                 </a>
             </div>
@@ -676,7 +683,7 @@
                 <a href="#pagebuilder" class="nav-item" data-section="pagebuilder">
                     🌐 Web Templates
                 </a>
-                <a href="#webbuilder" class="nav-item" data-section="webbuilder">
+                <a href="#webbuilder" class="nav-item" data-section="webbuilder" style="display: none;">
                     🔧 Web Builder
                 </a>
                 <a href="#socialmedia" class="nav-item" data-section="socialmedia">
@@ -685,10 +692,10 @@
                 <a href="#marketing" class="nav-item" data-section="marketing">
                     📢 Marketing
                 </a>
-                <a href="#marketing" class="nav-item" data-section="marketing">
+                <a href="#marketing" class="nav-item" data-section="marketing" style="display: none;">
                     📧 Email Campaigns
                 </a>
-                <a href="#themes" class="nav-item" data-section="themes">
+                <a href="#themes" class="nav-item" data-section="themes" style="display: none;">
                     🎭 Themes
                 </a>
             </div>
@@ -698,10 +705,10 @@
                 <a href="#staff" class="nav-item" data-section="staff">
                     👤 Staff
                 </a>
-                <a href="#artlibrary" class="nav-item" data-section="artlibrary">
+                <a href="#artlibrary" class="nav-item" data-section="artlibrary" style="display: none;">
                     🎨 Art Library
                 </a>
-                <a href="#integrations" class="nav-item" data-section="integrations">
+                <a href="#integrations" class="nav-item" data-section="integrations" style="display: none;">
                     🔗 Integrations
                 </a>
                 <a href="#transactions" class="nav-item" data-section="transactions">
@@ -710,10 +717,10 @@
                 <a href="#rewardstransactions" class="nav-item" data-section="rewardstransactions">
                     🏆 Rewards Transactions
                 </a>
-                <a href="#actionslog" class="nav-item" data-section="actionslog">
+                <a href="javascript:void(0)" class="nav-item" data-section="actionslog" onclick="showComingSoon('Actions Log')">
                     📋 Actions Log
                 </a>
-                <a href="#reports" class="nav-item" data-section="reports">
+                <a href="javascript:void(0)" class="nav-item" data-section="reports" onclick="showComingSoon('Reports')">
                     📈 Reports
                 </a>
                 <a href="#settings" class="nav-item" data-section="settings">
@@ -915,11 +922,6 @@
         <section id="schedule" class="content-panel" style="display: none;">
             <div class="header-bar">
                 <h1 class="header-title">Schedule Management</h1>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="saveSchedule()">
-                        💾 Save Schedule
-                    </button>
-                </div>
             </div>
 
             <div class="content-section">
@@ -938,11 +940,6 @@
         <section id="redemption" class="content-panel" style="display: none;">
             <div class="header-bar">
                 <h1 class="header-title">Redemption Settings</h1>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="saveRedemptionSettings()">
-                        💾 Save Settings
-                    </button>
-                </div>
             </div>
             
             <div class="content-main">
@@ -1022,11 +1019,6 @@
         <section id="purchasing" class="content-panel" style="display: none;">
             <div class="header-bar">
                 <h1 class="header-title">Purchasing Settings</h1>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="savePurchasingSettings()">
-                        💾 Save Settings
-                    </button>
-                </div>
             </div>
             
             <div class="content-main">
@@ -1049,13 +1041,6 @@
                     </div>
                     
                     <div style="display: flex; gap: 2rem; align-items: center; margin-top: 1.5rem;">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <strong>Merge Apps</strong>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="mergeRedemptionPurchasing" onchange="toggleMergeSettings()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <span>Print Receipts Automatically</span>
                             <label class="toggle-switch">
@@ -1095,11 +1080,6 @@
         <section id="floor-rewards" class="content-panel" style="display: none;">
             <div class="header-bar">
                 <h1 class="header-title">Floor Rewards</h1>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="saveFloorRewardsSettings()">
-                        💾 Save Settings
-                    </button>
-                </div>
             </div>
             
             <div class="content-main">
@@ -1261,12 +1241,6 @@
                     <button class="btn btn-success" onclick="launchCustomerSite()">
                         🚀 Launch Site
                     </button>
-                    <button class="btn btn-secondary" onclick="previewSelectedTemplate()">
-                        👁️ Preview Template
-                    </button>
-                    <button class="btn btn-primary" onclick="useSelectedTemplate()">
-                        ✨ Use This Template
-                    </button>
                 </div>
             </div>
 
@@ -1276,23 +1250,12 @@
                     <p class="section-subtitle">Select a template design for your booking page</p>
                 </div>
                 
-                <!-- Quick Launch Bar -->
-                <div style="background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <div style="color: white;">
-                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem;">Your Customer Booking Site</h3>
-                        <p style="margin: 0; opacity: 0.9;">View your live booking page as customers see it</p>
-                    </div>
-                    <button class="btn" onclick="launchCustomerSite()" style="background: white; color: var(--success); padding: 0.75rem 2rem; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        🚀 Open Live Site
-                    </button>
-                </div>
-                
                 <!-- Template Carousel -->
                 <div style="position: relative; overflow: hidden; border-radius: 12px; background: var(--gray-lighter); padding: 2rem 0;">
                     <div id="templateCarousel" style="display: flex; transition: transform 0.4s ease-in-out; align-items: center; justify-content: center;">
                         
                         <!-- Template 1: Classic -->
-                        <div class="template-card" data-template="classic" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
+                        <div class="template-card" data-template="classic" onclick="showComingSoon('Web Templates')" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
                             <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.85); opacity: 0.6;">
                                 <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; display: flex; align-items: center; justify-content: center;">
                                     <div style="text-align: center; color: white;">
@@ -1345,7 +1308,7 @@
                         </div>
 
                         <!-- Template 3: Vibrant -->
-                        <div class="template-card" data-template="vibrant" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
+                        <div class="template-card" data-template="vibrant" onclick="showComingSoon('Web Templates')" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
                             <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.85); opacity: 0.6;">
                                 <div style="height: 200px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); position: relative; display: flex; align-items: center; justify-content: center;">
                                     <div style="text-align: center; color: white;">
@@ -1385,25 +1348,6 @@
                 </div>
             </div>
 
-            <!-- Template Preview Section -->
-            <div class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Template Preview</h2>
-                    <p class="section-subtitle">See how your template looks with your actual offerings</p>
-                </div>
-                
-                <div id="templatePreview" style="background: var(--gray-lighter); border-radius: 12px; padding: 2rem; min-height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <div style="text-align: center; color: var(--gray);">
-                        <h3 style="margin: 0 0 1rem;">Select a template above to see the preview</h3>
-                        <p>Your actual packages and offerings will be displayed here</p>
-                    </div>
-                </div>
-                
-                <!-- Apply to Hall Buttons -->
-                <div id="applyToHallButtons" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
-                    <!-- Buttons will be dynamically added here -->
-                </div>
-            </div>
         </section>
 
         <!-- ═══════════════════════════════════════════════════════════════════
@@ -1627,11 +1571,6 @@
         <section id="settings" class="content-panel" style="display: none;">
             <div class="header-bar">
                 <h1 class="header-title">Settings</h1>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="saveSettings()">
-                        💾 Save Settings
-                    </button>
-                </div>
             </div>
 
             <div class="content-section">
@@ -3754,6 +3693,7 @@
                                     <th style="padding: 1rem; text-align: left; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid var(--gray-light); cursor: pointer;" onclick="sortTransactions('amount')">Amount <span id="sortArrowAmount">↕️</span></th>
                                     <th style="padding: 1rem; text-align: center; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid var(--gray-light); cursor: pointer;" onclick="sortTransactions('status')">Status <span id="sortArrowStatus">↕️</span></th>
                                     <th style="padding: 1rem; text-align: right; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid var(--gray-light); cursor: pointer;" id="loyaltyPointsHeader" onclick="sortTransactions('loyalty')">Loyalty Points <span id="sortArrowLoyalty">↕️</span></th>
+                                    <th style="padding: 1rem; text-align: center; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid var(--gray-light);">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="transactionsTableBody">
@@ -4498,6 +4438,31 @@
         // Initialize NewcoData if not already initialized
         if (typeof NewcoData !== 'undefined') {
             NewcoData.init();
+
+            // Initialize master admin user if not exists
+            const staff = NewcoData.get('staff') || [];
+            const masterAdminExists = staff.some(s => s.role === 'master-admin');
+
+            if (!masterAdminExists) {
+                // Create initial master admin
+                staff.push({
+                    id: 'master_admin_' + Date.now(),
+                    name: 'Master Admin',
+                    email: 'admin@newco.com',
+                    role: 'master-admin',
+                    status: 'Active',
+                    permissions: ['all'],
+                    createdAt: new Date().toISOString()
+                });
+                NewcoData.set('staff', staff);
+
+                // Set initial password
+                const adminUsers = NewcoData.get('adminUsers') || {};
+                if (!adminUsers['admin@newco.com']) {
+                    adminUsers['admin@newco.com'] = 'admin123';
+                    NewcoData.set('adminUsers', adminUsers);
+                }
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════════
@@ -4810,28 +4775,135 @@
         function loadDashboard() {
             const stats = calculateStats();
             updateDashboardStats(stats);
+            loadRecentActivity();
         }
 
         function calculateStats() {
-            const sessions = NewcoData.get("sessions") || [];
+            const transactions = NewcoData.get('transactions') || [];
             const members = NewcoData.get('members') || [];
-            const bookings = NewcoData.get('bookings') || [];
-            
+            const schedules = NewcoData.get('schedules') || {};
+            const halls = NewcoData.get('halls') || [];
+
+            // Calculate today's revenue
+            const today = new Date().toDateString();
+            const todayTransactions = transactions.filter(t => {
+                const transDate = new Date(t.timestamp || t.date);
+                return transDate.toDateString() === today;
+            });
+            const todayRevenue = todayTransactions.reduce((sum, t) => sum + (t.total || t.amount || 0), 0);
+
+            // Calculate yesterday's revenue for comparison
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            const yesterdayTransactions = transactions.filter(t => {
+                const transDate = new Date(t.timestamp || t.date);
+                return transDate.toDateString() === yesterdayStr;
+            });
+            const yesterdayRevenue = yesterdayTransactions.reduce((sum, t) => sum + (t.total || t.amount || 0), 0);
+            const revenueChange = yesterdayRevenue > 0 ? (((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100).toFixed(1) : 0;
+
+            // Count active sessions today
+            const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const todayDay = daysOfWeek[new Date().getDay()];
+            let activeSessions = 0;
+            Object.values(schedules).forEach(schedule => {
+                if (schedule[todayDay]) {
+                    activeSessions++;
+                }
+            });
+
+            // Count members added this week
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const newMembersThisWeek = members.filter(m => {
+                const joinDate = new Date(m.joinDate || m.createdAt);
+                return joinDate >= weekAgo;
+            }).length;
+
+            // Calculate occupancy rate
+            const totalCapacity = halls.reduce((sum, h) => sum + (h.capacity || 0), 0);
+            const totalBooked = todayTransactions.reduce((sum, t) => sum + (t.seats || 1), 0);
+            const occupancyRate = totalCapacity > 0 ? Math.round((totalBooked / totalCapacity) * 100) : 0;
+
             return {
-                revenue: 0, // Calculate from bookings
-                activeSessions: sessions.length,
+                revenue: todayRevenue,
+                revenueChange: revenueChange,
+                activeSessions: activeSessions,
                 totalMembers: members.length,
-                occupancyRate: 0 // Calculate from bookings/capacity
+                newMembersThisWeek: newMembersThisWeek,
+                occupancyRate: occupancyRate,
+                seatsBooked: totalBooked
             };
         }
 
         function updateDashboardStats(stats) {
             // Update stat cards with real data
             const statCards = document.querySelectorAll('.stat-value');
-            if (statCards[0]) statCards[0].textContent = `$${stats.revenue}`;
+            const statChanges = document.querySelectorAll('.stat-change');
+
+            if (statCards[0]) statCards[0].textContent = `$${stats.revenue.toFixed(2)}`;
+            if (statChanges[0]) {
+                const changeClass = stats.revenueChange >= 0 ? 'positive' : 'negative';
+                const arrow = stats.revenueChange >= 0 ? '↑' : '↓';
+                statChanges[0].className = `stat-change ${changeClass}`;
+                statChanges[0].textContent = `${arrow} ${Math.abs(stats.revenueChange)}% from yesterday`;
+            }
+
             if (statCards[1]) statCards[1].textContent = stats.activeSessions;
+            if (statChanges[1]) {
+                statChanges[1].textContent = `${stats.activeSessions} scheduled today`;
+            }
+
             if (statCards[2]) statCards[2].textContent = stats.totalMembers;
+            if (statChanges[2]) {
+                const changeClass = stats.newMembersThisWeek > 0 ? 'positive' : '';
+                statChanges[2].className = `stat-change ${changeClass}`;
+                statChanges[2].textContent = `↑ ${stats.newMembersThisWeek} new this week`;
+            }
+
             if (statCards[3]) statCards[3].textContent = `${stats.occupancyRate}%`;
+            if (statChanges[3]) {
+                statChanges[3].textContent = `${stats.seatsBooked} seats filled`;
+            }
+        }
+
+        function loadRecentActivity() {
+            const transactions = NewcoData.get('transactions') || [];
+            const activityTable = document.getElementById('activityTable');
+
+            if (!activityTable) return;
+
+            // Get last 10 transactions
+            const recentTransactions = transactions
+                .sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date))
+                .slice(0, 10);
+
+            if (recentTransactions.length === 0) {
+                activityTable.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--gray);">
+                            No recent activity
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            activityTable.innerHTML = recentTransactions.map(t => {
+                const time = new Date(t.timestamp || t.date);
+                const timeStr = time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const dateStr = time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+                return `
+                    <tr>
+                        <td>${dateStr} ${timeStr}</td>
+                        <td><span class="badge badge-success">Booking</span></td>
+                        <td>${t.customerName || 'Guest'} - ${t.packageName || 'Package'}</td>
+                        <td style="font-weight: 600; color: var(--success);">$${(t.total || t.amount || 0).toFixed(2)}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function refreshDashboard() {
@@ -5156,6 +5228,9 @@
                                placeholder="Capacity"
                                onchange="updateHallInfo(${index}, 'capacity')"
                                style="width: 120px;">
+                        <div id="seat-count-${index}" style="margin-left: 1rem; padding: 0.5rem 1rem; background: var(--primary-light); border-radius: 4px; font-size: 0.875rem; color: var(--primary-dark);">
+                            <strong>Seats in Layout:</strong> <span id="seat-count-value-${index}">0</span>
+                        </div>
                     </div>
                 </div>
 
@@ -5214,11 +5289,11 @@
                     <div class="layout-designer">
                         <div class="layout-tools" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                             <div style="flex: 1; min-width: 200px;">
-                                <button class="tool-btn active" onclick="selectLayoutTool('select', ${hallIndex})" title="Select multiple cells">
-                                    👆 Select
+                                <button class="tool-btn active" onclick="selectLayoutTool('seat', ${hallIndex})" title="Place seats">
+                                    💺 Place Seat
                                 </button>
-                                <button class="tool-btn" onclick="selectLayoutTool('table', ${hallIndex})" title="Place tables">
-                                    🪑 Table
+                                <button class="tool-btn" onclick="selectLayoutTool('directional', ${hallIndex})" title="Place directional seats">
+                                    🪑 Place Directional Seat
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('blocked', ${hallIndex})" title="Block areas">
                                     🚫 Blocked
@@ -5232,8 +5307,8 @@
                                 <button class="tool-btn" onclick="selectLayoutTool('vip', ${hallIndex})" title="VIP areas">
                                     ⭐ VIP
                                 </button>
-                                <button class="tool-btn" onclick="selectLayoutTool('caller', ${hallIndex})" title="Caller station">
-                                    🎤 Caller
+                                <button class="tool-btn" onclick="selectLayoutTool('custom', ${hallIndex})" title="Create custom area">
+                                    🎨 Custom Area
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('clear', ${hallIndex})" title="Clear cells">
                                     🗑️ Clear
@@ -5247,17 +5322,45 @@
                                 <label style="font-size: 0.875rem;">Height:</label>
                                 <input type="number" id="grid-height-${hallIndex}" min="5" max="30" value="${hall.layout?.height || hall.layout?.rows || 15}"
                                        style="width: 60px; padding: 0.25rem;" onchange="updateGridSize(${hallIndex})">
-                                <button class="btn btn-secondary" onclick="applyToSelected(${hallIndex})" style="padding: 0.25rem 0.75rem; font-size: 0.875rem;">
-                                    Apply to Selected
-                                </button>
                             </div>
                         </div>
 
-                        <div id="selection-info-${hallIndex}" style="padding: 0.5rem; background: var(--primary-light); border-radius: 4px; margin: 0.5rem 0; display: none;">
-                            <span id="selection-count-${hallIndex}">0 cells selected</span>
-                            <button class="btn btn-secondary" onclick="clearSelection(${hallIndex})" style="margin-left: 1rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                Clear Selection
-                            </button>
+                        <div id="custom-area-info-${hallIndex}" style="padding: 1rem; background: var(--primary-light); border-radius: 8px; margin: 0.5rem 0; display: none;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong>Creating Custom Area</strong>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                                <input type="text" id="custom-area-name-${hallIndex}" placeholder="Area name" style="flex: 1; padding: 0.5rem; border: 1px solid var(--gray-light); border-radius: 4px;" readonly>
+                                <input type="color" id="custom-area-color-${hallIndex}" value="#ff6b6b" style="width: 60px; height: 38px; border: 1px solid var(--gray-light); border-radius: 4px;" disabled>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <span id="custom-area-count-${hallIndex}">0 cells selected</span>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <strong style="display: block; margin-bottom: 0.5rem;">Text Orientation:</strong>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <button onclick="updateCustomAreaOrientation(${hallIndex}, 'horizontal')" id="orient-horizontal-${hallIndex}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        →
+                                    </button>
+                                    <button onclick="updateCustomAreaOrientation(${hallIndex}, 'vertical-left')" id="orient-vertical-left-${hallIndex}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        ↓
+                                    </button>
+                                    <button onclick="updateCustomAreaOrientation(${hallIndex}, 'vertical-right')" id="orient-vertical-right-${hallIndex}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.7rem;">
+                                        ↑
+                                    </button>
+                                    <div id="orientation-example-${hallIndex}" style="width: 80px; padding: 0.35rem; background: white; border-radius: 4px; font-size: 0.65rem; text-align: center; border: 1px solid var(--gray-light); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                        Custom Area
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                <button class="btn btn-secondary" onclick="cancelCustomArea(${hallIndex})" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    Cancel
+                                </button>
+                                <button class="btn btn-primary" onclick="confirmCustomArea(${hallIndex})" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    ✓ Confirm Area
+                                </button>
+                            </div>
                         </div>
 
                         <div id="layout-grid-${hallIndex}" class="layout-grid">
@@ -5411,9 +5514,10 @@
             const cols = hall.layout?.cols || hall.layout?.width || 20;
             
             gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            
-            tableCount[hallIndex] = 0;
-            
+
+            if (!window.seatCount) window.seatCount = {};
+            seatCount[hallIndex] = 0;
+
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const cell = document.createElement('div');
@@ -5421,27 +5525,74 @@
                     cell.dataset.row = r;
                     cell.dataset.col = c;
                     cell.dataset.hallIndex = hallIndex;
-                    
+
                     // Load existing cell data if available
                     if (hall.layout?.cells?.[`${r}-${c}`]) {
                         const cellData = hall.layout.cells[`${r}-${c}`];
-                        
+
                         // Handle different data formats
                         if (cellData.type) {
                             cell.className = `grid-cell ${cellData.type}`;
-                            
+
                             // Set display text based on type
-                            if (cellData.type === 'table') {
-                                cell.textContent = cellData.name || cellData.label || `T${cellData.tableNumber || ''}`;
-                                if (cellData.tableNumber && cellData.tableNumber > tableCount[hallIndex]) {
-                                    tableCount[hallIndex] = cellData.tableNumber;
+                            if (cellData.type === 'seat') {
+                                cell.textContent = cellData.label || cellData.seatNumber || '';
+                                if (cellData.seatNumber) {
+                                    cell.dataset.seatNumber = cellData.seatNumber;
+                                    if (cellData.seatNumber > seatCount[hallIndex]) {
+                                        seatCount[hallIndex] = cellData.seatNumber;
+                                    }
                                 }
+                            } else if (cellData.type === 'directional') {
+                                const directionSymbols = {
+                                    'up': '↑',
+                                    'down': '↓',
+                                    'left': '←',
+                                    'right': '→'
+                                };
+                                const direction = cellData.direction || 'up';
+                                cell.innerHTML = `
+                                    <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                        <div style="position: absolute; top: 2px; font-size: 0.7rem;">${directionSymbols[direction]}</div>
+                                        <div style="font-size: 0.8rem; font-weight: bold;">${cellData.seatNumber || ''}</div>
+                                    </div>
+                                `;
+                                if (cellData.seatNumber) {
+                                    cell.dataset.seatNumber = cellData.seatNumber;
+                                    cell.dataset.direction = direction;
+                                    if (cellData.seatNumber > seatCount[hallIndex]) {
+                                        seatCount[hallIndex] = cellData.seatNumber;
+                                    }
+                                }
+                            } else if (cellData.type === 'custom') {
+                                cell.dataset.customName = cellData.customName;
+                                cell.dataset.customColor = cellData.customColor;
+                                cell.dataset.customAreaId = cellData.customAreaId;
+                                cell.dataset.textOrientation = cellData.textOrientation || 'horizontal';
+                                cell.style.backgroundColor = cellData.customColor;
+                                cell.style.color = '#fff';
+                                cell.style.fontWeight = 'bold';
+
+                                // We'll calculate borders after loading all cells
+                                cell.textContent = '';
                             } else if (cellData.type === 'blocked') {
                                 cell.textContent = '❌';
-                            } else if (cellData.type === 'special') {
-                                cell.textContent = cellData.name || '⭐';
+                            } else if (cellData.type === 'entrance') {
+                                cell.textContent = '🚪';
+                            } else if (cellData.type === 'restroom') {
+                                cell.textContent = '🚻';
+                            } else if (cellData.type === 'vip') {
+                                cell.textContent = '⭐';
                             } else {
                                 cell.textContent = cellData.label || cellData.name || '';
+                            }
+
+                            // Apply table styling if this is part of a table
+                            if (cellData.isTable && cellData.tableId) {
+                                cell.classList.add('table-group');
+                                cell.dataset.tableId = cellData.tableId;
+                                // Don't change background or text color - keep seat styling
+                                // Borders will be applied by applyTableBorders function
                             }
                         } else if (cellData.marker) {
                             // Handle markers (entrance, restroom)
@@ -5458,37 +5609,594 @@
                             cell.textContent = cellData;
                         }
                     }
-                    
+
                     cell.onclick = (e) => handleLayoutCellClick(e, hallIndex, r, c);
                     gridContainer.appendChild(cell);
                 }
             }
+
+            // After loading all cells, apply merged styling to custom areas
+            applyCustomAreaMerging(hallIndex);
+
+            // Apply borders to table groups
+            applyTableBorders(hallIndex);
+
+            // Update seat count display
+            updateSeatCount(hallIndex);
         }
 
-        function selectLayoutTool(tool, hallIndex) {
+        function applyTableBorders(hallIndex) {
+            // Group table cells by tableId
+            const tableCells = document.querySelectorAll(`[data-hall-index="${hallIndex}"].table-group`);
+            const tableGroups = {};
+
+            tableCells.forEach(cell => {
+                const tableId = cell.dataset.tableId;
+                if (!tableGroups[tableId]) {
+                    tableGroups[tableId] = [];
+                }
+                tableGroups[tableId].push(cell);
+            });
+
+            // For each table, calculate bounds and apply borders
+            Object.entries(tableGroups).forEach(([tableId, cells]) => {
+                if (cells.length === 0) return;
+
+                // Get all cell coordinates
+                const coords = cells.map(cell => ({
+                    row: parseInt(cell.dataset.row),
+                    col: parseInt(cell.dataset.col),
+                    cell: cell
+                }));
+
+                const minRow = Math.min(...coords.map(c => c.row));
+                const maxRow = Math.max(...coords.map(c => c.row));
+                const minCol = Math.min(...coords.map(c => c.col));
+                const maxCol = Math.max(...coords.map(c => c.col));
+
+                // Apply borders to each cell
+                coords.forEach(({ row, col, cell }) => {
+                    const isTopEdge = row === minRow;
+                    const isBottomEdge = row === maxRow;
+                    const isLeftEdge = col === minCol;
+                    const isRightEdge = col === maxCol;
+
+                    if (isTopEdge) cell.style.borderTop = '3px solid #4CAF50';
+                    if (isBottomEdge) cell.style.borderBottom = '3px solid #4CAF50';
+                    if (isLeftEdge) cell.style.borderLeft = '3px solid #4CAF50';
+                    if (isRightEdge) cell.style.borderRight = '3px solid #4CAF50';
+
+                    // Remove internal borders
+                    if (!isTopEdge) cell.style.borderTop = 'none';
+                    if (!isBottomEdge) cell.style.borderBottom = 'none';
+                    if (!isLeftEdge) cell.style.borderLeft = 'none';
+                    if (!isRightEdge) cell.style.borderRight = 'none';
+                });
+            });
+        }
+
+        function applyCustomAreaMerging(hallIndex) {
+            // Group cells by customAreaId
+            const customCells = document.querySelectorAll(`[data-hall-index="${hallIndex}"].custom`);
+            const areaGroups = {};
+
+            customCells.forEach(cell => {
+                const areaId = cell.dataset.customAreaId || `${cell.dataset.customName}-${cell.dataset.customColor}`;
+                if (!areaGroups[areaId]) {
+                    areaGroups[areaId] = [];
+                }
+                areaGroups[areaId].push(cell);
+            });
+
+            // For each custom area, calculate bounds and apply merged styling
+            Object.entries(areaGroups).forEach(([areaId, cells]) => {
+                if (cells.length === 0) return;
+
+                const coords = cells.map(c => ({
+                    row: parseInt(c.dataset.row),
+                    col: parseInt(c.dataset.col),
+                    cell: c
+                }));
+
+                const minRow = Math.min(...coords.map(c => c.row));
+                const maxRow = Math.max(...coords.map(c => c.row));
+                const minCol = Math.min(...coords.map(c => c.col));
+                const maxCol = Math.max(...coords.map(c => c.col));
+
+                const areaName = cells[0].dataset.customName;
+                const areaColor = cells[0].dataset.customColor;
+
+                // Apply borders and find top-left cell
+                let topLeftCell = null;
+                cells.forEach(cell => {
+                    const r = parseInt(cell.dataset.row);
+                    const c = parseInt(cell.dataset.col);
+
+                    const isTopEdge = r === minRow;
+                    const isBottomEdge = r === maxRow;
+                    const isLeftEdge = c === minCol;
+                    const isRightEdge = c === maxCol;
+
+                    cell.style.borderTop = isTopEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderBottom = isBottomEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderLeft = isLeftEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderRight = isRightEdge ? `3px solid ${areaColor}` : 'none';
+
+                    if (r === minRow && c === minCol) {
+                        topLeftCell = cell;
+                    }
+                });
+
+                // Add text overlay to top-left cell
+                if (topLeftCell) {
+                    const rowSpan = maxRow - minRow + 1;
+                    const colSpan = maxCol - minCol + 1;
+                    const orientation = topLeftCell.dataset.textOrientation || 'horizontal';
+
+                    let transform = 'none';
+                    if (orientation === 'vertical-left') {
+                        transform = 'rotate(-90deg)';
+                    } else if (orientation === 'vertical-right') {
+                        transform = 'rotate(90deg)';
+                    }
+
+                    topLeftCell.style.position = 'relative';
+                    topLeftCell.innerHTML = `
+                        <div style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: ${colSpan * 100}%;
+                            height: ${rowSpan * 100}%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: ${Math.min(1.5, Math.max(0.75, colSpan * 0.4))}rem;
+                            padding: 0.5rem;
+                            pointer-events: none;
+                            z-index: 1;
+                            transform: ${transform};
+                        ">${areaName}</div>
+                    `;
+                }
+            });
+        }
+
+        function selectLayoutTool(tool, hallIndex, skipModal = false) {
             currentTool[hallIndex] = tool;
-            const buttons = document.querySelectorAll(`#hall-tab-${hallIndex} .tool-btn`);
+
+            // Remove active from all layout tool buttons
+            const buttons = document.querySelectorAll('.layout-designer .tool-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active to the clicked tool button
+            const toolMap = {
+                'seat': '💺',
+                'directional': '🪑',
+                'blocked': '🚫',
+                'entrance': '🚪',
+                'restroom': '🚻',
+                'vip': '⭐',
+                'custom': '🎨',
+                'clear': '🗑️'
+            };
+
             buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(tool) || 
-                    (tool === 'select' && btn.textContent.includes('👆')) ||
-                    (tool === 'table' && btn.textContent.includes('🪑')) ||
-                    (tool === 'caller' && btn.textContent.includes('🎤')) ||
-                    (tool === 'clear' && btn.textContent.includes('🗑️'))) {
+                const btnText = btn.textContent.trim();
+                if (toolMap[tool] && btnText.includes(toolMap[tool])) {
                     btn.classList.add('active');
                 }
             });
-            
-            // Initialize selected cells for this hall if not exists
-            if (!selectedCells[hallIndex]) {
-                selectedCells[hallIndex] = new Set();
-            }
-            
-            if (tool !== 'select' && tool !== 'clear') {
-                clearSelection(hallIndex);
+
+            // Show modals only if not skipping
+            if (!skipModal) {
+                if (tool === 'custom') {
+                    startCustomAreaSelection(hallIndex);
+                } else if (tool === 'seat') {
+                    showSeatNumberModal(hallIndex);
+                } else if (tool === 'directional') {
+                    showDirectionalSeatModal(hallIndex);
+                } else if (tool === 'blocked') {
+                    showBlockedColorModal(hallIndex);
+                }
             }
         }
-        
+
+        function showBlockedColorModal(hallIndex) {
+            if (!window.blockedColor) window.blockedColor = {};
+            const currentColor = blockedColor[hallIndex] || '#f44336';
+
+            showModal({
+                title: '🚫 Blocked Area Color',
+                message: `
+                    <div style="padding: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Choose Blocked Color</label>
+                        <input type="color" id="blockedColorPicker" value="${currentColor}"
+                            style="width: 100%; height: 50px; border: 1px solid var(--gray-light); border-radius: 6px; cursor: pointer;">
+                    </div>
+                `,
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                showCancel: true,
+                autoClose: false,
+                onConfirm: () => {
+                    const color = document.getElementById('blockedColorPicker').value;
+                    blockedColor[hallIndex] = color;
+                },
+                onCancel: () => {
+                    selectLayoutTool('blocked', hallIndex, true);
+                }
+            });
+        }
+
+        function showSeatNumberModal(hallIndex) {
+            // Get the next seat number
+            if (!window.seatCount) window.seatCount = {};
+            if (!seatCount[hallIndex]) seatCount[hallIndex] = 0;
+            const nextNumber = seatCount[hallIndex] + 1;
+
+            showModal({
+                title: '💺 Place Seat',
+                message: `
+                    <div style="padding: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Start with what number?</label>
+                        <input type="number" id="seatStartNumber" value="${nextNumber}" min="1"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 6px; font-size: 1rem;">
+                    </div>
+                `,
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                showCancel: true,
+                autoClose: false,
+                onConfirm: () => {
+                    const startNumber = parseInt(document.getElementById('seatStartNumber').value) || nextNumber;
+                    seatCount[hallIndex] = startNumber - 1; // Set to one before so next seat will be this number
+                },
+                onCancel: () => {
+                    selectLayoutTool('seat', hallIndex, true); // Keep seat tool active, skip modal
+                }
+            });
+        }
+
+        function showDirectionalSeatModal(hallIndex) {
+            // Get the next seat number
+            if (!window.seatCount) window.seatCount = {};
+            if (!seatCount[hallIndex]) seatCount[hallIndex] = 0;
+            const nextNumber = seatCount[hallIndex] + 1;
+
+            showModal({
+                title: '🪑 Place Directional Seat',
+                message: `
+                    <div style="padding: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Seat Direction</label>
+                            <select id="seatDirection" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 6px; font-size: 1rem;">
+                                <option value="up">↑ Up</option>
+                                <option value="down">↓ Down</option>
+                                <option value="left">← Left</option>
+                                <option value="right">→ Right</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Start with what number?</label>
+                            <input type="number" id="directionalStartNumber" value="${nextNumber}" min="1"
+                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 6px; font-size: 1rem;">
+                        </div>
+                    </div>
+                `,
+                confirmText: 'OK',
+                cancelText: 'Cancel',
+                showCancel: true,
+                autoClose: false,
+                onConfirm: () => {
+                    const direction = document.getElementById('seatDirection').value;
+                    const startNumber = parseInt(document.getElementById('directionalStartNumber').value) || nextNumber;
+
+                    if (!window.directionalSeatConfig) {
+                        window.directionalSeatConfig = {};
+                    }
+                    directionalSeatConfig[hallIndex] = {
+                        direction: direction,
+                        startNumber: startNumber
+                    };
+                    seatCount[hallIndex] = startNumber - 1; // Set to one before so next seat will be this number
+                },
+                onCancel: () => {
+                    selectLayoutTool('seat', hallIndex, true); // Switch back to regular seat, skip modal
+                }
+            });
+        }
+
+        function startTableSelection(hallIndex) {
+            // Initialize table selection cells if not exists
+            if (!window.tableSelectionCells) {
+                window.tableSelectionCells = {};
+            }
+            if (!tableSelectionCells[hallIndex]) {
+                tableSelectionCells[hallIndex] = new Set();
+            }
+            tableSelectionCells[hallIndex].clear();
+
+            // Show the table selection panel
+            const panel = document.getElementById(`table-selection-panel-${hallIndex}`);
+            if (panel) {
+                panel.style.display = 'block';
+            }
+
+            // Clear any existing selections
+            document.querySelectorAll(`[data-hall-index="${hallIndex}"].selected`).forEach(cell => {
+                cell.classList.remove('selected');
+            });
+
+            updateTableSelectionCount(hallIndex);
+        }
+
+        function updateTableSelectionCount(hallIndex) {
+            const countElement = document.getElementById(`table-selection-count-${hallIndex}`);
+            if (countElement && tableSelectionCells[hallIndex]) {
+                const count = tableSelectionCells[hallIndex].size;
+                countElement.textContent = `${count} seat${count !== 1 ? 's' : ''} selected`;
+            }
+        }
+
+        function isAdjacentToTableSelection(row, col, hallIndex) {
+            if (!tableSelectionCells[hallIndex] || tableSelectionCells[hallIndex].size === 0) {
+                return true; // First cell is always valid
+            }
+
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1] // up, down, left, right
+            ];
+
+            for (let key of tableSelectionCells[hallIndex]) {
+                const [r, c] = key.split('-').map(Number);
+                for (let [dr, dc] of directions) {
+                    if (r + dr === row && c + dc === col) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function confirmTableSelection(hallIndex) {
+            if (!tableSelectionCells[hallIndex] || tableSelectionCells[hallIndex].size === 0) {
+                showModal({
+                    title: '⚠️ No Seats Selected',
+                    message: 'Please select at least one seat to create a table.',
+                    type: 'error'
+                });
+                return;
+            }
+
+            const tableId = `table-${hallIndex}-${Date.now()}`;
+
+            // Find bounds of the table
+            const coords = Array.from(tableSelectionCells[hallIndex]).map(key => {
+                const [r, c] = key.split('-').map(Number);
+                return { row: r, col: c };
+            });
+
+            const minRow = Math.min(...coords.map(c => c.row));
+            const maxRow = Math.max(...coords.map(c => c.row));
+            const minCol = Math.min(...coords.map(c => c.col));
+            const maxCol = Math.max(...coords.map(c => c.col));
+
+            // Apply table styling to all selected cells
+            tableSelectionCells[hallIndex].forEach(cellKey => {
+                const [r, c] = cellKey.split('-').map(Number);
+                const cell = document.querySelector(`[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`);
+
+                if (cell) {
+                    // Keep the existing seat class and styling
+                    cell.classList.add('table-group');
+                    cell.dataset.tableId = tableId;
+
+                    // Apply green borders only on edges
+                    const isTopEdge = r === minRow;
+                    const isBottomEdge = r === maxRow;
+                    const isLeftEdge = c === minCol;
+                    const isRightEdge = c === maxCol;
+
+                    if (isTopEdge) cell.style.borderTop = '3px solid #4CAF50';
+                    if (isBottomEdge) cell.style.borderBottom = '3px solid #4CAF50';
+                    if (isLeftEdge) cell.style.borderLeft = '3px solid #4CAF50';
+                    if (isRightEdge) cell.style.borderRight = '3px solid #4CAF50';
+
+                    // Remove internal borders
+                    if (!isTopEdge) cell.style.borderTop = 'none';
+                    if (!isBottomEdge) cell.style.borderBottom = 'none';
+                    if (!isLeftEdge) cell.style.borderLeft = 'none';
+                    if (!isRightEdge) cell.style.borderRight = 'none';
+                }
+            });
+
+            // Clear selection and hide panel
+            cancelTableSelection(hallIndex);
+            saveHallLayout(hallIndex);
+            markUnsaved();
+        }
+
+        function cancelTableSelection(hallIndex) {
+            // Clear selections
+            if (tableSelectionCells[hallIndex]) {
+                tableSelectionCells[hallIndex].clear();
+            }
+
+            document.querySelectorAll(`[data-hall-index="${hallIndex}"].selected`).forEach(cell => {
+                cell.classList.remove('selected');
+            });
+
+            // Hide panel
+            const panel = document.getElementById(`table-selection-panel-${hallIndex}`);
+            if (panel) {
+                panel.style.display = 'none';
+            }
+
+            // Switch back to seat tool, skip modal
+            selectLayoutTool('seat', hallIndex, true);
+        }
+
+        function startCustomAreaSelection(hallIndex) {
+            // Initialize custom area cells if not exists
+            if (!window.customAreaCells) {
+                window.customAreaCells = {};
+            }
+            if (!customAreaCells[hallIndex]) {
+                customAreaCells[hallIndex] = new Set();
+            }
+            customAreaCells[hallIndex].clear();
+
+            // Initialize config with defaults
+            if (!window.customAreaConfig) {
+                window.customAreaConfig = {};
+            }
+            customAreaConfig[hallIndex] = {
+                name: 'Custom Area',
+                color: '#4A90E2',
+                orientation: 'horizontal'
+            };
+
+            // Show the panel
+            const customPanel = document.getElementById(`custom-area-info-${hallIndex}`);
+            if (customPanel) {
+                customPanel.style.display = 'block';
+                document.getElementById(`custom-area-name-${hallIndex}`).value = customAreaConfig[hallIndex].name;
+                document.getElementById(`custom-area-color-${hallIndex}`).value = customAreaConfig[hallIndex].color;
+                // Make inputs editable
+                document.getElementById(`custom-area-name-${hallIndex}`).removeAttribute('readonly');
+                document.getElementById(`custom-area-color-${hallIndex}`).removeAttribute('disabled');
+                // Add listeners to update config
+                document.getElementById(`custom-area-name-${hallIndex}`).oninput = (e) => {
+                    customAreaConfig[hallIndex].name = e.target.value;
+                    previewCustomAreaText(hallIndex);
+                    // Update example
+                    const example = document.getElementById(`orientation-example-${hallIndex}`);
+                    if (example) example.textContent = e.target.value || 'Custom Area';
+                };
+                document.getElementById(`custom-area-color-${hallIndex}`).oninput = (e) => {
+                    customAreaConfig[hallIndex].color = e.target.value;
+                    // Update selected cell colors
+                    customAreaCells[hallIndex].forEach(cellKey => {
+                        const [r, c] = cellKey.split('-').map(Number);
+                        const cell = document.querySelector(`[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`);
+                        if (cell) {
+                            cell.style.backgroundColor = e.target.value;
+                        }
+                    });
+                };
+                updateCustomAreaInfo(hallIndex);
+                // Highlight default orientation button
+                updateOrientationButtons(hallIndex, 'horizontal');
+            }
+        }
+
+        function updateCustomAreaOrientation(hallIndex, orientation) {
+            if (!customAreaConfig[hallIndex]) return;
+
+            // Update config
+            customAreaConfig[hallIndex].orientation = orientation;
+
+            // Update button states
+            updateOrientationButtons(hallIndex, orientation);
+
+            // Show live preview on selected cells
+            previewCustomAreaText(hallIndex);
+        }
+
+        function updateOrientationButtons(hallIndex, activeOrientation) {
+            // Remove active from all
+            ['horizontal', 'vertical-left', 'vertical-right'].forEach(orient => {
+                const btn = document.getElementById(`orient-${orient}-${hallIndex}`);
+                if (btn) {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline');
+                }
+            });
+
+            // Add active to selected
+            const activeBtn = document.getElementById(`orient-${activeOrientation}-${hallIndex}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('btn-outline');
+                activeBtn.classList.add('btn-primary');
+            }
+
+            // Update example text
+            const example = document.getElementById(`orientation-example-${hallIndex}`);
+            if (example) {
+                const areaName = customAreaConfig[hallIndex]?.name || 'Custom Area';
+                let transform = 'none';
+                if (activeOrientation === 'vertical-left') {
+                    transform = 'rotate(-90deg)';
+                } else if (activeOrientation === 'vertical-right') {
+                    transform = 'rotate(90deg)';
+                }
+                example.style.transform = transform;
+                example.textContent = areaName;
+            }
+        }
+
+        function previewCustomAreaText(hallIndex) {
+            if (!customAreaCells[hallIndex] || customAreaCells[hallIndex].size === 0) return;
+            if (!customAreaConfig[hallIndex]) return;
+
+            const config = customAreaConfig[hallIndex];
+            const coords = Array.from(customAreaCells[hallIndex]).map(key => {
+                const [r, c] = key.split('-').map(Number);
+                return { row: r, col: c, key: key };
+            });
+
+            const minRow = Math.min(...coords.map(c => c.row));
+            const minCol = Math.min(...coords.map(c => c.col));
+            const maxRow = Math.max(...coords.map(c => c.row));
+            const maxCol = Math.max(...coords.map(c => c.col));
+
+            const rowSpan = maxRow - minRow + 1;
+            const colSpan = maxCol - minCol + 1;
+
+            let transform = 'none';
+            if (config.orientation === 'vertical-left') {
+                transform = 'rotate(-90deg)';
+            } else if (config.orientation === 'vertical-right') {
+                transform = 'rotate(90deg)';
+            }
+
+            // Clear all preview text first
+            customAreaCells[hallIndex].forEach(cellKey => {
+                const [r, c] = cellKey.split('-').map(Number);
+                const cell = document.querySelector(`[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`);
+                if (cell) {
+                    cell.innerHTML = '';
+                }
+            });
+
+            // Add preview text to top-left cell
+            const topLeftKey = `${minRow}-${minCol}`;
+            const topLeftCell = document.querySelector(`[data-hall-index="${hallIndex}"][data-row="${minRow}"][data-col="${minCol}"]`);
+
+            if (topLeftCell) {
+                topLeftCell.style.position = 'relative';
+                topLeftCell.innerHTML = `
+                    <div style="
+                        position: absolute;
+                        top: 0; left: 0;
+                        width: ${colSpan * 100}%;
+                        height: ${rowSpan * 100}%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: ${Math.min(1.5, Math.max(0.75, colSpan * 0.4))}rem;
+                        font-weight: bold;
+                        color: white;
+                        transform: ${transform};
+                        pointer-events: none;
+                        z-index: 1;
+                        opacity: 0.8;
+                    ">${config.name}</div>
+                `;
+            }
+        }
+
         function clearSelection(hallIndex) {
             if (selectedCells[hallIndex]) {
                 selectedCells[hallIndex].clear();
@@ -5516,61 +6224,168 @@
 
         function handleLayoutCellClick(event, hallIndex, row, col) {
             const cell = event.target;
-            const tool = currentTool[hallIndex] || 'select';
-            
-            if (!selectedCells[hallIndex]) {
-                selectedCells[hallIndex] = new Set();
-            }
-            
+            const tool = currentTool[hallIndex] || 'seat';
             const cellKey = `${row}-${col}`;
-            
-            if (tool === 'select' || event.shiftKey || event.ctrlKey) {
-                // Multi-select mode
-                if (selectedCells[hallIndex].has(cellKey)) {
-                    selectedCells[hallIndex].delete(cellKey);
+
+            if (tool === 'table-select') {
+                // Table selection mode - only allow selecting existing seats
+                const cellType = cell.className.replace('grid-cell', '').replace('selected', '').replace('table-group', '').trim();
+
+                if (cellType !== 'seat' && cellType !== 'directional') {
+                    showModal({
+                        title: '⚠️ Invalid Selection',
+                        message: 'You can only select existing seats to create a table.',
+                        type: 'error'
+                    });
+                    return;
+                }
+
+                if (!tableSelectionCells[hallIndex]) {
+                    tableSelectionCells[hallIndex] = new Set();
+                }
+
+                if (tableSelectionCells[hallIndex].has(cellKey)) {
+                    // Deselect cell
+                    tableSelectionCells[hallIndex].delete(cellKey);
                     cell.classList.remove('selected');
                 } else {
-                    selectedCells[hallIndex].add(cellKey);
+                    // Check adjacency if not first cell
+                    if (tableSelectionCells[hallIndex].size > 0) {
+                        if (!isAdjacentToTableSelection(row, col, hallIndex)) {
+                            showModal({
+                                title: '⚠️ Invalid Selection',
+                                message: 'All seats in a table must be adjacent to each other.',
+                                type: 'error'
+                            });
+                            return;
+                        }
+                    }
+                    tableSelectionCells[hallIndex].add(cellKey);
                     cell.classList.add('selected');
                 }
-                updateSelectionInfo(hallIndex);
+                updateTableSelectionCount(hallIndex);
+            } else if (tool === 'custom') {
+                // Custom area selection mode with adjacency check
+                if (!customAreaCells[hallIndex]) {
+                    customAreaCells[hallIndex] = new Set();
+                }
+
+                if (customAreaCells[hallIndex].has(cellKey)) {
+                    // Deselect cell
+                    customAreaCells[hallIndex].delete(cellKey);
+                    cell.classList.remove('selected');
+                } else {
+                    // Check adjacency if not first cell
+                    if (customAreaCells[hallIndex].size > 0) {
+                        if (!isAdjacentToCustomArea(row, col, hallIndex)) {
+                            showModal({
+                                title: '⚠️ Invalid Selection',
+                                message: 'All custom area cells must be adjacent to each other.',
+                                type: 'error'
+                            });
+                            return;
+                        }
+                    }
+                    customAreaCells[hallIndex].add(cellKey);
+                    cell.classList.add('selected');
+                }
+                updateCustomAreaInfo(hallIndex);
             } else if (tool === 'clear') {
-                // Clear mode
-                if (selectedCells[hallIndex].size > 0) {
-                    // Clear all selected cells
-                    selectedCells[hallIndex].forEach(key => {
-                        const [r, c] = key.split('-');
-                        const targetCell = document.querySelector(
-                            `[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`
-                        );
-                        if (targetCell) {
-                            targetCell.className = 'grid-cell';
-                            targetCell.textContent = '';
+                // Check if this is a table group cell
+                if (cell.classList.contains('table-group') && cell.dataset.tableId) {
+                    const tableId = cell.dataset.tableId;
+
+                    // Find and clear all cells with the same table ID
+                    const allCells = document.querySelectorAll(`[data-hall-index="${hallIndex}"]`);
+                    allCells.forEach(c => {
+                        if (c.dataset.tableId === tableId) {
+                            c.classList.remove('table-group');
+                            delete c.dataset.tableId;
+                            // Reset borders - remove all table borders
+                            c.style.borderTop = '';
+                            c.style.borderBottom = '';
+                            c.style.borderLeft = '';
+                            c.style.borderRight = '';
+                            // Keep original background and color (seats stay blue)
                         }
                     });
-                    clearSelection(hallIndex);
+                }
+                // Check if this is a custom area cell
+                else if (cell.classList.contains('custom') && cell.dataset.customName) {
+                    const customName = cell.dataset.customName;
+                    const customColor = cell.dataset.customColor;
+
+                    // Find and clear all cells with the same custom area
+                    const allCells = document.querySelectorAll(`[data-hall-index="${hallIndex}"]`);
+                    allCells.forEach(c => {
+                        if (c.dataset.customName === customName && c.dataset.customColor === customColor) {
+                            c.className = 'grid-cell';
+                            c.textContent = '';
+                            c.style.backgroundColor = '';
+                            c.style.color = '';
+                            c.style.fontWeight = '';
+                            c.style.fontSize = '';
+                            c.style.border = '';
+                            c.style.display = '';
+                            c.style.alignItems = '';
+                            c.style.justifyContent = '';
+                            delete c.dataset.customName;
+                            delete c.dataset.customColor;
+                        }
+                    });
                 } else {
                     // Clear single cell
                     cell.className = 'grid-cell';
                     cell.textContent = '';
+                    cell.style.backgroundColor = '';
+                    cell.style.color = '';
+                    cell.style.fontWeight = '';
+                    cell.style.fontSize = '';
+                    cell.style.border = '';
+                    delete cell.dataset.customName;
+                    delete cell.dataset.customColor;
+                    delete cell.dataset.seatNumber;
                 }
+                saveHallLayout(hallIndex);
+                markUnsaved();
             } else {
                 // Apply tool to cell immediately
-                applyCellType(cell, tool, hallIndex);
+                applyCellType(cell, tool, hallIndex, row, col);
+                saveHallLayout(hallIndex);
+                markUnsaved();
             }
-            
-            // Save layout after changes
-            saveHallLayout(hallIndex);
-            markUnsaved();
         }
         
-        function applyCellType(cell, type, hallIndex) {
+        function applyCellType(cell, type, hallIndex, row, col) {
             cell.className = `grid-cell ${type}`;
-            
-            if (type === 'table') {
-                if (!tableCount[hallIndex]) tableCount[hallIndex] = 0;
-                tableCount[hallIndex]++;
-                cell.textContent = `T${tableCount[hallIndex]}`;
+
+            if (type === 'seat') {
+                if (!window.seatCount) window.seatCount = {};
+                if (!seatCount[hallIndex]) seatCount[hallIndex] = 0;
+                seatCount[hallIndex]++;
+                cell.textContent = `${seatCount[hallIndex]}`;
+                cell.dataset.seatNumber = seatCount[hallIndex];
+            } else if (type === 'directional') {
+                if (!window.seatCount) window.seatCount = {};
+                if (!seatCount[hallIndex]) seatCount[hallIndex] = 0;
+                seatCount[hallIndex]++;
+
+                const config = window.directionalSeatConfig?.[hallIndex] || { direction: 'up' };
+                const directionSymbols = {
+                    'up': '↑',
+                    'down': '↓',
+                    'left': '←',
+                    'right': '→'
+                };
+
+                cell.innerHTML = `
+                    <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <div style="position: absolute; top: 2px; font-size: 0.7rem;">${directionSymbols[config.direction]}</div>
+                        <div style="font-size: 0.8rem; font-weight: bold;">${seatCount[hallIndex]}</div>
+                    </div>
+                `;
+                cell.dataset.seatNumber = seatCount[hallIndex];
+                cell.dataset.direction = config.direction;
             } else if (type === 'entrance') {
                 cell.textContent = '🚪';
             } else if (type === 'restroom') {
@@ -5579,13 +6394,9 @@
                 cell.textContent = '⭐';
             } else if (type === 'blocked') {
                 cell.textContent = '❌';
-            } else if (type === 'caller') {
-                // Prompt for custom name
-                const name = prompt('Enter name for caller station:', 'Caller Station');
-                if (name) {
-                    cell.textContent = '🎤';
-                    cell.title = name;
-                    cell.dataset.customName = name;
+                // Apply custom blocked color if set
+                if (window.blockedColor && blockedColor[hallIndex]) {
+                    cell.style.backgroundColor = blockedColor[hallIndex];
                 }
             } else {
                 cell.textContent = '';
@@ -5677,30 +6488,260 @@
         function saveHallLayout(hallIndex) {
             const halls = NewcoData.get('halls') || [];
             if (!halls[hallIndex]) return;
-            
+
             const cells = {};
             const gridCells = document.querySelectorAll(`[data-hall-index="${hallIndex}"]`);
-            
+
             gridCells.forEach(cell => {
                 const row = cell.dataset.row;
                 const col = cell.dataset.col;
-                const type = cell.className.replace('grid-cell', '').trim();
-                
-                if (type && type !== 'selected') {
-                    cells[`${row}-${col}`] = {
+                const type = cell.className.replace('grid-cell', '').replace('selected', '').trim();
+
+                if (type) {
+                    const cellData = {
                         type: type,
                         label: cell.textContent
                     };
+
+                    // Save custom area data
+                    if (type === 'custom') {
+                        cellData.customName = cell.dataset.customName;
+                        cellData.customColor = cell.dataset.customColor;
+                        cellData.customAreaId = cell.dataset.customAreaId;
+                        cellData.textOrientation = cell.dataset.textOrientation || 'horizontal';
+                        cellData.showText = cell.innerHTML.includes('position: absolute') ? true : false;
+                    }
+
+                    // Save seat number
+                    if (type === 'seat' && cell.dataset.seatNumber) {
+                        cellData.seatNumber = cell.dataset.seatNumber;
+                    }
+
+                    // Save directional seat data
+                    if (type === 'directional' && cell.dataset.seatNumber) {
+                        cellData.seatNumber = cell.dataset.seatNumber;
+                        cellData.direction = cell.dataset.direction || 'up';
+                    }
+
+                    // Save table group data
+                    if (cell.classList.contains('table-group') && cell.dataset.tableId) {
+                        cellData.tableId = cell.dataset.tableId;
+                        cellData.isTable = true;
+                    }
+
+                    cells[`${row}-${col}`] = cellData;
                 }
             });
-            
+
+            const widthInput = document.getElementById(`grid-width-${hallIndex}`);
+            const heightInput = document.getElementById(`grid-height-${hallIndex}`);
+
             halls[hallIndex].layout = {
-                rows: 15,
-                cols: 20,
+                rows: heightInput ? parseInt(heightInput.value) : 15,
+                cols: widthInput ? parseInt(widthInput.value) : 20,
+                width: widthInput ? parseInt(widthInput.value) : 20,
+                height: heightInput ? parseInt(heightInput.value) : 15,
                 cells: cells
             };
-            
+
             NewcoData.set('halls', halls);
+            updateSeatCount(hallIndex);
+        }
+
+        function updateSeatCount(hallIndex) {
+            const halls = NewcoData.get('halls') || [];
+            if (!halls[hallIndex] || !halls[hallIndex].layout || !halls[hallIndex].layout.cells) {
+                return;
+            }
+
+            const cells = halls[hallIndex].layout.cells;
+            let seatCount = 0;
+
+            Object.values(cells).forEach(cellData => {
+                if (cellData.type === 'seat' || cellData.type === 'vip' || cellData.type === 'directional') {
+                    seatCount++;
+                }
+            });
+
+            const countElement = document.getElementById(`seat-count-value-${hallIndex}`);
+            if (countElement) {
+                countElement.textContent = seatCount;
+            }
+        }
+
+        // Custom Area Functions
+        function updateCustomAreaInfo(hallIndex) {
+            const count = document.getElementById(`custom-area-count-${hallIndex}`);
+            if (count && customAreaCells[hallIndex]) {
+                count.textContent = `${customAreaCells[hallIndex].size} cells selected`;
+            }
+            // Update preview when cells change
+            previewCustomAreaText(hallIndex);
+        }
+
+        function isAdjacentToCustomArea(row, col, hallIndex) {
+            // Check if the cell at (row, col) is adjacent to any cell in customAreaCells
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1] // up, down, left, right
+            ];
+
+            for (let key of customAreaCells[hallIndex]) {
+                const [r, c] = key.split('-').map(Number);
+                for (let [dr, dc] of directions) {
+                    if (r + dr === row && c + dc === col) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function confirmCustomArea(hallIndex) {
+            const nameInput = document.getElementById(`custom-area-name-${hallIndex}`);
+            const colorInput = document.getElementById(`custom-area-color-${hallIndex}`);
+
+            if (!nameInput.value.trim()) {
+                showModal({
+                    title: '⚠️ Name Required',
+                    message: 'Please enter a name for the custom area.',
+                    type: 'error'
+                });
+                return;
+            }
+
+            if (!customAreaCells[hallIndex] || customAreaCells[hallIndex].size === 0) {
+                showModal({
+                    title: '⚠️ No Cells Selected',
+                    message: 'Please select cells for the custom area.',
+                    type: 'error'
+                });
+                return;
+            }
+
+            const areaName = nameInput.value.trim();
+            const areaColor = colorInput.value;
+            const orientation = customAreaConfig[hallIndex]?.orientation || 'horizontal';
+
+            // Find bounds of the custom area (min/max row and col)
+            const cellArray = Array.from(customAreaCells[hallIndex]);
+            const coords = cellArray.map(key => {
+                const [r, c] = key.split('-').map(Number);
+                return { row: r, col: c, key };
+            });
+
+            const minRow = Math.min(...coords.map(c => c.row));
+            const maxRow = Math.max(...coords.map(c => c.row));
+            const minCol = Math.min(...coords.map(c => c.col));
+            const maxCol = Math.max(...coords.map(c => c.col));
+            const topLeftCell = `${minRow}-${minCol}`;
+
+            // Generate unique ID for this custom area
+            const areaId = `custom-area-${hallIndex}-${Date.now()}`;
+
+            // Apply custom area to all selected cells
+            customAreaCells[hallIndex].forEach(cellKey => {
+                const [r, c] = cellKey.split('-').map(Number);
+                const cell = document.querySelector(
+                    `[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`
+                );
+                if (cell) {
+                    cell.className = 'grid-cell custom';
+                    cell.style.backgroundColor = areaColor;
+                    cell.style.color = '#fff';
+                    cell.style.fontWeight = 'bold';
+                    cell.dataset.customName = areaName;
+                    cell.dataset.customColor = areaColor;
+                    cell.dataset.customAreaId = areaId;
+                    cell.classList.remove('selected');
+                    cell.textContent = '';
+
+                    // Remove borders between cells in same area, but keep outer border
+                    const isTopEdge = r === minRow;
+                    const isBottomEdge = r === maxRow;
+                    const isLeftEdge = c === minCol;
+                    const isRightEdge = c === maxCol;
+
+                    cell.style.borderTop = isTopEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderBottom = isBottomEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderLeft = isLeftEdge ? `3px solid ${areaColor}` : 'none';
+                    cell.style.borderRight = isRightEdge ? `3px solid ${areaColor}` : 'none';
+
+                    // Create text overlay only in top-left cell
+                    if (cellKey === topLeftCell) {
+                        const rowSpan = maxRow - minRow + 1;
+                        const colSpan = maxCol - minCol + 1;
+
+                        let transform = 'none';
+                        if (orientation === 'vertical-left') {
+                            transform = 'rotate(-90deg)';
+                        } else if (orientation === 'vertical-right') {
+                            transform = 'rotate(90deg)';
+                        }
+
+                        cell.style.position = 'relative';
+                        cell.innerHTML = `
+                            <div style="
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: ${colSpan * 100}%;
+                                height: ${rowSpan * 100}%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: ${Math.min(1.5, Math.max(0.75, colSpan * 0.4))}rem;
+                                padding: 0.5rem;
+                                pointer-events: none;
+                                z-index: 1;
+                                transform: ${transform};
+                            ">${areaName}</div>
+                        `;
+
+                        // Store orientation in dataset
+                        cell.dataset.textOrientation = orientation;
+                    }
+                }
+            });
+
+            // Clear and reset
+            customAreaCells[hallIndex].clear();
+            nameInput.value = '';
+            colorInput.value = '#ff6b6b';
+            document.getElementById(`custom-area-info-${hallIndex}`).style.display = 'none';
+
+            // Don't auto-select any tool
+            currentTool[hallIndex] = null;
+            // Remove active from all buttons
+            document.querySelectorAll('.layout-designer .tool-btn').forEach(btn => btn.classList.remove('active'));
+
+            saveHallLayout(hallIndex);
+            markUnsaved();
+        }
+
+        function cancelCustomArea(hallIndex) {
+            // Clear selection visuals
+            customAreaCells[hallIndex].forEach(cellKey => {
+                const [r, c] = cellKey.split('-');
+                const cell = document.querySelector(
+                    `[data-hall-index="${hallIndex}"][data-row="${r}"][data-col="${c}"]`
+                );
+                if (cell) {
+                    cell.classList.remove('selected');
+                    cell.style.backgroundColor = '';
+                    cell.innerHTML = '';
+                }
+            });
+
+            // Clear data
+            customAreaCells[hallIndex].clear();
+            document.getElementById(`custom-area-name-${hallIndex}`).value = '';
+            document.getElementById(`custom-area-color-${hallIndex}`).value = '#ff6b6b';
+            document.getElementById(`custom-area-info-${hallIndex}`).style.display = 'none';
+
+            // Don't auto-select any tool
+            currentTool[hallIndex] = null;
+            // Remove active from all buttons
+            document.querySelectorAll('.layout-designer .tool-btn').forEach(btn => btn.classList.remove('active'));
         }
 
         function updateHallInfo(hallIndex, field) {
@@ -5795,12 +6836,14 @@
         let selectedStaff = new Set();
         
         function loadStaff() {
-            const staff = NewcoData.get('staff') || [];
+            const allStaff = NewcoData.get('staff') || [];
+            // Filter out master admins from display
+            const staff = allStaff.filter(s => s.role !== 'master-admin');
             const org = NewcoData.get("organization") || {};
-            
+
             // Update statistics cards
             updateStaffStats(staff, org);
-            
+
             // Load staff table
             loadStaffTable(staff, org);
         }
@@ -6028,19 +7071,22 @@
             const searchTerm = searchInput.value.toLowerCase();
             const roleValue = roleFilter ? roleFilter.value : '';
             const statusValue = statusFilter ? statusFilter.value : '';
-            
-            const staff = NewcoData.get('staff') || [];
+
+            const allStaff = NewcoData.get('staff') || [];
             const org = NewcoData.get("organization") || {};
-            
-            const filtered = staff.filter(s => {
-                const matchesSearch = !searchTerm || 
+
+            const filtered = allStaff.filter(s => {
+                // Filter out master admins
+                if (s.role === 'master-admin') return false;
+
+                const matchesSearch = !searchTerm ||
                     s.name.toLowerCase().includes(searchTerm) ||
                     s.email.toLowerCase().includes(searchTerm) ||
                     (s.role && s.role.toLowerCase().includes(searchTerm));
-                
+
                 const matchesRole = !roleValue || s.role === roleValue;
                 const matchesStatus = !statusValue || (s.status || 'Active') === statusValue;
-                
+
                 return matchesSearch && matchesRole && matchesStatus;
             });
             
@@ -6054,8 +7100,10 @@
                 currentStaffSort.column = column;
                 currentStaffSort.direction = 'asc';
             }
-            
-            const staff = NewcoData.get('staff') || [];
+
+            const allStaff = NewcoData.get('staff') || [];
+            // Filter out master admins before sorting
+            const staff = allStaff.filter(s => s.role !== 'master-admin');
             const sorted = [...staff].sort((a, b) => {
                 let aVal = a[column] || '';
                 let bVal = b[column] || '';
@@ -6248,15 +7296,17 @@
                     name: document.getElementById('staffName').value,
                     email: document.getElementById('staffEmail').value,
                     role: document.getElementById('staffRole').value,
+                    status: 'Active',
+                    lastActive: null,
                     sendWelcomeEmail: document.getElementById('sendWelcomeEmail').checked,
-                    welcomeEmailTemplate: document.getElementById('sendWelcomeEmail').checked ? 
+                    welcomeEmailTemplate: document.getElementById('sendWelcomeEmail').checked ?
                         document.getElementById('welcomeEmailTemplate').value : null,
                     customWelcomeText: document.getElementById('welcomeEmailTemplate').value === 'custom' ?
                         document.getElementById('customWelcomeText').value : null,
                     includeCredentials: document.getElementById('includeCredentials').checked,
                     requirePasswordReset: document.getElementById('requirePasswordReset').checked
                 };
-                
+
                 staff.push(newMember);
                 NewcoData.set('staff', staff);
                 
@@ -7234,12 +8284,12 @@
             if (settings.customMessages && settings.customMessages.length > 0) {
                 document.getElementById('customAlertMessages').value = settings.customMessages.join('\n');
             }
-            
-            toggleFlashyAlerts();
+
+            toggleFlashyAlerts(false);
             toggleMessageSource();
         }
         
-        function toggleFlashyAlerts() {
+        function toggleFlashyAlerts(showToast = true) {
             const enabled = document.getElementById('enableFlashyAlerts').checked;
             document.getElementById('flashyAlertsSettings').style.display = enabled ? 'block' : 'none';
 
@@ -7255,10 +8305,12 @@
             currentSettings.enabled = enabled;
             NewcoData.set('marketingAlerts', currentSettings);
 
-            if (enabled) {
-                showSuccess('Flashy alerts enabled');
-            } else {
-                showSuccess('Flashy alerts disabled');
+            if (showToast) {
+                if (enabled) {
+                    showSuccess('Flashy alerts enabled');
+                } else {
+                    showSuccess('Flashy alerts disabled');
+                }
             }
         }
         
@@ -8731,6 +9783,25 @@
             });
         }
 
+        function showComingSoon(featureName) {
+            // Clear all active nav items since this isn't a real section
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            showModal({
+                title: `${featureName} - Coming Soon`,
+                message: `<div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🚀</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">Coming Soon!</h3>
+                    <p style="color: var(--gray); line-height: 1.6;">
+                        The ${featureName} feature is currently in development and will be available in a future update.
+                    </p>
+                </div>`,
+                confirmText: 'OK'
+            });
+        }
+
         // Page Builder Functions
         function loadPageBuilder() {
             // Initialize drag and drop
@@ -8964,12 +10035,16 @@
         
         function generateTemplatePreview() {
             const preview = document.getElementById('templatePreview');
+
+            // Template preview was removed - just return
+            if (!preview) return;
+
             const packages = NewcoData.get('packages') || [];
             const basicOfferings = NewcoData.get('basicOfferings') || [];
-            
+
             // Update Apply to Hall buttons
             updateApplyToHallButtons();
-            
+
             const templates = {
                 classic: {
                     colors: { primary: '#667eea', secondary: '#764ba2', accent: '#9575cd' },
@@ -9466,11 +10541,10 @@
                 
                 html += `
                         </div>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light);">
                             <div style="font-size: 0.875rem; color: var(--gray);">
                                 💡 Tip: Check the days you're open and set your operating hours
                             </div>
-                            <button class="btn btn-primary" onclick="saveSchedule('${hall.id}')">Save ${hall.name} Schedule</button>
                         </div>
                     </div>
                 `;
@@ -9605,7 +10679,6 @@
                             <option value="early">Early</option>
                             <option value="matinee">Matinee</option>
                             <option value="late">Late</option>
-                            <option value="special">Special</option>
                         </select>
                         <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray);">
                             This will create "${day.charAt(0).toUpperCase() + day.slice(1)} - Early" as a separate session
@@ -9650,6 +10723,15 @@
             };
 
             schedules[hallId][day].push(newSession);
+
+            // Sort sessions by suffix priority: Early, Matinee, Normal (no suffix), Late
+            const suffixOrder = { 'early': 1, 'matinee': 2, '': 3, 'late': 4 };
+            schedules[hallId][day].sort((a, b) => {
+                const orderA = suffixOrder[a.suffix || ''] || 3;
+                const orderB = suffixOrder[b.suffix || ''] || 3;
+                return orderA - orderB;
+            });
+
             NewcoData.set('schedules', schedules);
 
             showSuccess(`Created "${newSession.sessionName}" session`);
@@ -12128,6 +13210,11 @@
                     <td style="padding: 1rem; text-align: right; font-weight: 600; color: var(--primary);">
                         ${transaction.loyaltyEarned > 0 ? transaction.loyaltyEarned.toLocaleString() : '—'}
                     </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button onclick='viewTransactionDetails(${JSON.stringify(transaction).replace(/'/g, "&apos;")})' class="btn btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.875rem;">
+                            👁️ View Details
+                        </button>
+                    </td>
                 </tr>
             `).join('');
             
@@ -12157,6 +13244,294 @@
         function getPointsCurrencyName() {
             const rewardsConfig = NewcoData.get('rewardsConfig') || {};
             return rewardsConfig.basicSettings?.pointsCurrencyName || 'Loyalty Points';
+        }
+
+        // View Transaction Details Modal
+        window.viewTransactionDetails = function(transaction) {
+            const modal = document.createElement('div');
+            modal.id = 'transactionDetailsModal';
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+
+            const isCancelled = transaction.status === 'Cancelled' || transaction.cancelled;
+            const hasRefund = transaction.refundAmount > 0 || (transaction.refunded && transaction.amount > 0);
+            const refundAmount = transaction.refundAmount || (hasRefund ? transaction.amount : 0);
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 16px; padding: 2rem; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                    <button onclick="closeTransactionDetailsModal()" style="position: absolute; right: 1.5rem; top: 1.5rem; background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #999; line-height: 1;">&times;</button>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="margin: 0 0 0.5rem 0; color: #333; font-size: 1.75rem;">Transaction Details</h2>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="color: #666; font-size: 0.95rem;">Order #${transaction.id || 'N/A'}</span>
+                            <span style="
+                                padding: 0.25rem 0.75rem;
+                                border-radius: 20px;
+                                font-size: 0.875rem;
+                                font-weight: 600;
+                                ${isCancelled ? 'background: #fee; color: #c33;' :
+                                  transaction.status === 'Received' ? 'background: var(--success-light); color: var(--success-dark);' :
+                                  transaction.status === 'Purchased' ? 'background: var(--primary-light); color: var(--primary-dark);' :
+                                  transaction.status === 'Pending' ? 'background: var(--warning-light); color: var(--warning-dark);' :
+                                  'background: var(--gray-lighter); color: var(--gray-dark);'}
+                            ">
+                                ${isCancelled ? '❌ Cancelled' : transaction.status || 'Unknown'}
+                            </span>
+                            ${transaction.isTestTransaction ? '<span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">TEST</span>' : ''}
+                        </div>
+                    </div>
+
+                    <!-- Customer & Transaction Info -->
+                    <div style="background: #f8f9fa; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Customer</div>
+                                <div style="font-weight: 600; font-size: 1.05rem;">${transaction.customerName || 'Anonymous'}</div>
+                                <div style="font-size: 0.875rem; color: #666; text-transform: capitalize;">${transaction.customerType || 'Guest'}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Date & Time</div>
+                                <div style="font-weight: 600; font-size: 1.05rem;">${new Date(transaction.date).toLocaleDateString()}</div>
+                                <div style="font-size: 0.875rem; color: #666;">${new Date(transaction.date).toLocaleTimeString()}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Source</div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: ${getSourceColor(transaction.source)};"></span>
+                                    <span style="font-weight: 600; text-transform: capitalize; font-size: 1.05rem;">${transaction.source}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Salesperson</div>
+                                <div style="font-weight: 600; font-size: 1.05rem;">${transaction.salesperson || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Breakdown -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; color: #333;">Items</h3>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                            ${(transaction.items || []).map((item, idx) => `
+                                <div style="padding: 1rem; ${idx > 0 ? 'border-top: 1px solid #e5e7eb;' : ''} display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${item.name || 'Item'}</div>
+                                        <div style="font-size: 0.875rem; color: #666;">Qty: ${item.quantity || 1} × $${(item.price || 0).toFixed(2)}</div>
+                                    </div>
+                                    <div style="font-weight: 600; font-size: 1.1rem;">$${((item.price || 0) * (item.quantity || 1)).toFixed(2)}</div>
+                                </div>
+                            `).join('')}
+                            ${!transaction.items || transaction.items.length === 0 ? '<div style="padding: 1rem; text-align: center; color: #999;">No items recorded</div>' : ''}
+                        </div>
+                    </div>
+
+                    <!-- Seats (if applicable) -->
+                    ${transaction.selectedSeats && Object.keys(transaction.selectedSeats).length > 0 ? `
+                        <div style="background: #f0f9ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                            <div style="font-size: 0.75rem; color: #1e40af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; font-weight: 600;">Reserved Seats</div>
+                            <div style="font-size: 0.95rem; color: #1e3a8a;">${Object.values(transaction.selectedSeats).flat().join(', ')}</div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Payment Breakdown -->
+                    <div style="background: #f8f9fa; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; color: #333;">Payment Breakdown</h3>
+                        <div style="space-y: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                                <span style="color: #666;">Subtotal (before tax)</span>
+                                <span style="font-weight: 600;">$${(transaction.subtotal || transaction.amount || 0).toFixed(2)}</span>
+                            </div>
+                            ${transaction.tax > 0 || transaction.taxAmount > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                                    <span style="color: #666;">Tax ${transaction.taxRate ? `(${transaction.taxRate}%)` : ''}</span>
+                                    <span style="font-weight: 600;">$${(transaction.tax || transaction.taxAmount || 0).toFixed(2)}</span>
+                                </div>
+                            ` : ''}
+                            ${transaction.tip > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                                    <span style="color: #666;">Tip</span>
+                                    <span style="font-weight: 600;">$${transaction.tip.toFixed(2)}</span>
+                                </div>
+                            ` : ''}
+                            ${transaction.discount > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: #16a34a;">
+                                    <span>Discount</span>
+                                    <span style="font-weight: 600;">-$${transaction.discount.toFixed(2)}</span>
+                                </div>
+                            ` : ''}
+                            ${transaction.loyaltyPointsUsed > 0 || transaction.loyaltyDiscount > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: #7c3aed;">
+                                    <span>${getPointsCurrencyName()} Redeemed</span>
+                                    <span style="font-weight: 600;">-${transaction.loyaltyPointsUsed || 0} pts (-$${(transaction.loyaltyDiscount || transaction.loyaltyPointsValue || 0).toFixed(2)})</span>
+                                </div>
+                            ` : ''}
+                            <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-top: 2px solid #ddd; margin-top: 0.5rem;">
+                                <span style="font-weight: 700; font-size: 1.1rem;">Total Paid</span>
+                                <span style="font-weight: 700; font-size: 1.3rem; color: #2563eb;">$${(transaction.finalTotal || transaction.total || transaction.amount || 0).toFixed(2)}</span>
+                            </div>
+                            ${transaction.processingFee > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: #666; font-size: 0.875rem; border-top: 1px solid #e5e7eb; margin-top: 0.5rem;">
+                                    <span>Processing Fee (${transaction.processingFeeRate || '2.9%'})</span>
+                                    <span>$${transaction.processingFee.toFixed(2)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; font-weight: 600;">
+                                    <span>Net Amount</span>
+                                    <span style="color: #16a34a;">$${((transaction.finalTotal || transaction.total || transaction.amount || 0) - transaction.processingFee).toFixed(2)}</span>
+                                </div>
+                            ` : ''}
+                            ${transaction.loyaltyEarned > 0 || transaction.loyaltyPointsEarned > 0 ? `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; background: #fef3c7; margin: 0.5rem -1rem 0; padding: 0.75rem 1rem; border-radius: 6px;">
+                                    <span style="color: #92400e; font-weight: 600;">${getPointsCurrencyName()} Earned</span>
+                                    <span style="font-weight: 700; color: #92400e;">+${transaction.loyaltyEarned || transaction.loyaltyPointsEarned || 0} pts</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Refund Info (if applicable) -->
+                    ${hasRefund ? `
+                        <div style="background: #fee; border: 2px solid #fcc; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <span style="font-size: 1.25rem;">💸</span>
+                                <h3 style="margin: 0; font-size: 1.1rem; color: #c33;">Refund Information</h3>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">Refund Amount</div>
+                                    <div style="font-weight: 700; font-size: 1.3rem; color: #c33;">$${refundAmount.toFixed(2)}</div>
+                                </div>
+                                ${transaction.refundDate ? `
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">Refunded On</div>
+                                        <div style="font-weight: 600; color: #666;">${new Date(transaction.refundDate).toLocaleDateString()}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${transaction.refundReason ? `
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #fcc;">
+                                    <div style="font-size: 0.75rem; color: #999; text-transform: uppercase; margin-bottom: 0.25rem;">Reason</div>
+                                    <div style="color: #666;">${transaction.refundReason}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+
+                    <!-- Payment & Card Details -->
+                    <div style="background: #f8f9fa; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; color: #333;">Payment Details</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            ${transaction.paymentMethod ? `
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Payment Method</div>
+                                    <div style="font-weight: 600; text-transform: capitalize;">${transaction.paymentMethod}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.cardLast4 || transaction.card_last4 ? `
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Card Number</div>
+                                    <div style="font-weight: 600;">•••• •••• •••• ${transaction.cardLast4 || transaction.card_last4}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.cardBrand || transaction.card_brand ? `
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Card Brand</div>
+                                    <div style="font-weight: 600; text-transform: capitalize;">${transaction.cardBrand || transaction.card_brand}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.authorizationCode || transaction.auth_code ? `
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Authorization Code</div>
+                                    <div style="font-weight: 600; font-family: monospace;">${transaction.authorizationCode || transaction.auth_code}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Transaction Metadata -->
+                    <div style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem;">
+                        <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; color: #333;">Transaction Information</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.875rem;">
+                            <div>
+                                <div style="color: #666; margin-bottom: 0.25rem;">Transaction ID</div>
+                                <div style="font-weight: 600; font-family: monospace; font-size: 0.8rem;">${transaction.id || 'N/A'}</div>
+                            </div>
+                            ${transaction.invoiceNumber || transaction.invoice_number ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Invoice Number</div>
+                                    <div style="font-weight: 600;">${transaction.invoiceNumber || transaction.invoice_number}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.timestamp || transaction.processedAt ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Processed At</div>
+                                    <div style="font-weight: 600;">${new Date(transaction.timestamp || transaction.processedAt).toLocaleString()}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.sessionId ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Session ID</div>
+                                    <div style="font-weight: 600; font-family: monospace; font-size: 0.8rem;">${transaction.sessionId}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.sessionName ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Session Name</div>
+                                    <div style="font-weight: 600;">${transaction.sessionName}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.sessionDate ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Session Date</div>
+                                    <div style="font-weight: 600;">${transaction.sessionDate}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.customerEmail || transaction.memberEmail ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Customer Email</div>
+                                    <div style="font-weight: 600;">${transaction.customerEmail || transaction.memberEmail}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.customerId || transaction.memberId ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Customer ID</div>
+                                    <div style="font-weight: 600; font-family: monospace; font-size: 0.8rem;">${transaction.customerId || transaction.memberId}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.stripeChargeId || transaction.stripe_charge_id ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Stripe Charge ID</div>
+                                    <div style="font-weight: 600; font-family: monospace; font-size: 0.75rem;">${transaction.stripeChargeId || transaction.stripe_charge_id}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.stripePaymentMethodId ? `
+                                <div>
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Stripe Payment Method</div>
+                                    <div style="font-weight: 600; font-family: monospace; font-size: 0.75rem;">${transaction.stripePaymentMethodId}</div>
+                                </div>
+                            ` : ''}
+                            ${transaction.receiptUrl || transaction.receipt_url ? `
+                                <div style="grid-column: 1 / -1;">
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Receipt URL</div>
+                                    <a href="${transaction.receiptUrl || transaction.receipt_url}" target="_blank" style="color: #2563eb; text-decoration: underline; word-break: break-all; font-size: 0.8rem;">${transaction.receiptUrl || transaction.receipt_url}</a>
+                                </div>
+                            ` : ''}
+                            ${transaction.notes ? `
+                                <div style="grid-column: 1 / -1;">
+                                    <div style="color: #666; margin-bottom: 0.25rem;">Notes</div>
+                                    <div style="font-weight: 500; padding: 0.75rem; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb;">${transaction.notes}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        window.closeTransactionDetailsModal = function() {
+            const modal = document.getElementById('transactionDetailsModal');
+            if (modal) modal.remove();
         }
         
         function updateTransactionAnalytics(transactions) {
@@ -12424,17 +13799,6 @@
             showNotification('Link copied to clipboard!', 'success');
         }
         
-        function toggleMergeSettings() {
-            const merged = document.getElementById('mergeRedemptionPurchasing').checked;
-            // Update links based on merge status
-            if (merged) {
-                document.getElementById('redemptionAppLink').value = 'file:///C:/Users/aring/NewCo/newco-redemption-v2.2.html';
-                document.getElementById('purchasingAppLink').value = 'file:///C:/Users/aring/NewCo/newco-redemption-v2.2.html';
-            } else {
-                document.getElementById('redemptionAppLink').value = 'file:///C:/Users/aring/NewCo/newco-redemption-v2.2.html?mode=redemption';
-                document.getElementById('purchasingAppLink').value = 'file:///C:/Users/aring/NewCo/newco-redemption-v2.2.html?mode=purchasing';
-            }
-        }
         
         function openFloorRewardsApp() {
             // Open floor rewards app in new tab
@@ -12474,11 +13838,9 @@
             if (purchasingSettings) {
                 document.getElementById('enablePurchasing').checked = purchasingSettings.enabled || false;
                 document.getElementById('purchasingPermissionLevel').value = purchasingSettings.permissionLevel || 'Cashier';
-                document.getElementById('mergeRedemptionPurchasing').checked = purchasingSettings.mergeWithRedemption || false;
                 document.getElementById('printReceipts').checked = purchasingSettings.printReceipts !== false;
                 document.getElementById('emailReceipts').checked = purchasingSettings.emailReceipts || false;
                 togglePurchasingSettings();
-                toggleMergeSettings();
             } else {
                 // Check additionalApps from wizard
                 const additionalApps = NewcoData.get('additionalApps');
@@ -14750,10 +16112,27 @@
             let isFirstLogin = false;
             let superAdminEmail = null;
 
-            // Check Super Admin from Supabase first
+            // Check Master Portal admin credentials first (NewCo employees)
+            const masterPortalUsers = NewcoData.get('masterPortalUsers') || [];
+            const masterUser = masterPortalUsers.find(u => u.email && u.email.toLowerCase() === email);
+
+            if (masterUser) {
+                // Check password for master portal user
+                const masterAdminPasswords = NewcoData.get('masterAdminPasswords') || {};
+                if (masterAdminPasswords[email] && password === masterAdminPasswords[email]) {
+                    isValidPassword = true;
+                    isSuperAdmin = true; // Grant super admin access to all client portals
+                } else if (masterUser.password && password === masterUser.password) {
+                    // Check if password is stored in user object
+                    isValidPassword = true;
+                    isSuperAdmin = true;
+                }
+            }
+
+            // Check Super Admin from Supabase
             try {
                 const accountResponse = await fetch(
-                    `${NewcoData.supabaseUrl}/rest/v1/accounts?customer_id=eq.${customerId}&select=email,organization_name`,
+                    `${NewcoData.supabaseUrl}/rest/v1/accounts?customer_id=eq.${customerId}&select=email,organization_name,password_hash`,
                     {
                         headers: {
                             'apikey': NewcoData.supabaseKey,
@@ -14765,13 +16144,21 @@
 
                 if (accounts && accounts.length > 0) {
                     superAdminEmail = accounts[0].email.toLowerCase();
+                    const passwordHash = accounts[0].password_hash;
 
                     // Check if this is the super admin logging in
                     if (email === superAdminEmail) {
                         isSuperAdmin = true;
 
-                        // Check if super admin has set a password
-                        if (adminUsers[email]) {
+                        // Check password from Supabase first (set during account creation)
+                        if (passwordHash) {
+                            const enteredPasswordHash = btoa(password);
+                            if (enteredPasswordHash === passwordHash) {
+                                isValidPassword = true;
+                            }
+                        }
+                        // Check if super admin has set a password in localStorage
+                        else if (adminUsers[email]) {
                             // Use their custom password
                             if (password === adminUsers[email]) {
                                 isValidPassword = true;
@@ -14843,7 +16230,7 @@
                 } else {
                     // Hide login, show admin panel
                     document.getElementById('adminLoginScreen').style.display = 'none';
-                    document.getElementById('adminMainPanel').style.display = 'block';
+                    document.getElementById('adminMainPanel').style.display = 'flex';
                 }
 
                 return false;
@@ -14987,7 +16374,10 @@
             if (isAuthenticated === 'true') {
                 // Already logged in
                 document.getElementById('adminLoginScreen').style.display = 'none';
-                document.getElementById('adminMainPanel').style.display = 'block';
+                document.getElementById('adminMainPanel').style.display = 'flex';
+
+                // Apply branding colors after showing main panel
+                setTimeout(() => applyBrandingColors(), 100);
             } else {
                 // Check if any users have passwords set
                 const adminUsers = NewcoData.get('adminUsers') || {};

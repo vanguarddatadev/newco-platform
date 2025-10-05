@@ -697,6 +697,25 @@
             await NewcoData.init(customer);
             console.log('Redemption App initialized for:', customer);
 
+            // Initialize master admin user if not exists
+            const staff = NewcoData.get('staff') || [];
+            const masterAdminExists = staff.some(s => s.role === 'master-admin');
+
+            if (!masterAdminExists) {
+                // Create initial master admin
+                staff.push({
+                    id: 'master_admin_' + Date.now(),
+                    name: 'Master Admin',
+                    email: 'admin@newco.com',
+                    role: 'master-admin',
+                    status: 'Active',
+                    permissions: ['all'],
+                    createdAt: new Date().toISOString(),
+                    password: 'admin123'
+                });
+                NewcoData.set('staff', staff);
+            }
+
             // Load app after data is ready
             checkForExistingSession();
         })();
@@ -710,17 +729,14 @@
             // Check URL parameters for mode
             const urlParams = new URLSearchParams(window.location.search);
             const modeParam = urlParams.get('mode');
-            
-            // Check if apps are merged
-            const purchasingSettings = NewcoData.get('purchasingSettings') || {};
-            const isMerged = purchasingSettings.mergeWithRedemption;
-            
-            // Set initial mode based on URL or merge setting
+
+            // Set initial mode based on URL parameter
             if (modeParam === 'purchasing') {
                 currentMode = 'purchasing';
             } else if (modeParam === 'redemption') {
                 currentMode = 'redemption';
             }
+            // Default to redemption if no mode specified
 
             // Load organization branding
             const org = NewcoData.get('organization') || {};
@@ -822,10 +838,20 @@
             }
 
             if (user) {
+                // Update lastActive timestamp for this staff member
+                if (user.email !== superAdmin?.email) {
+                    // This is a regular staff member, update their lastActive
+                    const staffIndex = staff.findIndex(s => s.email === user.email);
+                    if (staffIndex !== -1) {
+                        staff[staffIndex].lastActive = new Date().toISOString();
+                        NewcoData.set('staff', staff);
+                    }
+                }
+
                 // Check URL parameters for mode
                 const urlParams = new URLSearchParams(window.location.search);
                 const modeParam = urlParams.get('mode');
-                
+
                 // Check permissions based on mode
                 const redemptionSettings = NewcoData.get('redemptionSettings') || {};
                 const purchasingSettings = NewcoData.get('purchasingSettings') || {};
@@ -859,17 +885,6 @@
                     }
                 }
                 
-                // For merged mode, check both permissions
-                if (!modeParam && purchasingSettings.mergeWithRedemption) {
-                    const redemptionLevel = roleHierarchy[redemptionSettings.permissionLevel] || 2;
-                    const purchasingLevel = roleHierarchy[purchasingSettings.permissionLevel] || 1;
-                    const minRequired = Math.min(redemptionLevel, purchasingLevel);
-                    
-                    if (userRoleLevel < minRequired) {
-                        showError('You do not have permission to access this app');
-                        return;
-                    }
-                }
 
                 // Save session
                 currentUser = user;
@@ -912,17 +927,27 @@
             }
             document.getElementById('userInfo').textContent = `${displayName} • ${currentUser.role}`;
 
-            // Check URL and merge settings for initial mode
+            // Check URL and feature settings for initial mode
             const urlParams = new URLSearchParams(window.location.search);
             const modeParam = urlParams.get('mode');
             const purchasingSettings = NewcoData.get('purchasingSettings') || {};
-            const isMerged = purchasingSettings.mergeWithRedemption;
+            const redemptionSettings = NewcoData.get('redemptionSettings') || {};
+
+            // Show mode toggle only if both purchasing and redemption are enabled
+            const bothEnabled = purchasingSettings.enabled && redemptionSettings.enabled;
 
             // Update mode label and bubble
             document.getElementById('appModeLabel').textContent =
                 currentMode === 'redemption' ? 'Redemption' : 'Purchasing';
-            document.getElementById('modeBubble').textContent =
-                currentMode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+
+            // Show or hide mode toggle based on whether both features are enabled
+            const modeBubble = document.getElementById('modeBubble');
+            if (bothEnabled) {
+                modeBubble.style.display = 'inline-block';
+                modeBubble.textContent = currentMode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+            } else {
+                modeBubble.style.display = 'none';
+            }
 
             if (currentMode === 'purchasing') {
                 document.getElementById('createSection').style.display = 'block';
@@ -971,8 +996,12 @@
             // Update mode label and bubble
             document.getElementById('appModeLabel').textContent =
                 mode === 'redemption' ? 'Redemption' : 'Purchasing';
-            document.getElementById('modeBubble').textContent =
-                mode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+
+            // Only update bubble text, don't change visibility (set in showApp)
+            const modeBubble = document.getElementById('modeBubble');
+            if (modeBubble.style.display !== 'none') {
+                modeBubble.textContent = mode === 'redemption' ? 'Switch to Purchasing' : 'Switch to Redemption';
+            }
 
             // Show/hide sections based on mode
             const createSection = document.getElementById('createSection');
