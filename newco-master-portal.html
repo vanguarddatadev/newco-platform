@@ -897,9 +897,30 @@
         // Login
         async function login(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.toLowerCase();
             const password = document.getElementById('loginPassword').value;
 
+            let user = null;
+
+            // First check localStorage for master admins
+            if (typeof NewcoData !== 'undefined') {
+                const staff = NewcoData.get('staff') || [];
+                const adminUsers = NewcoData.get('adminUsers') || {};
+                const masterAdmin = staff.find(s => s.email && s.email.toLowerCase() === email && s.role === 'master-admin');
+
+                if (masterAdmin) {
+                    // Check password
+                    const storedPassword = adminUsers[email] || masterAdmin.password;
+                    if (storedPassword === password) {
+                        user = masterAdmin;
+                        currentUser = user;
+                        showDashboard();
+                        return;
+                    }
+                }
+            }
+
+            // If not found in localStorage, check Supabase
             try {
                 const response = await fetch(
                     `${SUPABASE_URL}/rest/v1/newco_staff?email=eq.${encodeURIComponent(email)}&select=*`,
@@ -914,7 +935,7 @@
                 const staff = await response.json();
 
                 if (staff && staff.length > 0) {
-                    const user = staff[0];
+                    user = staff[0];
                     // Verify password (simple base64 for demo)
                     const passwordHash = btoa(password);
                     if (user.password_hash !== passwordHash) {
