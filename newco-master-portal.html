@@ -470,6 +470,97 @@
             background: var(--primary);
             color: white;
         }
+
+        /* Art Library Grid */
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .art-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .art-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .art-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: #f8f9fa;
+            padding: 1rem;
+        }
+
+        .art-card-info {
+            padding: 1rem;
+        }
+
+        .art-card-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .art-card-meta {
+            font-size: 0.75rem;
+            color: var(--gray);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .art-card-category {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--light-gray);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .art-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .art-card-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .art-card-delete {
+            background: #fee;
+            color: var(--danger);
+        }
+
+        .art-card-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -515,6 +606,7 @@
                 <button class="tab active" onclick="switchTab('clients')">Clients</button>
                 <button class="tab" onclick="switchTab('demos')">Demo Requests</button>
                 <button class="tab" onclick="switchTab('users')">Client Users</button>
+                <button class="tab" onclick="switchTab('artLibrary')">Art Library</button>
             </div>
 
             <!-- Clients Tab -->
@@ -579,6 +671,9 @@
                                 <th>Email</th>
                                 <th>Status</th>
                                 <th>Tier</th>
+                                <th>Staff</th>
+                                <th>Members</th>
+                                <th>Revenue</th>
                                 <th>Created</th>
                                 <th>Last Login</th>
                                 <th>Actions</th>
@@ -586,7 +681,7 @@
                         </thead>
                         <tbody id="clientsTableBody">
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 2rem;">Loading...</td>
+                                <td colspan="11" style="text-align: center; padding: 2rem;">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -647,12 +742,12 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Permission</label>
-                        <select id="filterUserPermission" class="form-select" onchange="filterUsers()">
+                        <label>Role</label>
+                        <select id="filterUserRole" class="form-select" onchange="filterUsers()">
                             <option value="">All</option>
                             <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
                             <option value="staff">Staff</option>
-                            <option value="read-only">Read-Only</option>
                         </select>
                     </div>
                 </div>
@@ -664,7 +759,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Client</th>
-                                <th>Permission</th>
+                                <th>Role</th>
                                 <th>Status</th>
                                 <th>Created By</th>
                                 <th>Actions</th>
@@ -676,6 +771,55 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Art Library Tab -->
+            <div id="artLibraryTab" class="tab-content">
+                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">NewCo Global Art Library</h2>
+                        <p style="color: var(--gray); font-size: 0.875rem;">Manage art assets shared across all client instances</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showUploadArtModal()">📤 Upload Art</button>
+                </div>
+
+                <div class="filters" style="margin-bottom: 1.5rem;">
+                    <div class="filter-group">
+                        <label>Category</label>
+                        <select id="filterArtCategory" class="form-select" onchange="filterArtLibrary()">
+                            <option value="">All Categories</option>
+                            <option value="logo">Logo</option>
+                            <option value="banner">Banner</option>
+                            <option value="package">Package Image</option>
+                            <option value="social">Social Media</option>
+                            <option value="marketing">Marketing Popup</option>
+                            <option value="background">Background</option>
+                            <option value="icon">Icon</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>File Type</label>
+                        <select id="filterArtType" class="form-select" onchange="filterArtLibrary()">
+                            <option value="">All Types</option>
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPG</option>
+                            <option value="svg">SVG</option>
+                            <option value="gif">GIF</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="searchArt" class="form-input" placeholder="Search by name or description..." oninput="filterArtLibrary()">
+                    </div>
+                </div>
+
+                <div id="artLibraryGrid" class="art-grid">
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
+                        Loading art library...
+                    </div>
                 </div>
             </div>
         </div>
@@ -780,14 +924,39 @@
                     <input type="password" id="newUserPassword" class="form-input" style="width: 100%;" required minlength="6">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Permission Level *</label>
-                    <select id="newUserPermission" class="form-select" style="width: 100%;" required>
+                    <label class="form-label">Role *</label>
+                    <select id="newUserRole" class="form-select" style="width: 100%;" required>
                         <option value="staff">Staff</option>
+                        <option value="manager">Manager</option>
                         <option value="admin">Admin</option>
-                        <option value="read-only">Read-Only</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Add User</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Add User to Client Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reset User Password</h2>
+                <button class="modal-close" onclick="closeModal('resetPasswordModal')">&times;</button>
+            </div>
+            <form onsubmit="resetUserPassword(event)">
+                <input type="hidden" id="resetPwUserId">
+                <input type="hidden" id="resetPwCustomerId">
+                <div class="form-group">
+                    <label class="form-label">User Email</label>
+                    <div style="padding: 0.75rem; background: var(--light-gray); border-radius: 8px; font-weight: 600;">
+                        <span id="resetPwEmail"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password *</label>
+                    <input type="text" id="newPassword" class="form-input" style="width: 100%;" required minlength="6" placeholder="Enter new password (min 6 characters)">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Reset Password</button>
             </form>
         </div>
     </div>
@@ -880,6 +1049,54 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('automationModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Upload & Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Art Modal -->
+    <div id="uploadArtModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload Art to Global Library</h2>
+                <button class="modal-close" onclick="closeModal('uploadArtModal')">&times;</button>
+            </div>
+            <form onsubmit="uploadArt(event)">
+                <div class="form-group">
+                    <label class="form-label">Art Files (5MB max per file)</label>
+                    <input type="file" id="artFiles" class="form-input" accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/gif,image/webp" multiple required style="width: 100%;">
+                    <small style="color: var(--gray); margin-top: 0.5rem; display: block;">
+                        Accepted formats: PNG, JPG, SVG, GIF, WebP. You can select multiple files.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Name (required for single file)</label>
+                    <input type="text" id="artName" class="form-input" style="width: 100%;" placeholder="e.g., Logo - Primary">
+                    <small style="color: var(--gray); margin-top: 0.5rem; display: block;">
+                        For multiple files, filenames will be used as names.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description (optional)</label>
+                    <textarea id="artDescription" class="form-input" rows="2" style="width: 100%;" placeholder="Brief description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="artCategory" class="form-select" required style="width: 100%;">
+                        <option value="">Select Category</option>
+                        <option value="logo">Logo</option>
+                        <option value="banner">Banner</option>
+                        <option value="package">Package Image</option>
+                        <option value="social">Social Media</option>
+                        <option value="marketing">Marketing Popup</option>
+                        <option value="background">Background</option>
+                        <option value="icon">Icon</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('uploadArtModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </form>
         </div>
@@ -981,9 +1198,11 @@
             document.getElementById('userRole').textContent = currentUser.role;
             document.getElementById('userRole').className = `user-badge ${currentUser.role}`;
 
-            loadClients();
+            // Load clients first, then users (users need client list for dropdowns)
+            loadClients().then(() => {
+                loadUsers();
+            });
             loadDemos();
-            loadUsers();
         }
 
         // Tab switching
@@ -993,6 +1212,11 @@
 
             event.target.classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Load art library when switching to that tab
+            if (tabName === 'artLibrary') {
+                loadArtLibrary();
+            }
         }
 
         // Load Clients
@@ -1029,21 +1253,75 @@
             document.getElementById('inactiveClients').textContent = activeOnly.filter(c => c.subscription_status === 'inactive').length;
         }
 
-        function renderClients(clients) {
+        async function renderClients(clients) {
             const tbody = document.getElementById('clientsTableBody');
 
             if (clients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No clients found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 2rem;">No clients found</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = clients.map(client => `
+            // Show loading state
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 2rem;">Loading client data...</td></tr>';
+
+            // Fetch stats for all clients
+            const clientsWithStats = await Promise.all(clients.map(async (client) => {
+                try {
+                    // Fetch staff data
+                    const staffResponse = await fetch(
+                        `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${client.customer_id}&key=eq.staff&select=value`,
+                        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }}
+                    );
+                    const staffData = await staffResponse.json();
+                    const staffCount = staffData[0]?.value ? (Array.isArray(staffData[0].value) ? staffData[0].value.length : 0) : 0;
+
+                    // Fetch members data from members table
+                    const membersResponse = await fetch(
+                        `${SUPABASE_URL}/rest/v1/members?customer_id=eq.${client.customer_id}&select=id`,
+                        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }}
+                    );
+                    const membersData = await membersResponse.json();
+                    const memberCount = Array.isArray(membersData) ? membersData.length : 0;
+
+                    // Fetch transactions data for revenue
+                    const transResponse = await fetch(
+                        `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${client.customer_id}&key=eq.transactions&select=value`,
+                        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }}
+                    );
+                    const transData = await transResponse.json();
+                    let totalRevenue = 0;
+                    if (transData[0]?.value && Array.isArray(transData[0].value)) {
+                        const transactions = transData[0].value;
+                        totalRevenue = transactions.reduce((sum, t) => sum + (t.finalTotal || t.total || t.amount || 0), 0);
+                    }
+
+                    return {
+                        ...client,
+                        staffCount,
+                        memberCount,
+                        totalRevenue
+                    };
+                } catch (err) {
+                    console.error(`Error fetching stats for ${client.organization_name}:`, err);
+                    return {
+                        ...client,
+                        staffCount: 0,
+                        memberCount: 0,
+                        totalRevenue: 0
+                    };
+                }
+            }));
+
+            tbody.innerHTML = clientsWithStats.map(client => `
                 <tr>
                     <td><strong>${client.organization_name}</strong></td>
                     <td>${client.contact_name}</td>
                     <td>${client.email}</td>
                     <td><span class="status-badge ${client.subscription_status}">${client.subscription_status}</span></td>
                     <td><span class="status-badge ${client.subscription_tier}">${client.subscription_tier}</span></td>
+                    <td><strong>${client.staffCount}</strong></td>
+                    <td><strong>${client.memberCount}</strong></td>
+                    <td><strong>$${client.totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                     <td>${new Date(client.created_at).toLocaleDateString()}</td>
                     <td>${client.last_login ? new Date(client.last_login).toLocaleDateString() : 'Never'}</td>
                     <td>
@@ -1434,17 +1712,46 @@
         // Load Users
         async function loadUsers() {
             try {
-                const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/client_users?select=*&order=created_at.desc`,
-                    {
-                        headers: {
-                            'apikey': SUPABASE_ANON_KEY,
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                        }
-                    }
-                );
+                console.log('Loading users from', allClients.length, 'clients');
 
-                allUsers = await response.json();
+                // Load staff from all clients
+                const usersPromises = allClients.map(async (client) => {
+                    try {
+                        console.log(`Fetching staff for ${client.organization_name} (${client.customer_id})`);
+                        const response = await fetch(
+                            `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${client.customer_id}&key=eq.staff&select=value`,
+                            {
+                                headers: {
+                                    'apikey': SUPABASE_ANON_KEY,
+                                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                }
+                            }
+                        );
+                        const staffData = await response.json();
+                        console.log(`Staff data for ${client.organization_name}:`, staffData);
+
+                        if (staffData && staffData.length > 0 && staffData[0]?.value) {
+                            const staff = Array.isArray(staffData[0].value) ? staffData[0].value : [];
+                            console.log(`Found ${staff.length} staff members for ${client.organization_name}`);
+                            // Add customer_id and organization name to each staff member
+                            return staff.map(s => ({
+                                ...s,
+                                customer_id: client.customer_id,
+                                organization_name: client.organization_name
+                            }));
+                        }
+                        console.log(`No staff found for ${client.organization_name}`);
+                        return [];
+                    } catch (err) {
+                        console.error(`Error loading staff for ${client.organization_name}:`, err);
+                        return [];
+                    }
+                });
+
+                const usersArrays = await Promise.all(usersPromises);
+                allUsers = usersArrays.flat();
+                console.log('Total users loaded:', allUsers.length, allUsers);
+
                 renderUsers(allUsers);
                 populateClientDropdowns();
             } catch (error) {
@@ -1465,22 +1772,32 @@
             const tbody = document.getElementById('usersTableBody');
 
             if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No users found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No users found</td></tr>';
                 return;
             }
 
             tbody.innerHTML = users.map(user => {
+                // Check if user is super-admin (email matches organization email)
                 const client = allClients.find(c => c.customer_id === user.customer_id);
+                const isSuperAdmin = client && user.email && client.email &&
+                                     user.email.toLowerCase() === client.email.toLowerCase();
+
+                const roleDisplay = isSuperAdmin ? 'super-admin' : (user.role || 'staff');
+
                 return `
                     <tr>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>${client ? client.organization_name : user.customer_id}</td>
-                        <td><span class="permission-badge ${user.permission_level}">${user.permission_level}</span></td>
-                        <td><span class="status-badge ${user.status}">${user.status}</span></td>
-                        <td>${user.created_by || '-'}</td>
+                        <td>${user.name || '-'}</td>
+                        <td>${user.email || '-'}</td>
+                        <td>${user.organization_name || user.customer_id}</td>
+                        <td><span class="permission-badge ${roleDisplay}">${roleDisplay}</span></td>
+                        <td><span class="status-badge ${user.status || 'active'}">${user.status || 'active'}</span></td>
+                        <td>${user.createdBy || '-'}</td>
                         <td>
-                            <button class="btn btn-small btn-danger" onclick="deleteUser('${user.id}')">Delete</button>
+                            <button class="btn btn-small" onclick="showResetPasswordModal('${user.id}', '${user.customer_id}', '${user.email}')" style="background: #f59e0b; color: white; margin-right: 0.5rem;">Reset PW</button>
+                            ${isSuperAdmin
+                                ? '<span style="color: var(--gray); font-size: 0.875rem; font-style: italic;">Super Admin (Cannot Delete)</span>'
+                                : `<button class="btn btn-small btn-danger" onclick="deleteUser('${user.id}', '${user.customer_id}', '${user.email}')">Delete</button>`
+                            }
                         </td>
                     </tr>
                 `;
@@ -1489,15 +1806,15 @@
 
         function filterUsers() {
             const client = document.getElementById('filterUserClient').value;
-            const permission = document.getElementById('filterUserPermission').value;
+            const role = document.getElementById('filterUserRole').value;
 
             let filtered = allUsers;
 
             if (client) {
                 filtered = filtered.filter(u => u.customer_id === client);
             }
-            if (permission) {
-                filtered = filtered.filter(u => u.permission_level === permission);
+            if (role) {
+                filtered = filtered.filter(u => u.role === role);
             }
 
             renderUsers(filtered);
@@ -1510,62 +1827,242 @@
         async function addClientUser(e) {
             e.preventDefault();
 
-            const userData = {
-                customer_id: document.getElementById('newUserClient').value,
-                name: document.getElementById('newUserName').value,
-                email: document.getElementById('newUserEmail').value,
-                password_hash: btoa(document.getElementById('newUserPassword').value),
-                permission_level: document.getElementById('newUserPermission').value,
-                created_by: currentUser.email,
-                status: 'active',
-                created_at: new Date().toISOString()
-            };
+            const customerId = document.getElementById('newUserClient').value;
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+
+            if (!customerId) {
+                alert('Please select a client');
+                return;
+            }
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/client_users`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=minimal'
-                    },
-                    body: JSON.stringify(userData)
-                });
+                // Get existing staff array from client's newco_data
+                const staffResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff&select=value`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
 
-                if (response.ok) {
-                    alert('User added successfully');
+                const staffData = await staffResponse.json();
+                let staff = [];
+
+                if (staffData && staffData.length > 0 && staffData[0]?.value) {
+                    staff = Array.isArray(staffData[0].value) ? staffData[0].value : [];
+                }
+
+                // Check if email already exists
+                if (staff.some(s => s.email && s.email.toLowerCase() === email.toLowerCase())) {
+                    alert('A user with this email already exists for this client');
+                    return;
+                }
+
+                // Create new staff member
+                const newStaff = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: role,
+                    status: 'active',
+                    createdAt: new Date().toISOString(),
+                    createdBy: currentUser.email
+                };
+
+                staff.push(newStaff);
+
+                // Update staff array in Supabase
+                const updateResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            value: staff,
+                            updated_at: new Date().toISOString()
+                        })
+                    }
+                );
+
+                if (updateResponse.ok) {
+                    alert(`User added successfully to ${allClients.find(c => c.customer_id === customerId)?.organization_name || customerId} admin portal`);
                     closeModal('addUserModal');
                     loadUsers();
                     document.getElementById('newUserName').value = '';
                     document.getElementById('newUserEmail').value = '';
                     document.getElementById('newUserPassword').value = '';
                 } else {
-                    throw new Error('Failed to add user');
+                    const errorText = await updateResponse.text();
+                    throw new Error(`Failed to add user: ${errorText}`);
                 }
             } catch (error) {
                 console.error('Error adding user:', error);
-                alert('Error adding user');
+                alert('Error adding user: ' + error.message);
             }
         }
 
-        async function deleteUser(userId) {
-            if (!confirm('Are you sure you want to delete this user?')) return;
+        async function deleteUser(userId, customerId, userEmail) {
+            // Check if user is super-admin
+            const client = allClients.find(c => c.customer_id === customerId);
+            const isSuperAdmin = client && userEmail && client.email &&
+                                 userEmail.toLowerCase() === client.email.toLowerCase();
+
+            if (isSuperAdmin) {
+                alert('Cannot delete super-admin user. The organization owner cannot be removed from the staff list.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete this user? They will be removed from the client admin portal.')) return;
 
             try {
-                await fetch(`${SUPABASE_URL}/rest/v1/client_users?id=eq.${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                // Get existing staff array
+                const staffResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff&select=value`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
                     }
-                });
+                );
 
-                alert('User deleted');
-                loadUsers();
+                const staffData = await staffResponse.json();
+                if (!staffData || staffData.length === 0 || !staffData[0]?.value) {
+                    alert('Staff data not found');
+                    return;
+                }
+
+                let staff = Array.isArray(staffData[0].value) ? staffData[0].value : [];
+
+                // Double-check super-admin status
+                const userToDelete = staff.find(s => s.id === userId);
+                if (userToDelete && userToDelete.email && client.email &&
+                    userToDelete.email.toLowerCase() === client.email.toLowerCase()) {
+                    alert('Cannot delete super-admin user.');
+                    return;
+                }
+
+                // Remove user
+                staff = staff.filter(s => s.id !== userId);
+
+                // Update staff array
+                const updateResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            value: staff,
+                            updated_at: new Date().toISOString()
+                        })
+                    }
+                );
+
+                if (updateResponse.ok) {
+                    alert('User deleted successfully');
+                    loadUsers();
+                } else {
+                    throw new Error('Failed to delete user');
+                }
             } catch (error) {
                 console.error('Error deleting user:', error);
-                alert('Error deleting user');
+                alert('Error deleting user: ' + error.message);
+            }
+        }
+
+        function showResetPasswordModal(userId, customerId, email) {
+            const modal = document.getElementById('resetPasswordModal');
+            if (!modal) {
+                alert('Reset password modal not found');
+                return;
+            }
+
+            document.getElementById('resetPwUserId').value = userId;
+            document.getElementById('resetPwCustomerId').value = customerId;
+            document.getElementById('resetPwEmail').textContent = email;
+            document.getElementById('newPassword').value = '';
+            modal.classList.add('active');
+        }
+
+        async function resetUserPassword(e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('resetPwUserId').value;
+            const customerId = document.getElementById('resetPwCustomerId').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            try {
+                // Get existing staff array
+                const staffResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff&select=value`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                const staffData = await staffResponse.json();
+                if (!staffData || staffData.length === 0 || !staffData[0]?.value) {
+                    alert('Staff data not found');
+                    return;
+                }
+
+                let staff = Array.isArray(staffData[0].value) ? staffData[0].value : [];
+
+                // Find and update user password
+                const userIndex = staff.findIndex(s => s.id === userId);
+                if (userIndex === -1) {
+                    alert('User not found');
+                    return;
+                }
+
+                staff[userIndex].password = newPassword;
+
+                // Update staff array
+                const updateResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${customerId}&key=eq.staff`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            value: staff,
+                            updated_at: new Date().toISOString()
+                        })
+                    }
+                );
+
+                if (updateResponse.ok) {
+                    alert('Password reset successfully');
+                    closeModal('resetPasswordModal');
+                } else {
+                    throw new Error('Failed to reset password');
+                }
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                alert('Error resetting password: ' + error.message);
             }
         }
 
@@ -1623,7 +2120,7 @@
                         organization_name: orgName,
                         contact_name: contactName,
                         email: email,
-                        password_hash: btoa('changeme123'),
+                        password_hash: null,
                         subscription_tier: 'trial',
                         subscription_status: 'active',
                         created_at: new Date().toISOString()
@@ -1711,7 +2208,7 @@
                     });
                 }
 
-                alert(`✓ Organization "${orgName}" created successfully!\n\nCustomer ID: ${customerId}\nTemp Password: changeme123`);
+                alert(`✓ Organization "${orgName}" created successfully!\n\nCustomer ID: ${customerId}\nLogin: ${email}\nFirst-time Password: ${email}\n\n(Use email as password on first login, then set a new password)`);
                 closeModal('quickCreateModal');
                 loadClients();
 
@@ -1825,6 +2322,222 @@
             } catch (error) {
                 console.error('Error creating organization:', error);
                 alert('Error creating organization: ' + error.message);
+            }
+        }
+
+        // ===== ART LIBRARY FUNCTIONS =====
+
+        let allArtItems = [];
+        let filteredArtItems = [];
+
+        // Load Art Library
+        async function loadArtLibrary() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/art_library?customer_id=eq.newco&order=created_at.desc`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                allArtItems = await response.json();
+                filteredArtItems = [...allArtItems];
+                renderArtLibrary();
+            } catch (error) {
+                console.error('Error loading art library:', error);
+                document.getElementById('artLibraryGrid').innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--danger);">
+                        Error loading art library. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        // Render Art Library Grid
+        function renderArtLibrary() {
+            const grid = document.getElementById('artLibraryGrid');
+
+            if (filteredArtItems.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
+                        No art found. Click "Upload Art" to add items to the library.
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredArtItems.map(art => `
+                <div class="art-card">
+                    <img src="${art.file_data}" alt="${art.name}" class="art-card-image" loading="lazy">
+                    <div class="art-card-info">
+                        <div class="art-card-name" title="${art.name}">${art.name}</div>
+                        <div class="art-card-meta">
+                            <span>${art.file_type.toUpperCase()}</span>
+                            <span>${(art.file_size / 1024).toFixed(1)}KB</span>
+                        </div>
+                        ${art.category ? `<span class="art-card-category">${art.category}</span>` : ''}
+                        <div class="art-card-actions">
+                            <button class="art-card-delete" onclick="deleteArt('${art.id}', '${art.name.replace(/'/g, "\\'")}')">🗑 Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Art Library
+        function filterArtLibrary() {
+            const category = document.getElementById('filterArtCategory').value;
+            const fileType = document.getElementById('filterArtType').value;
+            const searchTerm = document.getElementById('searchArt').value.toLowerCase();
+
+            filteredArtItems = allArtItems.filter(art => {
+                const matchesCategory = !category || art.category === category;
+                const matchesType = !fileType || art.file_type === fileType;
+                const matchesSearch = !searchTerm ||
+                    art.name.toLowerCase().includes(searchTerm) ||
+                    (art.description && art.description.toLowerCase().includes(searchTerm));
+
+                return matchesCategory && matchesType && matchesSearch;
+            });
+
+            renderArtLibrary();
+        }
+
+        // Show Upload Art Modal
+        function showUploadArtModal() {
+            document.getElementById('uploadArtModal').classList.add('active');
+        }
+
+        // Upload Art
+        async function uploadArt(event) {
+            event.preventDefault();
+
+            const files = document.getElementById('artFiles').files;
+            const name = document.getElementById('artName').value;
+            const description = document.getElementById('artDescription').value;
+            const category = document.getElementById('artCategory').value;
+
+            if (files.length === 0) {
+                alert('Please select at least one file.');
+                return;
+            }
+
+            // Validate file sizes
+            for (let file of files) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File "${file.name}" exceeds 5MB limit.`);
+                    return;
+                }
+            }
+
+            try {
+                // Process each file
+                const uploadPromises = Array.from(files).map((file, index) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+
+                        reader.onload = async (e) => {
+                            const fileData = e.target.result;
+                            const img = new Image();
+
+                            img.onload = async () => {
+                                const artName = files.length === 1 && name ? name : file.name.replace(/\.[^/.]+$/, "");
+                                const fileType = file.type.split('/')[1];
+
+                                const artData = {
+                                    customer_id: 'newco',
+                                    name: artName,
+                                    description: files.length === 1 ? description : '',
+                                    category: category,
+                                    file_data: fileData,
+                                    file_type: fileType,
+                                    width: img.width,
+                                    height: img.height,
+                                    file_size: file.size,
+                                    uploaded_by: currentUser?.email || 'admin',
+                                    is_global: true
+                                };
+
+                                const response = await fetch(
+                                    `${SUPABASE_URL}/rest/v1/art_library`,
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'apikey': SUPABASE_ANON_KEY,
+                                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                            'Content-Type': 'application/json',
+                                            'Prefer': 'return=minimal'
+                                        },
+                                        body: JSON.stringify(artData)
+                                    }
+                                );
+
+                                if (!response.ok) {
+                                    throw new Error(`Failed to upload ${file.name}`);
+                                }
+
+                                resolve();
+                            };
+
+                            img.src = fileData;
+                        };
+
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                });
+
+                await Promise.all(uploadPromises);
+
+                alert(`✓ Successfully uploaded ${files.length} file(s) to the art library!`);
+                closeModal('uploadArtModal');
+
+                // Reset form
+                document.getElementById('artFiles').value = '';
+                document.getElementById('artName').value = '';
+                document.getElementById('artDescription').value = '';
+                document.getElementById('artCategory').value = '';
+
+                loadArtLibrary();
+            } catch (error) {
+                console.error('Error uploading art:', error);
+                alert('Error uploading art: ' + error.message);
+            }
+        }
+
+        // Delete Art
+        async function deleteArt(artId, artName) {
+            // TODO: Check if art is in use before deleting
+            // For now, just confirm deletion
+
+            if (!confirm(`Are you sure you want to delete "${artName}"?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/art_library?id=eq.${artId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete art');
+                }
+
+                alert(`✓ "${artName}" has been deleted from the library.`);
+                loadArtLibrary();
+            } catch (error) {
+                console.error('Error deleting art:', error);
+                alert('Error deleting art: ' + error.message);
             }
         }
     </script>

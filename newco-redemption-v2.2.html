@@ -496,6 +496,67 @@
             .app-content {
                 padding: 1rem;
             }
+
+            /* Mobile POS - Touch friendly buttons */
+            #packagesList {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+
+            #packagesList button {
+                min-height: 100px !important;
+                font-size: 1rem !important;
+            }
+
+            .payment-method-btn {
+                padding: 1.25rem !important;
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* Print Receipt Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #receiptToPrint, #receiptToPrint * {
+                visibility: visible;
+            }
+            #receiptToPrint {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        .receipt {
+            font-family: 'Courier New', monospace;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .receipt-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .receipt-total {
+            border-top: 2px dashed #000;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -601,11 +662,11 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div style="margin-bottom: 1rem; display: flex; gap: 1rem;">
-                        <button class="btn" onclick="toggleMemberLookup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+                        <button class="btn" onclick="toggleMemberLookup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); flex-shrink: 0;">
                             👤 Member Lookup
                         </button>
-                        <div id="selectedMemberBadge" style="display: none; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; display: flex; align-items: center; gap: 1rem;">
+                        <div id="selectedMemberBadge" style="display: none; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; flex: 1; display: flex; align-items: center; gap: 1rem;">
                             <div>
                                 <strong id="selectedMemberNameBadge"></strong>
                                 <div style="font-size: 0.875rem; opacity: 0.9;" id="selectedMemberPointsBadge"></div>
@@ -653,16 +714,79 @@
 
                     <!-- Right Column: Cart Summary -->
                     <div id="cartSummary" style="padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 1rem;">
+                        <!-- Quick Sale Button -->
+                        <button onclick="showQuickSaleModal()" style="
+                            width: 100%;
+                            margin-bottom: 1rem;
+                            padding: 0.875rem 1.5rem;
+                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            font-size: 1rem;
+                            cursor: pointer;
+                            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+                            transition: all 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)'">
+                            💵 Quick Sale
+                        </button>
+
                         <h3 style="margin: 0 0 1rem 0;">Cart Summary</h3>
                         <div id="cartItems" style="min-height: 50px;">
                             <p style="color: #999;">No items in cart</p>
                         </div>
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #f0f0f0; display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold;">
-                            <span>Total:</span>
-                            <span id="cartTotal" style="color: #2ea3f2;">$0.00</span>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #f0f0f0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">
+                                <span>Total:</span>
+                                <span id="cartTotal" style="color: #2ea3f2;">$0.00</span>
+                            </div>
+
+                            <!-- Payment Methods -->
+                            <div style="margin: 1rem 0;">
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; color: #666;">Payment Method:</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="payment-method-btn active" data-method="cash" onclick="selectPaymentMethod('cash')" style="flex: 1; padding: 0.75rem; background: var(--success); color: white; border: 2px solid var(--success); border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                        💵 Cash
+                                    </button>
+                                    <button class="payment-method-btn" data-method="card" onclick="selectPaymentMethod('card')" style="flex: 1; padding: 0.75rem; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                        💳 Card
+                                    </button>
+                                    <button class="payment-method-btn" data-method="split" onclick="selectPaymentMethod('split')" style="flex: 1; padding: 0.75rem; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                        🔄 Split
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Split Payment Details (Hidden by default) -->
+                            <div id="splitPaymentSection" style="display: none; margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <label style="display: block; font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">💵 Cash Amount:</label>
+                                    <input type="number" id="cashAmount" step="0.01" min="0" value="0" onchange="updateSplitPayment()" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem;">
+                                </div>
+                                <div style="margin-bottom: 0.75rem;">
+                                    <label style="display: block; font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">💳 Card Amount:</label>
+                                    <input type="number" id="cardAmount" step="0.01" min="0" value="0" readonly style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; background: #f0f0f0;">
+                                </div>
+                                <div id="splitPaymentWarning" style="display: none; color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem;">
+                                    ⚠️ Cash + Card must equal total
+                                </div>
+                            </div>
+
+                            <!-- Cash Received Calculator (for cash payments) -->
+                            <div id="cashCalculator" style="display: none; margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <label style="display: block; font-size: 0.875rem; color: #666; margin-bottom: 0.25rem;">💵 Cash Received:</label>
+                                    <input type="number" id="cashReceived" step="0.01" min="0" value="0" onchange="calculateChange()" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem;">
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-weight: 600; color: #333; font-size: 1.1rem;">
+                                    <span>Change:</span>
+                                    <span id="changeAmount" style="color: var(--success);">$0.00</span>
+                                </div>
+                            </div>
                         </div>
-                        <button class="btn btn-primary" onclick="createTransaction()" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" id="checkoutBtn">
-                            Complete Purchase
+                        <button class="btn btn-primary" onclick="checkoutAndPrint()" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" id="checkoutBtn">
+                            💳 Complete & Print Receipt
                         </button>
                     </div>
                 </div>
@@ -680,6 +804,96 @@
             <!-- Transactions List -->
             <div class="transactions-grid" id="transactionsList">
                 <div class="loading">Loading transactions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Sale Modal -->
+    <div id="quickSaleModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #333;">💵 Quick Sale</h2>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #666;">Item Description (Optional)</label>
+                <input type="text" id="quickSaleDescription" placeholder="e.g., Concessions, Misc Item" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;">
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #666;">Amount ($) *</label>
+                <input type="number" id="quickSaleAmount" step="0.01" min="0.01" placeholder="0.00" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1.5rem; font-weight: 600;" autofocus>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+                <button onclick="closeQuickSaleModal()" style="flex: 1; padding: 0.875rem; background: white; color: #666; border: 2px solid #e0e0e0; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Cancel
+                </button>
+                <button onclick="addQuickSaleToCart()" style="flex: 1; padding: 0.875rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Receipt Template for Printing -->
+    <div id="receiptToPrint" style="display: none;">
+        <div class="receipt">
+            <div class="receipt-header">
+                <h2 id="receiptOrgName" style="margin: 0; font-size: 1.5em;">BINGO HALL</h2>
+                <div id="receiptOrgAddress" style="font-size: 0.9em; margin: 5px 0;">123 Main St, City, ST 12345</div>
+                <div id="receiptOrgPhone" style="font-size: 0.9em; margin: 5px 0;">(555) 123-4567</div>
+            </div>
+            <div style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Date:</span>
+                    <span id="receiptDate"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Time:</span>
+                    <span id="receiptTime"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Transaction:</span>
+                    <span id="receiptTxnId"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Cashier:</span>
+                    <span id="receiptCashier"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Customer:</span>
+                    <span id="receiptCustomer"></span>
+                </div>
+            </div>
+            <div style="border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
+                <div style="font-weight: bold; margin-bottom: 10px;">ITEMS:</div>
+                <div id="receiptItems"></div>
+            </div>
+            <div style="border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Subtotal:</span>
+                    <span id="receiptSubtotal"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0; font-weight: bold; font-size: 1.2em;">
+                    <span>TOTAL:</span>
+                    <span id="receiptTotal"></span>
+                </div>
+            </div>
+            <div id="receiptPaymentDetails" style="border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
+                <!-- Payment method details will go here -->
+            </div>
+            <div id="receiptPointsSection" style="display: none; border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Points Earned:</span>
+                    <span id="receiptPointsEarned"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>New Balance:</span>
+                    <span id="receiptPointsBalance"></span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; font-size: 0.9em;">
+                <div>Thank you for your purchase!</div>
+                <div style="margin-top: 10px;">Good Luck!</div>
             </div>
         </div>
     </div>
@@ -1369,15 +1583,87 @@
         // ═══════════════════════════════════════════════════════════
         // [PAYMENT-CALC] - Payment Method & Points Calculation
         // ═══════════════════════════════════════════════════════════
-        
+
         function selectPaymentMethod(method) {
             selectedPaymentMethod = method;
-            
+
+            // Update button states
             document.querySelectorAll('.payment-method-btn').forEach(btn => {
                 btn.classList.remove('active');
+                btn.style.background = 'white';
+                btn.style.color = '#333';
+                btn.style.borderColor = '#e0e0e0';
             });
-            
-            document.querySelector(`.payment-method-btn[data-method="${method}"]`).classList.add('active');
+
+            const activeBtn = document.querySelector(`.payment-method-btn[data-method="${method}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                if (method === 'cash') {
+                    activeBtn.style.background = 'var(--success)';
+                    activeBtn.style.color = 'white';
+                    activeBtn.style.borderColor = 'var(--success)';
+                } else if (method === 'card') {
+                    activeBtn.style.background = 'var(--primary)';
+                    activeBtn.style.color = 'white';
+                    activeBtn.style.borderColor = 'var(--primary)';
+                } else if (method === 'split') {
+                    activeBtn.style.background = 'var(--warning)';
+                    activeBtn.style.color = 'white';
+                    activeBtn.style.borderColor = 'var(--warning)';
+                }
+            }
+
+            // Show/hide relevant sections
+            const splitSection = document.getElementById('splitPaymentSection');
+            const cashSection = document.getElementById('cashCalculator');
+
+            if (method === 'split') {
+                splitSection.style.display = 'block';
+                cashSection.style.display = 'none';
+                // Initialize split amounts
+                const total = purchaseCart.subtotal;
+                document.getElementById('cashAmount').value = '0.00';
+                document.getElementById('cardAmount').value = total.toFixed(2);
+            } else if (method === 'cash') {
+                splitSection.style.display = 'none';
+                cashSection.style.display = 'block';
+                document.getElementById('cashReceived').value = purchaseCart.subtotal.toFixed(2);
+                calculateChange();
+            } else {
+                splitSection.style.display = 'none';
+                cashSection.style.display = 'none';
+            }
+        }
+
+        function updateSplitPayment() {
+            const total = purchaseCart.subtotal;
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const cardAmount = total - cashAmount;
+
+            document.getElementById('cardAmount').value = cardAmount.toFixed(2);
+
+            // Show warning if amounts don't match total
+            const warning = document.getElementById('splitPaymentWarning');
+            if (Math.abs((cashAmount + cardAmount) - total) > 0.01) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        function calculateChange() {
+            const total = purchaseCart.subtotal;
+            const cashReceived = parseFloat(document.getElementById('cashReceived').value) || 0;
+            const change = cashReceived - total;
+
+            const changeEl = document.getElementById('changeAmount');
+            if (change >= 0) {
+                changeEl.textContent = '$' + change.toFixed(2);
+                changeEl.style.color = 'var(--success)';
+            } else {
+                changeEl.textContent = '-$' + Math.abs(change).toFixed(2);
+                changeEl.style.color = 'var(--danger)';
+            }
         }
         
         function loadTodaySessionInfo() {
@@ -1590,69 +1876,596 @@
         }
 
         // ═══════════════════════════════════════════════════════════
+        // [QUICK-SALE] - Custom $ Amount Sales
+        // ═══════════════════════════════════════════════════════════
+
+        function showQuickSaleModal() {
+            const modal = document.getElementById('quickSaleModal');
+            modal.style.display = 'flex';
+
+            // Clear previous values
+            document.getElementById('quickSaleDescription').value = '';
+            document.getElementById('quickSaleAmount').value = '';
+
+            // Focus on amount field
+            setTimeout(() => {
+                document.getElementById('quickSaleAmount').focus();
+            }, 100);
+        }
+
+        function closeQuickSaleModal() {
+            document.getElementById('quickSaleModal').style.display = 'none';
+        }
+
+        function addQuickSaleToCart() {
+            const description = document.getElementById('quickSaleDescription').value.trim() || 'Quick Sale';
+            const amount = parseFloat(document.getElementById('quickSaleAmount').value);
+
+            // Validate amount
+            if (!amount || amount <= 0) {
+                showError('Please enter a valid amount');
+                return;
+            }
+
+            // Add custom sale item to cart
+            const quickSaleId = 'quicksale_' + Date.now();
+            purchaseCart.items.push({
+                id: quickSaleId,
+                type: 'quicksale',
+                name: description,
+                price: amount,
+                quantity: 1
+            });
+
+            updatePurchaseCartDisplay();
+            closeQuickSaleModal();
+            showSuccessMessage(`✓ Added ${description} - $${amount.toFixed(2)}`);
+        }
+
+        // Allow Enter key to submit in quick sale modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickSaleAmount = document.getElementById('quickSaleAmount');
+            if (quickSaleAmount) {
+                quickSaleAmount.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addQuickSaleToCart();
+                    }
+                });
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // [PAYMENT-PROCESSOR] - Custom Payment Processor Integration
+        // ═══════════════════════════════════════════════════════════
+
+        /**
+         * CUSTOM PAYMENT PROCESSOR INTEGRATION POINT
+         *
+         * This is the main entry point for your custom payment processor.
+         * Replace the placeholder implementation below with your actual API calls.
+         *
+         * INTEGRATION REQUIREMENTS:
+         *
+         * 1. API ENDPOINT:
+         *    - Replace PAYMENT_PROCESSOR_API_URL with your processor's endpoint
+         *    - Add authentication headers/tokens as needed
+         *
+         * 2. REQUEST FORMAT:
+         *    Your processor should receive:
+         *    - amount: decimal (e.g., 25.50)
+         *    - currency: string (e.g., "USD")
+         *    - description: string (e.g., "POS Sale - Transaction TXN-123456")
+         *    - metadata: object with transaction details
+         *
+         * 3. RESPONSE FORMAT:
+         *    Your processor should return:
+         *    {
+         *      success: boolean,
+         *      transactionId: string,
+         *      amount: number,
+         *      timestamp: ISO date string,
+         *      last4: string (optional - last 4 of card),
+         *      cardBrand: string (optional - Visa, MasterCard, etc.),
+         *      authCode: string (optional - authorization code),
+         *      errorMessage: string (if success = false)
+         *    }
+         *
+         * 4. ERROR HANDLING:
+         *    Handle these scenarios:
+         *    - Network failures
+         *    - Declined cards
+         *    - Insufficient funds
+         *    - Invalid card data
+         *    - API timeouts
+         */
+
+        // Payment Processor Configuration
+        const PAYMENT_CONFIG = {
+            // TODO: Add your payment processor configuration
+            apiUrl: 'https://your-payment-processor.com/api/v1/charge',
+            apiKey: 'YOUR_API_KEY_HERE',
+            merchantId: 'YOUR_MERCHANT_ID_HERE',
+            timeout: 30000, // 30 seconds
+            retryAttempts: 2
+        };
+
+        /**
+         * Process Card Payment
+         * @param {number} amount - Amount to charge in dollars
+         * @param {object} metadata - Additional transaction data
+         * @returns {Promise<object>} Payment result
+         */
+        async function processCardPayment(amount, metadata = {}) {
+            console.log('[PAYMENT PROCESSOR] Initiating card payment:', {
+                amount,
+                metadata
+            });
+
+            // ============================================================
+            // TODO: REPLACE THIS SECTION WITH YOUR ACTUAL API INTEGRATION
+            // ============================================================
+
+            try {
+                // PLACEHOLDER IMPLEMENTATION - Replace with actual API call
+                const response = await simulatePaymentProcessorAPI(amount, metadata);
+
+                /*
+                // EXAMPLE: Real payment processor integration
+                const response = await fetch(PAYMENT_CONFIG.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${PAYMENT_CONFIG.apiKey}`,
+                        'X-Merchant-ID': PAYMENT_CONFIG.merchantId
+                    },
+                    body: JSON.stringify({
+                        amount: Math.round(amount * 100), // Convert to cents
+                        currency: 'USD',
+                        description: `POS Sale - ${metadata.transactionId || 'N/A'}`,
+                        metadata: {
+                            source: 'pos',
+                            cashier: metadata.cashier || 'Unknown',
+                            transactionId: metadata.transactionId,
+                            customerId: metadata.customerId,
+                            timestamp: new Date().toISOString()
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Payment API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                return {
+                    success: data.status === 'approved' || data.success === true,
+                    transactionId: data.transaction_id || data.id,
+                    amount: amount,
+                    timestamp: new Date().toISOString(),
+                    last4: data.card?.last4,
+                    cardBrand: data.card?.brand,
+                    authCode: data.authorization_code,
+                    errorMessage: data.error_message
+                };
+                */
+
+                return response;
+
+            } catch (error) {
+                console.error('[PAYMENT PROCESSOR] Error:', error);
+
+                return {
+                    success: false,
+                    transactionId: null,
+                    amount: amount,
+                    timestamp: new Date().toISOString(),
+                    errorMessage: error.message || 'Payment processing failed'
+                };
+            }
+        }
+
+        /**
+         * TEMPORARY PLACEHOLDER - Simulates payment processor API
+         * DELETE THIS FUNCTION when implementing real payment processor
+         */
+        async function simulatePaymentProcessorAPI(amount, metadata) {
+            console.log('[SIMULATOR] Simulating payment processor API call...');
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Simulate 95% success rate for testing
+            const isApproved = Math.random() > 0.05;
+
+            if (isApproved) {
+                return {
+                    success: true,
+                    transactionId: 'CARD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                    amount: amount,
+                    timestamp: new Date().toISOString(),
+                    last4: '4242',
+                    cardBrand: 'Visa',
+                    authCode: 'AUTH' + Math.floor(Math.random() * 999999)
+                };
+            } else {
+                return {
+                    success: false,
+                    transactionId: null,
+                    amount: amount,
+                    timestamp: new Date().toISOString(),
+                    errorMessage: 'Card declined - Insufficient funds'
+                };
+            }
+        }
+
+        /**
+         * Process Refund
+         * @param {string} originalTransactionId - Original transaction ID to refund
+         * @param {number} amount - Amount to refund
+         * @returns {Promise<object>} Refund result
+         */
+        async function processRefund(originalTransactionId, amount) {
+            console.log('[PAYMENT PROCESSOR] Processing refund:', {
+                originalTransactionId,
+                amount
+            });
+
+            // TODO: Implement refund API call
+            // Similar structure to processCardPayment
+
+            return {
+                success: true,
+                refundId: 'REFUND-' + Date.now(),
+                originalTransactionId: originalTransactionId,
+                amount: amount,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        /**
+         * Void Transaction (same-day cancellation)
+         * @param {string} transactionId - Transaction ID to void
+         * @returns {Promise<object>} Void result
+         */
+        async function voidTransaction(transactionId) {
+            console.log('[PAYMENT PROCESSOR] Voiding transaction:', transactionId);
+
+            // TODO: Implement void API call
+
+            return {
+                success: true,
+                voidId: 'VOID-' + Date.now(),
+                originalTransactionId: transactionId,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════
         // [RECEIPT-GEN] - Transaction Processing & Receipt
         // ═══════════════════════════════════════════════════════════
-        
-        function createTransaction() {
-            // Purchases mode - create in-person transaction
-            if (!selectedMember) {
-                showError('Please select a member first');
-                return;
-            }
-            
+
+        async function checkoutAndPrint() {
+            // Validate cart
             if (purchaseCart.items.length === 0) {
-                notify.warning('Please add items to the cart');
+                showError('Please add items to the cart');
                 return;
             }
-            
-            // Create transaction
-            const transaction = {
-                id: 'TXN-' + Date.now(),
-                date: new Date().toISOString(),
-                memberName: `${selectedMember.firstName} ${selectedMember.lastName}`,
-                memberEmail: selectedMember.email,
-                memberId: selectedMember.id,
-                items: purchaseCart.items,
-                subtotal: purchaseCart.subtotal,
-                tax: 0, // Would calculate based on settings
-                finalTotal: purchaseCart.subtotal,
-                paymentMethod: selectedPaymentMethod,
-                status: 'Received', // In-person purchases are immediately received
-                source: 'desktop',
-                salesperson: currentUser.name || currentUser.email,
-                loyaltyPointsEarned: 0 // Would calculate based on rewards config
-            };
-            
-            // Calculate loyalty points if eligible
-            const rewardsConfig = NewcoData.get('rewardsConfig') || {};
-            if (rewardsConfig.rewardType && rewardsConfig.basicSettings) {
-                const pointsPerDollar = rewardsConfig.basicSettings.floorPointsPerDollar || 10;
-                transaction.loyaltyPointsEarned = Math.floor(transaction.finalTotal * pointsPerDollar);
-                
-                // Update member points
-                selectedMember.loyaltyPoints = (selectedMember.loyaltyPoints || 0) + transaction.loyaltyPointsEarned;
-                selectedMember.lifetimePoints = (selectedMember.lifetimePoints || 0) + transaction.loyaltyPointsEarned;
-                
-                const members = NewcoData.get('members') || [];
-                const updatedMembers = members.map(m => m.id === selectedMember.id ? selectedMember : m);
-                NewcoData.set('members', updatedMembers);
+
+            // No validation needed - if no member, automatically treat as guest
+
+            // Process payment based on method
+            let paymentDetails = {};
+            let paymentSuccess = false;
+
+            try {
+                // Create transaction ID early for payment processor metadata
+                const transactionId = 'TXN-' + Date.now();
+
+                if (selectedPaymentMethod === 'card') {
+                    // Process card payment with metadata
+                    const paymentMetadata = {
+                        transactionId: transactionId,
+                        cashier: currentUser.name || currentUser.email || currentUser.username,
+                        customerId: selectedMember?.id || null,
+                        customerName: selectedMember ? `${selectedMember.firstName} ${selectedMember.lastName}` : 'Guest',
+                        itemCount: purchaseCart.items.length
+                    };
+
+                    const result = await processCardPayment(purchaseCart.subtotal, paymentMetadata);
+
+                    if (result.success) {
+                        paymentSuccess = true;
+                        paymentDetails = {
+                            method: 'card',
+                            cardTransactionId: result.transactionId,
+                            amount: purchaseCart.subtotal,
+                            last4: result.last4,
+                            cardBrand: result.cardBrand,
+                            authCode: result.authCode
+                        };
+                    } else {
+                        showError(result.errorMessage || 'Card payment failed');
+                        return;
+                    }
+                } else if (selectedPaymentMethod === 'split') {
+                    // Process split payment
+                    const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+                    const cardAmount = parseFloat(document.getElementById('cardAmount').value) || 0;
+
+                    // Validate split amounts
+                    if (Math.abs((cashAmount + cardAmount) - purchaseCart.subtotal) > 0.01) {
+                        showError('Split payment amounts must equal total');
+                        return;
+                    }
+
+                    // Process card portion with metadata
+                    if (cardAmount > 0) {
+                        const paymentMetadata = {
+                            transactionId: transactionId,
+                            cashier: currentUser.name || currentUser.email || currentUser.username,
+                            customerId: selectedMember?.id || null,
+                            customerName: selectedMember ? `${selectedMember.firstName} ${selectedMember.lastName}` : 'Guest',
+                            itemCount: purchaseCart.items.length,
+                            paymentType: 'split'
+                        };
+
+                        const result = await processCardPayment(cardAmount, paymentMetadata);
+
+                        if (!result.success) {
+                            showError(result.errorMessage || 'Card payment failed');
+                            return;
+                        }
+                        paymentDetails = {
+                            method: 'split',
+                            cashAmount: cashAmount,
+                            cardAmount: cardAmount,
+                            cardTransactionId: result.transactionId,
+                            last4: result.last4,
+                            cardBrand: result.cardBrand,
+                            authCode: result.authCode
+                        };
+                    } else {
+                        paymentDetails = {
+                            method: 'split',
+                            cashAmount: cashAmount,
+                            cardAmount: 0
+                        };
+                    }
+                    paymentSuccess = true;
+                } else {
+                    // Cash payment
+                    paymentDetails = {
+                        method: 'cash',
+                        amount: purchaseCart.subtotal,
+                        received: parseFloat(document.getElementById('cashReceived').value) || 0,
+                        change: (parseFloat(document.getElementById('cashReceived').value) || 0) - purchaseCart.subtotal
+                    };
+                    paymentSuccess = true;
+                }
+
+                if (!paymentSuccess) {
+                    showError('Payment processing failed');
+                    return;
+                }
+
+                // Create transaction (use pre-generated ID)
+                const transaction = {
+                    id: transactionId,
+                    date: new Date().toISOString(),
+                    memberName: selectedMember ? `${selectedMember.firstName} ${selectedMember.lastName}` : 'Guest',
+                    memberEmail: selectedMember?.email || null,
+                    memberId: selectedMember?.id || null,
+                    items: purchaseCart.items,
+                    subtotal: purchaseCart.subtotal,
+                    tax: 0,
+                    finalTotal: purchaseCart.subtotal,
+                    paymentMethod: selectedPaymentMethod,
+                    paymentDetails: paymentDetails,
+                    status: 'Received',
+                    source: 'pos',
+                    salesperson: currentUser.name || currentUser.email || currentUser.username,
+                    loyaltyPointsEarned: 0
+                };
+
+                // Calculate loyalty points if member (not guest)
+                if (selectedMember) {
+                    const rewardsConfig = NewcoData.get('rewardsConfig') || {};
+                    if (rewardsConfig.rewardType && rewardsConfig.basicSettings) {
+                        const pointsPerDollar = rewardsConfig.basicSettings.floorPointsPerDollar || 10;
+                        transaction.loyaltyPointsEarned = Math.floor(transaction.finalTotal * pointsPerDollar);
+
+                        // Update member points
+                        selectedMember.loyaltyPoints = (selectedMember.loyaltyPoints || 0) + transaction.loyaltyPointsEarned;
+                        selectedMember.lifetimePoints = (selectedMember.lifetimePoints || 0) + transaction.loyaltyPointsEarned;
+
+                        const members = NewcoData.get('members') || [];
+                        const updatedMembers = members.map(m => m.id === selectedMember.id ? selectedMember : m);
+                        NewcoData.set('members', updatedMembers);
+                    }
+                }
+
+                // Save transaction
+                const transactions = NewcoData.get('transactions') || [];
+                transactions.push(transaction);
+                NewcoData.set('transactions', transactions);
+
+                // Generate and print receipt
+                generateReceipt(transaction);
+
+                // Print receipt
+                setTimeout(() => {
+                    window.print();
+                }, 100);
+
+                // Clear cart and reset
+                purchaseCart = { items: [], subtotal: 0 };
+                updatePurchaseCartDisplay();
+                clearSelectedMember();
+                selectedPaymentMethod = 'cash';
+                selectPaymentMethod('cash');
+
+                // Show success
+                const customerName = selectedMember ? selectedMember.firstName + ' ' + selectedMember.lastName : 'Guest';
+                showSuccessMessage(`✓ Sale completed for ${customerName}! Receipt printing...`);
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                showError('Checkout failed: ' + error.message);
             }
-            
-            // Save transaction
-            const transactions = NewcoData.get('transactions') || [];
-            transactions.push(transaction);
-            NewcoData.set('transactions', transactions);
-            
-            // Clear cart
-            purchaseCart = { items: [], subtotal: 0 };
-            updatePurchaseCartDisplay();
-            
-            // Show success
-            showSuccessMessage(`✓ Purchase completed for ${member.name}`);
-            
-            // Reset form
-            document.getElementById('createMember').value = '';
-            document.getElementById('createPayment').value = 'cash';
+        }
+
+        function generateReceipt(transaction) {
+            const org = NewcoData.get('organization') || {};
+
+            // Fill in organization details
+            document.getElementById('receiptOrgName').textContent = org.name || 'BINGO HALL';
+            document.getElementById('receiptOrgAddress').textContent = org.address || '';
+            document.getElementById('receiptOrgPhone').textContent = org.phone || '';
+
+            // Fill in transaction details
+            const date = new Date(transaction.date);
+            document.getElementById('receiptDate').textContent = date.toLocaleDateString();
+            document.getElementById('receiptTime').textContent = date.toLocaleTimeString();
+            document.getElementById('receiptTxnId').textContent = transaction.id;
+            document.getElementById('receiptCashier').textContent = transaction.salesperson || 'Staff';
+            document.getElementById('receiptCustomer').textContent = transaction.memberName || 'Guest';
+
+            // Fill in items
+            const itemsHtml = transaction.items.map(item => `
+                <div style="display: flex; justify-content: space-between; margin: 3px 0;">
+                    <span>${item.quantity}x ${item.name}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+            document.getElementById('receiptItems').innerHTML = itemsHtml;
+
+            // Fill in totals
+            document.getElementById('receiptSubtotal').textContent = '$' + transaction.subtotal.toFixed(2);
+            document.getElementById('receiptTotal').textContent = '$' + transaction.finalTotal.toFixed(2);
+
+            // Fill in payment details
+            let paymentHtml = '';
+            if (transaction.paymentMethod === 'cash') {
+                paymentHtml = `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Payment Method:</span>
+                        <span>CASH</span>
+                    </div>
+                `;
+                if (transaction.paymentDetails.change > 0) {
+                    paymentHtml += `
+                        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                            <span>Cash Received:</span>
+                            <span>$${transaction.paymentDetails.received.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                            <span>Change:</span>
+                            <span>$${transaction.paymentDetails.change.toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+            } else if (transaction.paymentMethod === 'card') {
+                paymentHtml = `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Payment Method:</span>
+                        <span>CARD</span>
+                    </div>
+                    ${transaction.paymentDetails.cardBrand && transaction.paymentDetails.last4 ? `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Card:</span>
+                        <span>${transaction.paymentDetails.cardBrand} ****${transaction.paymentDetails.last4}</span>
+                    </div>
+                    ` : ''}
+                    ${transaction.paymentDetails.authCode ? `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Auth Code:</span>
+                        <span>${transaction.paymentDetails.authCode}</span>
+                    </div>
+                    ` : ''}
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Transaction ID:</span>
+                        <span style="font-size: 0.75em;">${transaction.paymentDetails.cardTransactionId}</span>
+                    </div>
+                `;
+            } else if (transaction.paymentMethod === 'split') {
+                paymentHtml = `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Payment Method:</span>
+                        <span>SPLIT</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Cash:</span>
+                        <span>$${transaction.paymentDetails.cashAmount.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Card:</span>
+                        <span>$${transaction.paymentDetails.cardAmount.toFixed(2)}</span>
+                    </div>
+                    ${transaction.paymentDetails.cardBrand && transaction.paymentDetails.last4 ? `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Card Used:</span>
+                        <span>${transaction.paymentDetails.cardBrand} ****${transaction.paymentDetails.last4}</span>
+                    </div>
+                    ` : ''}
+                    ${transaction.paymentDetails.cardTransactionId ? `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Card Transaction:</span>
+                        <span style="font-size: 0.75em;">${transaction.paymentDetails.cardTransactionId}</span>
+                    </div>
+                    ` : ''}
+                `;
+            }
+            document.getElementById('receiptPaymentDetails').innerHTML = paymentHtml;
+
+            // Fill in loyalty points (if applicable)
+            if (transaction.loyaltyPointsEarned > 0) {
+                document.getElementById('receiptPointsSection').style.display = 'block';
+                document.getElementById('receiptPointsEarned').textContent = transaction.loyaltyPointsEarned.toLocaleString();
+                document.getElementById('receiptPointsBalance').textContent = (selectedMember?.loyaltyPoints || 0).toLocaleString();
+            } else {
+                document.getElementById('receiptPointsSection').style.display = 'none';
+            }
+        }
+
+        // Legacy function for compatibility
+        function createTransaction() {
+            checkoutAndPrint();
+        }
+
+        // Helper notification functions
+        function showSuccess(message) {
+            showSuccessMessage('✓ ' + message);
+        }
+
+        function showError(message) {
+            let popup = document.getElementById('errorPopup');
+            if (!popup) {
+                popup = document.createElement('div');
+                popup.id = 'errorPopup';
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--danger);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    z-index: 9999;
+                    font-weight: 500;
+                    animation: slideIn 0.3s ease;
+                `;
+                document.body.appendChild(popup);
+            }
+
+            popup.textContent = '⚠️ ' + message;
+            popup.style.display = 'block';
+
+            // Auto-hide after 4 seconds
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 4000);
         }
 
         // Auto refresh every 30 seconds (only for redemption mode)
@@ -1668,18 +2481,27 @@
                 login();
             }
         });
-        
+
         // Make functions available globally for onclick handlers
         window.selectMember = selectMember;
         window.clearSelectedMember = clearSelectedMember;
         window.selectPaymentMethod = selectPaymentMethod;
+        window.updateSplitPayment = updateSplitPayment;
+        window.calculateChange = calculateChange;
         window.searchMembersForPurchase = searchMembersForPurchase;
         window.addPackageToCart = addPackageToCart;
         window.addItemToCart = addItemToCart;
         window.removeFromPurchaseCart = removeFromPurchaseCart;
+        window.showQuickSaleModal = showQuickSaleModal;
+        window.closeQuickSaleModal = closeQuickSaleModal;
+        window.addQuickSaleToCart = addQuickSaleToCart;
         window.createTransaction = createTransaction;
+        window.checkoutAndPrint = checkoutAndPrint;
         window.searchTransactions = searchTransactions;
         window.switchMode = switchMode;
+        window.toggleMode = toggleMode;
+        window.toggleHeaderSection = toggleHeaderSection;
+        window.toggleMemberLookup = toggleMemberLookup;
         window.logout = logout;
         window.markReceived = markReceived;
         window.processCashPayment = processCashPayment;

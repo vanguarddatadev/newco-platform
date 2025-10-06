@@ -5,56 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santa Clara Bingo</title>
     
-    <!-- 
+    <!--
     ╔═══════════════════════════════════════════════════════════════════╗
-    ║              NEWCO CUSTOMER DEMO - PUBLIC FACING WEBSITE            ║
+    ║         NEWCO MEMBER WEBSITE - MOBILE RESPONSIVE VERSION          ║
     ╠═══════════════════════════════════════════════════════════════════╣
-    ║ FILE: newco-customer-demo.html                                      ║
-    ║ PURPOSE: Customer-facing bingo hall website with purchasing       ║
+    ║ FILE: newco-member-website-mobile.html                            ║
+    ║ PURPOSE: Mobile-first responsive bingo hall website               ║
     ╠═══════════════════════════════════════════════════════════════════╣
     ║                                                                   ║
-    ║ SYSTEM INTERCONNECTIONS:                                         ║
-    ║ • READS FROM:                                                     ║
-    ║   - newco_organization (branding, settings)                   ║
-    ║   - newco_sessions (available sessions)                       ║
-    ║   - newco_packages (pricing, packages)                        ║
-    ║   - newco_members (customer data)                             ║
-    ║   - newco_rewards (loyalty points)                            ║
+    ║ MOBILE FEATURES:                                                  ║
+    ║ • Responsive header with hamburger menu                           ║
+    ║ • Stacked cart sidebar on mobile                                  ║
+    ║ • Touch-friendly buttons and controls                             ║
+    ║ • Optimized grid layouts for all screen sizes                     ║
+    ║ • Bottom-fixed cart on mobile                                     ║
     ║                                                                   ║
-    ║ • WRITES TO:                                                      ║
-    ║   - newco_transactions (purchase records)                     ║
-    ║   - newco_members (updates points/visits)                     ║
-    ║   - newco_cart (temporary cart data)                          ║
+    ║ BREAKPOINTS:                                                      ║
+    ║ • Desktop: 1024px+                                                ║
+    ║ • Tablet: 768px - 1023px                                          ║
+    ║ • Mobile: < 768px                                                 ║
     ║                                                                   ║
-    ║ • INTEGRATES WITH:                                                ║
-    ║   - newco-admin.html (configuration source)                    ║
-    ║   - newco-redemption.html (point redemption)                       ║
-    ║   - newco-floor-runner-vanguard.html (in-person sales)             ║
+    ║ SYSTEM INTERCONNECTIONS:                                          ║
+    ║ • READS FROM: Same as desktop version                             ║
+    ║   - newco_organization, sessions, packages, members, rewards      ║
+    ║ • WRITES TO: Same as desktop version                              ║
+    ║   - newco_transactions, members, cart                             ║
     ║                                                                   ║
-    ║ KEY SECTIONS (use Ctrl+F):                                       ║
-    ║ • [CART-SYSTEM]     - Shopping cart management                   ║
-    ║ • [CHECKOUT]        - Payment processing                         ║
-    ║ • [MEMBER-AUTH]     - Member login/registration                  ║
-    ║ • [SESSION-DISPLAY] - Session calendar & selection               ║
-    ║ • [PACKAGE-SELECT]  - Package selection UI                       ║
-    ║ • [LOYALTY-POINTS]  - Points earning/display                     ║
-    ║ • [SEAT-SELECTION]  - Interactive seat picker                    ║
-    ║                                                                   ║
-    ║ TECHNICAL NOTES:                                                 ║
-    ║ • Uses NewcoData for all data operations                      ║
-    ║ • Cart persists in sessionStorage during checkout                ║
-    ║ • Transactions marked as source: 'website'                       ║
-    ║ • Points calculated using org.rewards.pointsConfig               ║
-    ║                                                                   ║
-    ║ SECURITY CONSIDERATIONS:                                         ║
-    ║ • No payment processing (placeholder only)                       ║
-    ║ • Member passwords not implemented (email-only)                  ║
-    ║ • All data client-side (localStorage)                            ║
-    ║                                                                   ║
-    ║ DEPLOYMENT:                                                       ║
-    ║ • Standalone HTML - no build process                             ║
-    ║ • Requires newco-admin.html to configure data                  ║
-    ║ • Mobile responsive design included                              ║
+    ║ TECHNICAL NOTES:                                                  ║
+    ║ • Uses NewcoData for all data operations                          ║
+    ║ • Cart persists in sessionStorage during checkout                 ║
+    ║ • Fully responsive CSS with mobile-first approach                 ║
+    ║ • Touch-optimized UI elements                                     ║
     ╚═══════════════════════════════════════════════════════════════════╝
     -->
     <style>
@@ -370,6 +351,207 @@
         .package-btn:active, .item-btn:active, .add-item-btn:active {
             transform: translateY(0);
         }
+
+        /* ============================================
+           MOBILE RESPONSIVE STYLES
+           ============================================ */
+
+        /* Tablet and below (768px) */
+        @media (max-width: 768px) {
+            /* Header - Make compact and stack elements */
+            .header {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .header-left {
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .header-right {
+                gap: 1rem;
+            }
+
+            .login-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            /* Main container - Stack vertically */
+            .main-container {
+                flex-direction: column;
+            }
+
+            /* Content area - Reduce padding */
+            .content {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.875rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* Cart sidebar - Full width at bottom or overlay */
+            .cart-sidebar {
+                width: 100%;
+                border-left: none;
+                border-top: 2px solid #e0e0e0;
+                max-height: 50vh;
+                overflow-y: auto;
+                position: sticky;
+                bottom: 0;
+                z-index: 100;
+            }
+
+            .cart-title {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            /* Package grid - Single column on mobile */
+            .packages-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .package-card {
+                min-height: auto;
+                padding: 1.25rem;
+            }
+
+            .package-name {
+                font-size: 1.25rem;
+            }
+
+            .package-price {
+                font-size: 1.75rem;
+            }
+
+            /* Cart items - Adjust spacing */
+            .cart-item {
+                padding: 0.75rem;
+            }
+
+            .cart-item-name {
+                font-size: 0.9rem;
+            }
+
+            .cart-item-price {
+                font-size: 0.9rem;
+            }
+
+            /* Checkout button - Make it prominent */
+            .checkout-btn {
+                padding: 1rem;
+                font-size: 1.125rem;
+                position: sticky;
+                bottom: 0;
+                background: #6c5ce7;
+            }
+
+            /* Touch-friendly buttons */
+            .add-to-cart-btn,
+            .package-btn,
+            .item-btn,
+            .add-item-btn {
+                padding: 0.875rem;
+                font-size: 1rem;
+                min-height: 44px; /* iOS recommended touch target */
+            }
+
+            /* Cart quantity controls - Larger touch targets */
+            .cart-item-actions button {
+                min-width: 36px;
+                min-height: 36px;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Mobile only (< 480px) */
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .content {
+                padding: 0.75rem;
+            }
+
+            .page-title {
+                font-size: 1.25rem;
+            }
+
+            .package-card {
+                padding: 1rem;
+            }
+
+            .package-name {
+                font-size: 1.1rem;
+            }
+
+            .package-price {
+                font-size: 1.5rem;
+            }
+
+            .cart-sidebar {
+                padding: 1rem;
+            }
+
+            .cart-item {
+                padding: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .cart-item-name {
+                font-size: 0.85rem;
+                flex: 1 1 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .cart-item-price {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Landscape mobile optimization */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .cart-sidebar {
+                max-height: 40vh;
+            }
+
+            .main-container {
+                height: auto;
+            }
+        }
+
+        /* Tablet specific (768px - 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .packages-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cart-sidebar {
+                width: 320px;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
     </style>
 
     <!-- Stripe.js -->
@@ -388,7 +570,8 @@
 
         // Initialize asynchronously and wait for it to complete
         (async () => {
-            await NewcoData.init(customer);
+            // Skip loading transactions and members for faster customer site load
+            await NewcoData.init(customer, { skipHeavyData: true });
             console.log('Customer Demo initialized for:', customer);
 
             // Load organization data after init completes
@@ -404,7 +587,10 @@
     <!-- Header -->
     <div class="header">
         <div class="header-left">
-            <div class="logo">🎯 <span id="orgName">Santa Clara Bingo</span></div>
+            <div id="orgLogo" style="display: none; width: 50px; height: 50px; margin-right: 1rem;">
+                <img id="orgLogoImg" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+            </div>
+            <div class="logo"><span id="orgName">Santa Clara Bingo</span></div>
         </div>
         <div class="header-right">
             <div id="socialMediaButton" style="display: none; margin-right: 1rem;">
@@ -531,7 +717,7 @@
         // [ORGANIZATION-LOADER] - Branding & Configuration
         // ═══════════════════════════════════════════════════════════
         
-        function loadOrganization() {
+        async function loadOrganization() {
             const org = NewcoData.get('organization');
             console.log('Organization data:', org);
             if (org && org.name) {
@@ -548,6 +734,32 @@
                 const welcomeTitle = document.getElementById('welcomeTitle');
                 if (welcomeTitle) {
                     welcomeTitle.textContent = 'Welcome!';
+                }
+            }
+
+            // Load and display logo from art library
+            if (org && org.logoArtId) {
+                try {
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/art_library?id=eq.${org.logoArtId}&select=*`,
+                        {
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            }
+                        }
+                    );
+                    const artData = await response.json();
+                    if (artData && artData.length > 0) {
+                        const logoContainer = document.getElementById('orgLogo');
+                        const logoImg = document.getElementById('orgLogoImg');
+                        if (logoContainer && logoImg) {
+                            logoImg.src = artData[0].file_data;
+                            logoContainer.style.display = 'block';
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error loading logo:', err);
                 }
             }
             
@@ -691,14 +903,103 @@
         }
 
         window.addItemToCart = function(itemId) {
+            console.log('🛒 addItemToCart called with itemId:', itemId);
             const items = NewcoData.get('salesItems') || [];
             const item = items.find(i => i.id === itemId);
+            console.log('🛒 Found item:', item);
             if (item) {
+                // Check if "No Add-ons without Seat" setting is enabled
+                const settings = NewcoData.get('settings') || {};
+                console.log('🛒 Add-on check - requireSeatForAddons setting:', settings.requireSeatForAddons);
+                console.log('🛒 Full settings object:', settings);
+                if (settings.requireSeatForAddons) {
+                    // Check if customer has a package with a seat in cart or already purchased for this session
+                    const hasSeatInCart = cart.items.some(cartItem =>
+                        cartItem.type === 'package' && cartItem.requiresSeat
+                    );
+                    console.log('Has seat in cart:', hasSeatInCart);
+
+                    if (!hasSeatInCart) {
+                        // Check if customer has previously purchased a seat for this session date
+                        const selectedSession = NewcoData.get('selectedSession');
+                        const memberData = sessionStorage.getItem('newco_current_member');
+                        const member = memberData ? JSON.parse(memberData) : null;
+
+                        let hasPurchasedSeat = false;
+                        if (member && selectedSession) {
+                            const transactions = NewcoData.get('transactions') || [];
+                            hasPurchasedSeat = transactions.some(t =>
+                                t.memberEmail === member.email &&
+                                t.sessionId === selectedSession.id &&
+                                t.sessionDate === selectedSession.day &&
+                                t.items && t.items.some(ti =>
+                                    ti.type === 'package' && ti.requiresSeat
+                                )
+                            );
+                        }
+
+                        if (!hasPurchasedSeat) {
+                            notify.modal({
+                                title: '🪑 Seat Required',
+                                message: 'You cannot get add-ons until you have a package with a seat.',
+                                type: 'warning'
+                            });
+                            return;
+                        }
+                    }
+                }
+
                 addToCart('item', item.id, item.name, item.price, false);
             }
         }
 
         function addToCart(type, id, name, price, requiresSeat) {
+            console.log('🛒 addToCart called - type:', type, 'id:', id);
+
+            // Check if "No Add-ons without Seat" setting is enabled for items (basic offerings)
+            if (type === 'item') {
+                const settings = NewcoData.get('settings') || {};
+                console.log('🛒 Item type detected - checking seat requirement, setting:', settings.requireSeatForAddons);
+
+                if (settings.requireSeatForAddons) {
+                    // Check if customer has a package with a seat in cart
+                    const hasSeatInCart = cart.items.some(cartItem =>
+                        cartItem.type === 'package' && cartItem.requiresSeat
+                    );
+                    console.log('🛒 Has seat in cart:', hasSeatInCart);
+
+                    if (!hasSeatInCart) {
+                        // Check if customer has previously purchased a seat for this session date
+                        const selectedSession = NewcoData.get('selectedSession');
+                        const memberData = sessionStorage.getItem('newco_current_member');
+                        const member = memberData ? JSON.parse(memberData) : null;
+
+                        let hasPurchasedSeat = false;
+                        if (member && selectedSession) {
+                            const transactions = NewcoData.get('transactions') || [];
+                            hasPurchasedSeat = transactions.some(t =>
+                                t.memberEmail === member.email &&
+                                t.sessionId === selectedSession.id &&
+                                t.sessionDate === selectedSession.day &&
+                                t.items && t.items.some(ti =>
+                                    ti.type === 'package' && ti.requiresSeat
+                                )
+                            );
+                        }
+                        console.log('🛒 Has purchased seat:', hasPurchasedSeat);
+
+                        if (!hasPurchasedSeat) {
+                            notify.modal({
+                                title: '🪑 Seat Required',
+                                message: 'You cannot get add-ons until you have a package with a seat.',
+                                type: 'warning'
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Check if item already in cart
             const existingItem = cart.items.find(i => i.id === id && i.type === type);
             
@@ -876,8 +1177,13 @@
                 let discountAmount = 0;
                 cart.items.forEach(item => {
                     if (item.type === 'reward' && item.data) {
-                        // Check if this is a percentage discount reward
-                        if (item.data.name && item.data.name.includes('%')) {
+                        // Check if this is a discount coupon with percentage field
+                        if (item.data.category === 'discount_coupon' && item.data.discountPercentage) {
+                            const percentage = parseInt(item.data.discountPercentage) / 100;
+                            discountAmount = cart.subtotal * percentage;
+                        }
+                        // Fallback: Check if this is a percentage discount reward (legacy)
+                        else if (item.data.name && item.data.name.includes('%')) {
                             // Extract percentage (e.g., "25% Discount" -> 25)
                             const match = item.data.name.match(/(\d+)%/);
                             if (match) {
@@ -943,20 +1249,45 @@
                 updateCartDisplay();
             }
             
-            // Restore selected session if available
+            // Restore selected session if available AND valid
             if (savedSession) {
-                selectedSession = JSON.parse(savedSession);
-                // If we have a saved session, go directly to package selection
-                if (selectedSession) {
+                const parsedSession = JSON.parse(savedSession);
+
+                // Verify the saved session still exists in the current schedule
+                const halls = NewcoData.get('halls') || [];
+                const schedules = NewcoData.get('schedules') || {};
+                const schedule = NewcoData.get('schedule') || {};
+
+                // Check if session is still valid
+                let sessionExists = false;
+                if (halls.length > 0 && parsedSession) {
+                    const daySchedule = schedule[parsedSession.day] || schedules[parsedSession.day];
+                    if (daySchedule && Array.isArray(daySchedule)) {
+                        sessionExists = daySchedule.some(s =>
+                            s.name === parsedSession.name &&
+                            s.startTime === parsedSession.startTime
+                        );
+                    }
+                }
+
+                // Only restore if session is still valid
+                if (sessionExists) {
+                    selectedSession = parsedSession;
                     document.getElementById('eventSelection').style.display = 'none';
                     document.getElementById('packageSelection').style.display = 'block';
                     document.getElementById('selectedSessionTitle').textContent = selectedSession.name;
-                    document.getElementById('selectedSessionDetails').textContent = 
+                    document.getElementById('selectedSessionDetails').textContent =
                         `${selectedSession.day} • ${selectedSession.startTime} - ${selectedSession.endTime}`;
-                    
+
                     // Load packages for this session
                     loadFilteredPackages();
                     loadFilteredItems();
+                } else {
+                    // Session no longer exists, clear it and show session selection
+                    sessionStorage.removeItem('selectedSession');
+                    sessionStorage.removeItem('newco_cart');
+                    document.getElementById('eventSelection').style.display = 'block';
+                    document.getElementById('packageSelection').style.display = 'none';
                 }
             }
         }
@@ -1845,14 +2176,17 @@
             const rows = layout.rows || layout.height || 10;
             const cols = layout.cols || layout.width || 10;
             const cells = layout.cells || {};
-            
+
             // Get reserved seats for this session INCLUDING the day
             const sessionKey = `${cart.sessionId}_${cart.sessionDate}`;
             const reservedSeats = getReservedSeatsForSession(sessionKey);
             const memberData = sessionStorage.getItem('newco_current_member');
             const member = memberData ? JSON.parse(memberData) : null;
             const userSeats = member ? getUserSeatsForSession(sessionKey, member.id) : new Set();
-            
+
+            // Track custom areas to avoid rendering them multiple times
+            const renderedCustomAreas = new Set();
+
             let html = `
                 <div style="text-align: center; margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
                     <strong>STAGE / CALLER</strong>
@@ -2021,8 +2355,133 @@
                     } else if (cellData.type === 'restroom') {
                         html += '<div style="width: 45px; height: 45px; background: #2196f3; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: white;">🚻</div>';
                     } else if (cellData.type === 'custom') {
-                        // Custom areas are not selectable - just show them
-                        html += `<div style="width: 45px; height: 45px; background: ${cellData.customColor || '#4A90E2'}; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; font-weight: bold;">${cellData.customName || ''}</div>`;
+                        // Custom areas - render as unified blocks with NO internal borders
+                        const areaId = cellData.customAreaId;
+                        const areaColor = cellData.customColor || '#4A90E2';
+                        const areaName = cellData.customName || '';
+                        const orientation = cellData.textOrientation || 'horizontal';
+
+                        // Check if this is the first cell of this custom area
+                        if (!renderedCustomAreas.has(areaId)) {
+                            renderedCustomAreas.add(areaId);
+
+                            // Find all cells in this custom area
+                            const areaCells = [];
+                            for (let ar = 0; ar < rows; ar++) {
+                                for (let ac = 0; ac < cols; ac++) {
+                                    const aCellKey = `${ar}-${ac}`;
+                                    const aCellData = cells[aCellKey] || {};
+                                    if (aCellData.customAreaId === areaId) {
+                                        areaCells.push({ row: ar, col: ac });
+                                    }
+                                }
+                            }
+
+                            const minRow = Math.min(...areaCells.map(c => c.row));
+                            const maxRow = Math.max(...areaCells.map(c => c.row));
+                            const minCol = Math.min(...areaCells.map(c => c.col));
+                            const maxCol = Math.max(...areaCells.map(c => c.col));
+
+                            const rowSpan = maxRow - minRow + 1;
+                            const colSpan = maxCol - minCol + 1;
+
+                            // Determine if this is a boundary cell
+                            const isTopEdge = r === minRow;
+                            const isBottomEdge = r === maxRow;
+                            const isLeftEdge = c === minCol;
+                            const isRightEdge = c === maxCol;
+
+                            // Only render text in top-left cell
+                            const isTopLeft = (r === minRow && c === minCol);
+
+                            let transform = 'none';
+                            if (orientation === 'vertical-left') {
+                                transform = 'rotate(-90deg)';
+                            } else if (orientation === 'vertical-right') {
+                                transform = 'rotate(90deg)';
+                            }
+
+                            if (isTopLeft) {
+                                // Top-left cell: render with spanning text overlay
+                                html += `
+                                    <div style="
+                                        position: relative;
+                                        width: 45px;
+                                        height: 45px;
+                                        background: ${areaColor};
+                                        border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                    ">
+                                        <div style="
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            width: ${colSpan * 100}%;
+                                            height: ${rowSpan * 100}%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-size: ${Math.min(1.5, Math.max(0.75, colSpan * 0.4))}rem;
+                                            color: white;
+                                            font-weight: bold;
+                                            padding: 0.5rem;
+                                            pointer-events: none;
+                                            z-index: 1;
+                                            transform: ${transform};
+                                        ">${areaName}</div>
+                                    </div>
+                                `;
+                            } else {
+                                // Other cells in area: just colored block with appropriate borders
+                                html += `
+                                    <div style="
+                                        width: 45px;
+                                        height: 45px;
+                                        background: ${areaColor};
+                                        border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
+                                        border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                    "></div>
+                                `;
+                            }
+                        } else {
+                            // Already rendered this area - find boundary info for this cell
+                            const areaCells = [];
+                            for (let ar = 0; ar < rows; ar++) {
+                                for (let ac = 0; ac < cols; ac++) {
+                                    const aCellKey = `${ar}-${ac}`;
+                                    const aCellData = cells[aCellKey] || {};
+                                    if (aCellData.customAreaId === areaId) {
+                                        areaCells.push({ row: ar, col: ac });
+                                    }
+                                }
+                            }
+
+                            const minRow = Math.min(...areaCells.map(c => c.row));
+                            const maxRow = Math.max(...areaCells.map(c => c.row));
+                            const minCol = Math.min(...areaCells.map(c => c.col));
+                            const maxCol = Math.max(...areaCells.map(c => c.col));
+
+                            const isTopEdge = r === minRow;
+                            const isBottomEdge = r === maxRow;
+                            const isLeftEdge = c === minCol;
+                            const isRightEdge = c === maxCol;
+
+                            html += `
+                                <div style="
+                                    width: 45px;
+                                    height: 45px;
+                                    background: ${areaColor};
+                                    border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
+                                    border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
+                                    border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
+                                    border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                "></div>
+                            `;
+                        }
                     } else if (cellData.type === 'caller') {
                         // Don't show caller station in order view
                         html += '<div style="width: 45px; height: 45px;"></div>';
@@ -2420,6 +2879,16 @@
             // Store selected seat (simple - just one seat per user)
             const selectedSeat = window.checkoutData.selectedSeat;
             
+            // Strip image data from cart items to prevent transaction bloat
+            const sanitizedItems = cart.items.map(item => {
+                const sanitized = { ...item };
+                // Remove large image fields that cause transaction data bloat
+                delete sanitized.imageUrl;
+                delete sanitized.imageArtId;
+                delete sanitized.imageStyle;
+                return sanitized;
+            });
+
             // Create transaction record matching schema
             const transaction = {
                 id: 'txn_' + Date.now(),
@@ -2431,7 +2900,7 @@
                 sessionId: cart.sessionId,
                 sessionName: cart.sessionName,
                 sessionDate: cart.sessionDate, // Day of week (e.g., "Friday")
-                items: cart.items,
+                items: sanitizedItems, // Use sanitized items without images
                 selectedSeat: selectedSeat,
                 subtotal: cart.subtotal,
                 tax: cart.tax,
@@ -2478,8 +2947,8 @@
                 members[memberIndex].totalSpent = (members[memberIndex].totalSpent || 0) + finalTotal;
                 members[memberIndex].visits = (members[memberIndex].visits || 0) + 1;
                 members[memberIndex].lastVisit = new Date().toISOString();
-                
-                NewcoData.set('members', members);
+
+                await NewcoData.set('members', members);
 
                 // Update session
                 window.checkoutData.member.currentPoints = members[memberIndex].currentPoints;
@@ -2488,10 +2957,20 @@
             
             // Save transaction with updated loyaltyPointsEarned
             try {
-                const transactions = NewcoData.get('transactions') || [];
+                // IMPORTANT: Customer site uses skipHeavyData, so transactions aren't in cache
+                // Must fetch fresh from Supabase before appending new transaction
+                const custData = await NewcoData.read_cust(true);  // Force load all data
+                const transactions = custData.transactions || [];
+
                 transactions.push(transaction);
-                await NewcoData.set('transactions', transactions);
-                
+
+                const saveResult = await NewcoData.set('transactions', transactions);
+
+                if (!saveResult) {
+                    console.error('❌ Transaction save failed - data may not have persisted');
+                    notify.warning('Transaction completed but may not have saved properly. Please verify in admin portal.');
+                }
+
                 // Also update seat reservations for this session/day in database
                 if (transaction.selectedSeat) {
                     const seatReservations = NewcoData.get('seatReservations') || {};
@@ -2508,12 +2987,13 @@
                     }
                 }
             } catch (error) {
-                console.error('Error saving transaction:', error);
+                console.error('❌ Error saving transaction:', error);
                 notify.error('Error saving transaction: ' + error.message);
             }
             
-            // Create reward transactions
-            const rewardTransactions = NewcoData.get('rewardsTransactions') || [];
+            // Create reward transactions - fetch fresh from Supabase since not in cache
+            const custData2 = await NewcoData.read_cust(true);  // Force load all data
+            const rewardTransactions = custData2.rewardsTransactions || [];
 
             // If points were redeemed
             if (window.checkoutData.loyaltyPointsUsed > 0) {
@@ -2547,7 +3027,7 @@
                 });
             }
 
-            NewcoData.set('rewardsTransactions', rewardTransactions);
+            await NewcoData.set('rewardsTransactions', rewardTransactions);
             
             // Clear cart
             cart = {
@@ -3051,30 +3531,46 @@
                             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
                                 ${rewards.map(reward => {
                                     const canAfford = points >= reward.pointsCost;
+
+                                    // Build image HTML based on style
+                                    let imageHTML = '';
+                                    if (reward.imageUrl) {
+                                        if (reward.imageStyle === 'banner') {
+                                            imageHTML = `<div style="width: 100%; height: 120px; overflow: hidden; margin-bottom: 1rem; border-radius: 8px; margin: -1.5rem -1.5rem 1rem -1.5rem;"><img src="${reward.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+                                        } else if (reward.imageStyle === 'background') {
+                                            imageHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${reward.imageUrl}'); background-size: cover; background-position: center; opacity: 0.15; border-radius: 12px; z-index: 0;"></div>`;
+                                        } else {
+                                            // thumbnail
+                                            imageHTML = `<div style="text-align: center; margin-bottom: 1rem;"><img src="${reward.imageUrl}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"></div>`;
+                                        }
+                                    }
+
                                     return `
-                                        <div style="background: white; border: 2px solid ${canAfford ? '#e0e0e0' : '#ffebee'}; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; position: relative; transition: transform 0.2s, box-shadow 0.2s;" 
-                                             onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)';" 
+                                        <div style="background: white; border: 2px solid ${canAfford ? '#e0e0e0' : '#ffebee'}; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; position: relative; ${reward.imageStyle === 'background' ? 'overflow: hidden;' : ''} transition: transform 0.2s, box-shadow 0.2s;"
+                                             onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)';"
                                              onmouseout="this.style.transform=''; this.style.boxShadow='';">
-                                            ${reward.featured ? '<span style="position: absolute; top: -10px; right: 10px; background: #ff4757; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">FEATURED</span>' : ''}
-                                            
-                                            <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">
-                                                ${reward.icon || '🎁'}
-                                            </div>
-                                            
-                                            <h3 style="margin: 0 0 0.5rem 0; color: #333;">${reward.name}</h3>
-                                            <p style="color: #666; font-size: 0.875rem; flex: 1;">${reward.description || 'Amazing reward waiting for you!'}</p>
-                                            
-                                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
-                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                                    <span style="font-weight: bold; color: #6c5ce7; font-size: 1.25rem;">${reward.pointsCost} pts</span>
+                                            ${reward.imageStyle === 'background' ? imageHTML : ''}
+                                            ${reward.featured ? '<span style="position: absolute; top: -10px; right: 10px; background: #ff4757; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: bold; z-index: 1;">FEATURED</span>' : ''}
+
+                                            ${reward.imageStyle !== 'background' && reward.imageStyle !== 'banner' ? imageHTML : ''}
+                                            ${reward.imageStyle === 'banner' ? imageHTML : ''}
+
+                                            <div style="${reward.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
+                                                <h3 style="margin: 0 0 0.5rem 0; color: #333;">${reward.name}</h3>
+                                                <p style="color: #666; font-size: 0.875rem; flex: 1;">${reward.description || 'Amazing reward waiting for you!'}</p>
+
+                                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                                        <span style="font-weight: bold; color: #6c5ce7; font-size: 1.25rem;">${reward.pointsCost} pts</span>
+                                                    </div>
+
+                                                    <button
+                                                        onclick="${canAfford ? `redeemReward('${reward.id}')` : ''}"
+                                                        style="width: 100%; padding: 0.75rem; background: ${canAfford ? '#6c5ce7' : '#ccc'}; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: ${canAfford ? 'pointer' : 'not-allowed'};"
+                                                        ${!canAfford ? 'disabled' : ''}>
+                                                        ${canAfford ? 'Redeem' : `Need ${reward.pointsCost - member.currentPoints} more pts`}
+                                                    </button>
                                                 </div>
-                                                
-                                                <button 
-                                                    onclick="${canAfford ? `redeemReward('${reward.id}')` : ''}"
-                                                    style="width: 100%; padding: 0.75rem; background: ${canAfford ? '#6c5ce7' : '#ccc'}; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: ${canAfford ? 'pointer' : 'not-allowed'};"
-                                                    ${!canAfford ? 'disabled' : ''}>
-                                                    ${canAfford ? 'Redeem' : `Need ${reward.pointsCost - member.currentPoints} more pts`}
-                                                </button>
                                             </div>
                                         </div>
                                     `;
@@ -3222,14 +3718,14 @@
         
         function loadSessions() {
             const halls = NewcoData.get('halls') || [];
-            const schedules = NewcoData.get('schedules') || {};
             const schedule = NewcoData.get('schedule') || {}; // Support both singular and plural
+            const schedules = schedule.schedules || {}; // Get schedules from schedule object
             const sessionsData = NewcoData.get('sessions') || []; // Get session names
             const container = document.getElementById('sessionsGrid');
 
             console.log('loadSessions - halls:', halls);
-            console.log('loadSessions - schedules:', schedules);
             console.log('loadSessions - schedule:', schedule);
+            console.log('loadSessions - schedules:', schedules);
             console.log('loadSessions - sessionsData:', sessionsData);
 
             // Create default Hall 1 if none exists
@@ -3313,7 +3809,14 @@
                             startTime: daySchedule.doors || daySchedule.startTime || '17:00',
                             endTime: daySchedule.closing || daySchedule.endTime || '21:00',
                             earlyBird: daySchedule.early || daySchedule.earlyBird || '18:00',
-                            regularTime: daySchedule.regular || daySchedule.regularTime || '18:30'
+                            regularTime: daySchedule.regular || daySchedule.regularTime || '18:30',
+                            imageUrl: daySchedule.imageUrl || null,
+                            imageArtId: daySchedule.imageArtId || null,
+                            imageStyle: daySchedule.imageStyle || 'thumbnail',
+                            bgOpacity: daySchedule.bgOpacity || 20,
+                            textColor: daySchedule.textColor || 'black',
+                            textEffect: daySchedule.textEffect || 'none',
+                            highlightColor: daySchedule.highlightColor || 'yellow'
                         };
 
                         console.log('Created session:', session);
@@ -3338,8 +3841,52 @@
                     return `${displayHour}:${minutes} ${ampm}`;
                 };
                 
+                // Render image based on style
+                let imageHTML = '';
+                const textColor = session.textColor || 'black';
+                const textEffect = session.textEffect || 'none';
+                const highlightColor = session.highlightColor || 'yellow';
+                const bgOpacity = (session.bgOpacity || 20) / 100;
+
+                // Map highlight colors to rgba
+                const highlightColorMap = {
+                    'yellow': 'rgba(255,255,0,0.5)',
+                    'green': 'rgba(0,255,0,0.4)',
+                    'blue': 'rgba(0,150,255,0.4)',
+                    'pink': 'rgba(255,105,180,0.4)',
+                    'orange': 'rgba(255,165,0,0.5)',
+                    'white': 'rgba(255,255,255,0.6)'
+                };
+
+                if (session.imageUrl) {
+                    if (session.imageStyle === 'banner') {
+                        imageHTML = `<div style="width: 100%; height: 250px; overflow: hidden; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 12px 12px 0 0; background: #f0f0f0;"><img src="${session.imageUrl}" style="width: 100%; height: 100%; object-fit: contain; object-position: center;"></div>`;
+                    } else if (session.imageStyle === 'background') {
+                        imageHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${session.imageUrl}'); background-size: cover; background-position: center; opacity: ${bgOpacity}; border-radius: 12px; z-index: 0;"></div>`;
+                    } else {
+                        // thumbnail
+                        imageHTML = `<div style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 8px; overflow: hidden;"><img src="${session.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+                    }
+                }
+
+                const isBackground = session.imageStyle === 'background';
+
+                // Build text style with effects
+                let textStyle = isBackground ? `color: ${textColor}; position: relative; z-index: 1;` : '';
+                if (textEffect === 'shadow') {
+                    textStyle += ' text-shadow: 2px 2px 4px rgba(0,0,0,0.8);';
+                } else if (textEffect === 'glow') {
+                    textStyle += ` text-shadow: 0 0 10px ${textColor}, 0 0 20px ${textColor}, 0 0 30px ${textColor};`;
+                } else if (textEffect === 'outline') {
+                    textStyle += ' text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 5px rgba(0,0,0,0.5);';
+                } else if (textEffect === 'highlight') {
+                    const highlightRgba = highlightColorMap[highlightColor] || 'rgba(255,255,0,0.5)';
+                    textStyle += ` background: linear-gradient(180deg, transparent 50%, ${highlightRgba} 50%); padding: 0 0.25rem; border-radius: 3px;`;
+                }
+
                 return `
                     <div onclick="selectSession('${session.id}', ${JSON.stringify(session).replace(/"/g, '&quot;')})" style="
+                        position: relative;
                         background: white;
                         border: 2px solid #e0e0e0;
                         border-radius: 12px;
@@ -3347,16 +3894,19 @@
                         cursor: pointer;
                         transition: all 0.3s;
                         text-align: center;
-                    " onmouseover="this.style.borderColor='#6c5ce7'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(108,92,231,0.2)';" 
+                        overflow: hidden;
+                    " onmouseover="this.style.borderColor='#6c5ce7'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(108,92,231,0.2)';"
                        onmouseout="this.style.borderColor='#e0e0e0'; this.style.transform=''; this.style.boxShadow='';">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎱</div>
-                        <h3 style="margin: 0 0 0.5rem 0; color: #333;">${session.name}</h3>
-                        <p style="margin: 0.25rem 0; color: #6c5ce7; font-weight: 600; font-size: 0.875rem;">📍 ${session.hallName || 'Hall 1'}</p>
-                        <p style="margin: 0.25rem 0; color: #666; font-weight: 600;">${session.day}</p>
-                        <p style="margin: 0.25rem 0; color: #999; font-size: 0.875rem;">
+                        ${isBackground ? imageHTML : ''}
+                        ${session.imageStyle === 'banner' ? imageHTML : ''}
+                        ${session.imageStyle === 'thumbnail' && imageHTML ? imageHTML : ''}
+                        <h3 style="margin: 0 0 0.5rem 0; ${textStyle}">${session.name}</h3>
+                        <p style="margin: 0.25rem 0; color: ${isBackground && textColor !== 'black' ? textColor : '#6c5ce7'}; font-weight: 600; font-size: 0.875rem; ${isBackground ? 'position: relative; z-index: 1;' : ''}">📍 ${session.hallName || 'Hall 1'}</p>
+                        <p style="margin: 0.25rem 0; font-weight: 600; ${textStyle}">${session.day}</p>
+                        <p style="margin: 0.25rem 0; font-size: 0.875rem; ${textStyle}">
                             Doors: ${formatTime(session.startTime)} • Ends: ${formatTime(session.endTime)}
                         </p>
-                        ${session.earlyBird ? `<p style="margin: 0.25rem 0; color: #27ae60; font-size: 0.75rem;">Early Bird: ${formatTime(session.earlyBird)}</p>` : ''}
+                        ${session.earlyBird ? `<p style="margin: 0.25rem 0; color: ${isBackground && textColor !== 'black' ? textColor : '#27ae60'}; font-size: 0.75rem; ${isBackground ? 'position: relative; z-index: 1;' : ''}">Early Bird: ${formatTime(session.earlyBird)}</p>` : ''}
                     </div>
                 `;
             }).join('');
@@ -3570,18 +4120,39 @@
                     itemsList += `<li>${pkg.customItems}</li>`;
                 }
                 
+                // Build image HTML based on style
+                let imageHTML = '';
+                if (pkg.imageUrl) {
+                    console.log(`Package ${pkg.name} has image:`, pkg.imageUrl.substring(0, 50), 'style:', pkg.imageStyle);
+                    if (pkg.imageStyle === 'banner') {
+                        imageHTML = `<div style="width: 100%; height: 150px; overflow: hidden; margin-bottom: 1rem; border-radius: 8px 8px 0 0;"><img src="${pkg.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+                    } else if (pkg.imageStyle === 'background') {
+                        imageHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${pkg.imageUrl}'); background-size: cover; background-position: center; opacity: 0.2; border-radius: 12px; z-index: 0;"></div>`;
+                    } else {
+                        // thumbnail
+                        imageHTML = `<img src="${pkg.imageUrl}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 1rem;">`;
+                    }
+                } else {
+                    console.log(`Package ${pkg.name} has NO image`);
+                }
+
                 return `
-                    <div class="package-card">
+                    <div class="package-card" style="${pkg.imageStyle === 'background' ? 'position: relative; overflow: hidden;' : ''}">
+                        ${pkg.imageStyle === 'background' ? imageHTML : ''}
                         ${pkg.bestValue ? '<span class="best-value-badge">BEST VALUE</span>' : ''}
-                        <div style="flex: 0;">
-                            <div class="package-name">${pkg.name}</div>
-                            <div class="package-price">$${pkg.price.toFixed(2)}</div>
-                            ${pkg.description ? `<div class="package-description">${pkg.description}</div>` : ''}
+                        ${pkg.imageStyle === 'banner' ? imageHTML : ''}
+                        <div style="flex: 0; ${pkg.imageStyle === 'thumbnail' && pkg.imageUrl ? 'display: flex; align-items: center;' : ''} ${pkg.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
+                            ${pkg.imageStyle === 'thumbnail' ? imageHTML : ''}
+                            <div>
+                                <div class="package-name">${pkg.name}</div>
+                                <div class="package-price">$${pkg.price.toFixed(2)}</div>
+                                ${pkg.description ? `<div class="package-description">${pkg.description}</div>` : ''}
+                            </div>
                         </div>
-                        <div class="package-items">
+                        <div class="package-items" style="${pkg.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
                             ${itemsList ? `<strong>Includes:</strong><ul>${itemsList}</ul>` : ''}
                         </div>
-                        <div style="margin-top: auto;">
+                        <div style="margin-top: auto; ${pkg.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
                             <button class="package-btn" onclick="addToCart('package', '${pkg.id}', '${pkg.name}', ${pkg.price}, ${pkg.seatSelection || false})">
                                 Add to Cart
                             </button>
@@ -3593,23 +4164,46 @@
         
         function loadItemsWithData(items) {
             const container = document.getElementById('itemsGrid');
-            
-            container.innerHTML = items.map(item => `
-                <div class="item-card">
-                    <div style="flex: 0;">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">$${item.price ? item.price.toFixed(2) : 'Package Only'}</div>
+
+            container.innerHTML = items.map(item => {
+                // Build image HTML based on style
+                let imageHTML = '';
+                if (item.imageUrl) {
+                    console.log(`Item ${item.name} has image:`, item.imageUrl.substring(0, 50), 'style:', item.imageStyle);
+                    if (item.imageStyle === 'banner') {
+                        imageHTML = `<div style="width: 100%; height: 150px; overflow: hidden; margin-bottom: 1rem; border-radius: 8px 8px 0 0;"><img src="${item.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+                    } else if (item.imageStyle === 'background') {
+                        imageHTML = `<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${item.imageUrl}'); background-size: cover; background-position: center; opacity: 0.2; border-radius: 12px; z-index: 0;"></div>`;
+                    } else {
+                        // thumbnail
+                        imageHTML = `<img src="${item.imageUrl}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 1rem;">`;
+                    }
+                } else {
+                    console.log(`Item ${item.name} has NO image`);
+                }
+
+                return `
+                    <div class="item-card" style="${item.imageStyle === 'background' ? 'position: relative; overflow: hidden;' : ''}">
+                        ${item.imageStyle === 'background' ? imageHTML : ''}
+                        ${item.imageStyle === 'banner' ? imageHTML : ''}
+                        <div style="flex: 0; ${item.imageStyle === 'thumbnail' && item.imageUrl ? 'display: flex; align-items: center;' : ''} ${item.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
+                            ${item.imageStyle === 'thumbnail' ? imageHTML : ''}
+                            <div>
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-price">$${item.price ? item.price.toFixed(2) : 'Package Only'}</div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; ${item.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
+                            ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+                        </div>
+                        <div style="margin-top: auto; ${item.imageStyle === 'background' ? 'position: relative; z-index: 1;' : ''}">
+                            <button class="item-btn" onclick="addToCart('item', '${item.id}', '${item.name}', ${item.price})">
+                                Add to Cart
+                            </button>
+                        </div>
                     </div>
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
-                        ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
-                    </div>
-                    <div style="margin-top: auto;">
-                        <button class="item-btn" onclick="addToCart('item', '${item.id}', '${item.name}', ${item.price})">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Social Media Button Functions
