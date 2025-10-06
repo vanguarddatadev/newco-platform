@@ -676,6 +676,7 @@
                 document.getElementById('initialLoader').classList.add('hidden');
                 document.body.classList.add('loaded');
                 restoreExamplesState();
+                toggleTestDataButtons(); // Show/hide test data buttons based on settings
             }, 300);
         })();
 
@@ -3129,6 +3130,8 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Member List</h2>
                     <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-success test-data-btn" onclick="generateTestMembers()" title="Add 50 test members" style="display: none;">➕ Add Test Members (+50)</button>
+                        <button class="btn btn-danger test-data-btn" onclick="deleteTestMembers()" title="Delete all test members" style="display: none;">🗑️ Delete Test Members</button>
                         <button class="btn btn-warning" onclick="toggleTopPerformers()" id="topPerformersBtn">🏆 Top Performers</button>
                         <button class="btn btn-secondary" onclick="exportMembers()">📥 Export CSV</button>
                         <button class="btn btn-primary" onclick="addMember()">+ Add Member</button>
