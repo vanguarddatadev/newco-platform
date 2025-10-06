@@ -11,8 +11,9 @@ const NewcoData = {
     supabaseKey: SUPABASE_ANON_KEY,
     cache: {}, // In-memory cache for synchronous access
 
-    async init(customer = 'demo') {
+    async init(customer = 'demo', options = {}) {
         this.customer = customer;
+        this.skipHeavyData = options.skipHeavyData || false; // For customer site performance
         const urlParams = new URLSearchParams(window.location.search);
         const urlCustomer = urlParams.get('customer');
         if (urlCustomer) {
@@ -65,11 +66,29 @@ const NewcoData = {
         const custData = await this.read_cust();
         const initStore = { ...defaults, ...custData };
 
+        // Don't cache heavy data keys with default empty values if we skipped loading them
+        if (this.skipHeavyData) {
+            // Remove transactions/rewardsTransactions from cache if they weren't loaded
+            // This prevents accidentally overwriting real data with empty arrays
+            if (!custData['transactions']) {
+                delete initStore['transactions'];
+            }
+            if (!custData['rewardsTransactions']) {
+                delete initStore['rewardsTransactions'];
+            }
+        }
+
         // Load into cache
         this.cache = { ...initStore };
 
         // Initialize missing keys with defaults in Supabase
+        // BUT: Don't overwrite keys that were skipped due to skipHeavyData
         for (const key of Object.keys(defaults)) {
+            // Skip initializing transactions/rewardsTransactions if we skipped loading them
+            if (this.skipHeavyData && (key === 'transactions' || key === 'rewardsTransactions')) {
+                continue; // Don't initialize - we didn't load them, so don't overwrite with empty array
+            }
+
             if (key && !custData[key]) {
                 await this.set(key, defaults[key]);
             }
@@ -77,7 +96,8 @@ const NewcoData = {
     },
 
     // Read all customer data from Supabase
-    async read_cust() {
+    // forceLoadAll: override skipHeavyData to load everything (used when explicitly fetching for save operations)
+    async read_cust(forceLoadAll = false) {
         try {
             const response = await fetch(
                 `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${this.customer}&select=*`,
@@ -98,13 +118,20 @@ const NewcoData = {
             // Convert array of {key, value} to {key: value} object
             const data = {};
             rows.forEach(row => {
+                // Skip heavy data keys if skipHeavyData is enabled (for customer site performance)
+                // UNLESS forceLoadAll is true (when we explicitly need the data for saving)
+                if (!forceLoadAll && this.skipHeavyData && (row.key === 'transactions' || row.key === 'rewardsTransactions')) {
+                    return; // Skip loading transactions
+                }
                 data[row.key] = row.value;
             });
 
-            // Load members from members table instead of newco_data
-            const membersData = await this.readMembersFromTable();
-            if (membersData && membersData.length > 0) {
-                data.members = membersData;
+            // Load members from members table (skip if heavy data mode)
+            if (!this.skipHeavyData) {
+                const membersData = await this.readMembersFromTable();
+                if (membersData && membersData.length > 0) {
+                    data.members = membersData;
+                }
             }
 
             return data;
@@ -181,16 +208,24 @@ const NewcoData = {
     // Set value to cache AND Supabase
     async set(key, value) {
         try {
-            // Update cache immediately (synchronous)
-            this.cache[key] = value;
-
             // Handle members specially - save to members table
             if (key === 'members') {
-                return await this.saveMembersToTable(value);
+                // Don't update cache until we know save succeeded
+                const result = await this.saveMembersToTable(value);
+                if (result) {
+                    this.cache[key] = value;
+                }
+                return result;
             }
 
             // Save to Supabase in background
             const jsonString = JSON.stringify(value);
+            const sizeInKB = (jsonString.length / 1024).toFixed(2);
+
+            // Warn if approaching 1MB limit (Supabase JSONB column limit)
+            if (jsonString.length > 900000) { // 900KB warning threshold
+                console.warn(`⚠️ Warning: ${key} data is ${sizeInKB} KB - approaching 1MB Supabase limit!`);
+            }
 
             // Check if key exists
             const checkResponse = await fetch(
@@ -203,11 +238,15 @@ const NewcoData = {
                 }
             );
 
+            if (!checkResponse.ok) {
+                throw new Error(`Check failed: ${checkResponse.status} ${checkResponse.statusText}`);
+            }
+
             const existing = await checkResponse.json();
 
             if (existing && existing.length > 0) {
                 // Update existing
-                await fetch(
+                const updateResponse = await fetch(
                     `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${this.customer}&key=eq.${key}`,
                     {
                         method: 'PATCH',
@@ -223,9 +262,15 @@ const NewcoData = {
                         })
                     }
                 );
+
+                if (!updateResponse.ok) {
+                    const errorText = await updateResponse.text();
+                    console.error(`❌ Supabase update failed for ${key} (${sizeInKB} KB):`, errorText);
+                    throw new Error(`Update failed: ${updateResponse.status} ${errorText}`);
+                }
             } else {
                 // Insert new
-                await fetch(
+                const insertResponse = await fetch(
                     `${SUPABASE_URL}/rest/v1/newco_data`,
                     {
                         method: 'POST',
@@ -244,11 +289,20 @@ const NewcoData = {
                         })
                     }
                 );
+
+                if (!insertResponse.ok) {
+                    const errorText = await insertResponse.text();
+                    console.error(`❌ Supabase insert failed for ${key} (${sizeInKB} KB):`, errorText);
+                    throw new Error(`Insert failed: ${insertResponse.status} ${errorText}`);
+                }
             }
 
+            // Only update cache AFTER successful save
+            this.cache[key] = value;
             return true;
         } catch (err) {
-            console.error(`Error setting ${key} in Supabase:`, err);
+            console.error(`❌ Error saving ${key} to Supabase:`, err);
+            // DO NOT update cache if save failed
             return false;
         }
     },
@@ -275,7 +329,10 @@ const NewcoData = {
             const existingMembers = await existingResponse.json();
             const existingIds = existingMembers.map(m => m.id);
 
-            // Process each member
+            // Separate into updates and inserts
+            const toUpdate = [];
+            const toInsert = [];
+
             for (const member of membersArray) {
                 const dbMember = {
                     customer_id: this.customer,
@@ -300,48 +357,57 @@ const NewcoData = {
                 };
 
                 if (existingIds.includes(member.id)) {
-                    // Update existing member
-                    const updateResponse = await fetch(
-                        `${SUPABASE_URL}/rest/v1/members?id=eq.${member.id}`,
-                        {
-                            method: 'PATCH',
-                            headers: {
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                                'Content-Type': 'application/json',
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify(dbMember)
-                        }
-                    );
-                    if (!updateResponse.ok) {
-                        console.error('Failed to update member:', await updateResponse.text());
-                        return false;
-                    }
+                    toUpdate.push({ id: member.id, ...dbMember });
                 } else {
-                    // Insert new member
-                    const insertResponse = await fetch(
-                        `${SUPABASE_URL}/rest/v1/members`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                                'Content-Type': 'application/json',
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify({
-                                id: member.id,
-                                ...dbMember,
-                                created_at: member.createdAt || new Date().toISOString()
-                            })
-                        }
-                    );
-                    if (!insertResponse.ok) {
-                        const errorText = await insertResponse.text();
-                        console.error('Failed to insert member:', errorText);
-                        return false;
+                    toInsert.push({
+                        id: member.id,
+                        ...dbMember,
+                        created_at: member.createdAt || new Date().toISOString()
+                    });
+                }
+            }
+
+            // Bulk insert new members (single request)
+            if (toInsert.length > 0) {
+                const insertResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/members`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify(toInsert)
                     }
+                );
+                if (!insertResponse.ok) {
+                    const errorText = await insertResponse.text();
+                    console.error('Failed to bulk insert members:', errorText);
+                    return false;
+                }
+            }
+
+            // Update existing members (still need individual requests for updates)
+            for (const member of toUpdate) {
+                const { id, ...updateData } = member;
+                const updateResponse = await fetch(
+                    `${SUPABASE_URL}/rest/v1/members?id=eq.${id}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify(updateData)
+                    }
+                );
+                if (!updateResponse.ok) {
+                    console.error('Failed to update member:', await updateResponse.text());
+                    return false;
                 }
             }
 

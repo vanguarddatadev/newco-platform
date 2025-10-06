@@ -545,6 +545,15 @@ body {
     font-size: 0.875rem;
 }
 
+.grid-cell.vip-seat {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%) !important;
+    color: #333 !important;
+    font-weight: bold;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
+    border: 1px solid #d4af37;
+}
+
 .grid-cell.custom {
     margin: -1px;
 }
@@ -886,7 +895,7 @@ input:checked + .toggle-slider:before {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 10000;
     align-items: center;
     justify-content: center;
 }
