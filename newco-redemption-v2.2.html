@@ -74,16 +74,34 @@
     -->
     <style>
         :root {
-            --primary: #6c5ce7;
-            --primary-dark: #5a4fd8;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
-            --pending: #fd79a8;
-            --dark: #2d3436;
-            --gray: #636e72;
-            --light: #f5f5f5;
+            /* Modern Color Palette */
+            --primary: #7c3aed;
+            --primary-light: #a78bfa;
+            --primary-dark: #5b21b6;
+            --success: #10b981;
+            --success-light: #34d399;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --pending: #ec4899;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --gray-lighter: #f3f4f6;
+            --light: #f9fafb;
             --white: #ffffff;
+
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         * {
@@ -95,35 +113,55 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Login Screen */
+        /* Login Screen - Enhanced */
         .login-container {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .login-header h1 {
-            font-size: 2rem;
-            color: var(--dark);
+            font-size: 2.25rem;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
+            font-weight: 700;
         }
 
         .login-header p {
             color: var(--gray);
+            font-size: 0.95rem;
         }
 
         .form-group {
@@ -139,36 +177,42 @@
 
         .form-input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            background: var(--white);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            transform: translateY(-1px);
         }
 
         .btn {
             width: 100%;
-            padding: 0.875rem;
-            background: var(--primary);
+            padding: 1rem;
+            background: var(--gradient-purple);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1.0625rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
         }
 
         .btn:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .error-message {
@@ -190,12 +234,18 @@
         }
 
         .app-header {
-            background: var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 1rem 2rem;
+            background: rgba(124, 58, 237, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .app-title {
@@ -474,6 +524,279 @@
             color: var(--gray);
         }
 
+        /* POS Package Grid - Enhanced */
+        #packagesList button {
+            background: white;
+            border: 2px solid var(--gray-lighter);
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--dark);
+            box-shadow: var(--shadow-sm);
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #packagesList button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-purple);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        #packagesList button:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        #packagesList button:hover::before {
+            opacity: 1;
+        }
+
+        #packagesList button:hover * {
+            color: white;
+            z-index: 1;
+            position: relative;
+        }
+
+        #packagesList button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Cart Summary - Enhanced */
+        #cartSummary {
+            background: white;
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-lighter);
+        }
+
+        #cartSummary h3 {
+            color: var(--dark);
+            font-size: 1.125rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .cart-item {
+            padding: 0.875rem;
+            background: var(--gray-lighter);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .cart-item:hover {
+            background: var(--gray-light);
+            transform: translateX(4px);
+        }
+
+        /* Member Badge - Enhanced */
+        #selectedMemberBadge, #guestModeBadge {
+            background: var(--gradient-purple) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-md) !important;
+            animation: slideIn 0.3s ease !important;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Quick Sale Button - Enhanced */
+        .quick-sale-btn {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--gradient-success);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.0625rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-sale-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .quick-sale-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+        }
+
+        .quick-sale-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .quick-sale-btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .quick-sale-icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Modal Styles - Enhanced */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 0;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--gray-lighter);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gray-lighter);
+            display: flex;
+            gap: 1rem;
+            background: var(--gray-lighter);
+            border-radius: 0 0 24px 24px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 1rem;
+            background: var(--gradient-success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 1rem;
+            background: white;
+            color: var(--gray);
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-lighter);
+            border-color: var(--gray);
+        }
+
+        .quick-sale-amount-input {
+            font-size: 2rem !important;
+            font-weight: 700 !important;
+            text-align: center;
+            color: var(--primary) !important;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .search-grid {
@@ -715,21 +1038,9 @@
                     <!-- Right Column: Cart Summary -->
                     <div id="cartSummary" style="padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 1rem;">
                         <!-- Quick Sale Button -->
-                        <button onclick="showQuickSaleModal()" style="
-                            width: 100%;
-                            margin-bottom: 1rem;
-                            padding: 0.875rem 1.5rem;
-                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                            color: white;
-                            border: none;
-                            border-radius: 8px;
-                            font-weight: 600;
-                            font-size: 1rem;
-                            cursor: pointer;
-                            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-                            transition: all 0.2s;
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)'">
-                            💵 Quick Sale
+                        <button onclick="showQuickSaleModal()" class="quick-sale-btn">
+                            <span class="quick-sale-icon">💵</span>
+                            <span>Quick Sale</span>
                         </button>
 
                         <h3 style="margin: 0 0 1rem 0;">Cart Summary</h3>
@@ -808,26 +1119,30 @@
         </div>
     </div>
 
-    <!-- Quick Sale Modal -->
-    <div id="quickSaleModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-            <h2 style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #333;">💵 Quick Sale</h2>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #666;">Item Description (Optional)</label>
-                <input type="text" id="quickSaleDescription" placeholder="e.g., Concessions, Misc Item" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;">
+    <!-- Quick Sale Modal - Enhanced -->
+    <div id="quickSaleModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💵 Quick Sale</h2>
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #666;">Amount ($) *</label>
-                <input type="number" id="quickSaleAmount" step="0.01" min="0.01" placeholder="0.00" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1.5rem; font-weight: 600;" autofocus>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Item Description (Optional)</label>
+                    <input type="text" id="quickSaleDescription" class="form-input" placeholder="e.g., Concessions, Misc Item">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount ($) *</label>
+                    <input type="number" id="quickSaleAmount" step="0.01" min="0.01" placeholder="0.00" class="form-input quick-sale-amount-input" autofocus>
+                </div>
             </div>
 
-            <div style="display: flex; gap: 0.75rem;">
-                <button onclick="closeQuickSaleModal()" style="flex: 1; padding: 0.875rem; background: white; color: #666; border: 2px solid #e0e0e0; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            <div class="modal-footer">
+                <button onclick="closeQuickSaleModal()" class="btn-secondary">
                     Cancel
                 </button>
-                <button onclick="addQuickSaleToCart()" style="flex: 1; padding: 0.875rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <button onclick="addQuickSaleToCart()" class="btn-primary">
                     Add to Cart
                 </button>
             </div>
@@ -1001,40 +1316,59 @@
             let user = null;
             let superAdmin = null;
 
-            // Get super admin from accounts table (SINGLE SOURCE OF TRUTH)
+            // Check newco_staff table for Master Portal Admin (like master portal does)
             try {
-                const accountResponse = await fetch(
-                    `${NewcoData.supabaseUrl}/rest/v1/accounts?customer_id=eq.${customerId}&select=email,organization_name`,
-                    {
-                        headers: {
-                            'apikey': NewcoData.supabaseKey,
-                            'Authorization': `Bearer ${NewcoData.supabaseKey}`
-                        }
+                const staffQueryUrl = `${NewcoData.supabaseUrl}/rest/v1/newco_staff?email=eq.${encodeURIComponent(username)}&select=*`;
+                console.log('[DEBUG] Querying newco_staff table:', staffQueryUrl);
+                console.log('[DEBUG] Email to search:', username);
+                console.log('[DEBUG] Password hash (base64):', btoa(password));
+
+                const staffResponse = await fetch(staffQueryUrl, {
+                    headers: {
+                        'apikey': NewcoData.supabaseKey,
+                        'Authorization': `Bearer ${NewcoData.supabaseKey}`
                     }
-                );
-                const accounts = await accountResponse.json();
-                if (accounts && accounts.length > 0) {
-                    superAdmin = {
-                        email: accounts[0].email,
-                        name: accounts[0].organization_name
-                    };
-                    console.log('Super admin:', superAdmin.email);
+                });
+
+                console.log('[DEBUG] Response status:', staffResponse.status);
+                const staffUsers = await staffResponse.json();
+                console.log('[DEBUG] Staff users found:', staffUsers);
+
+                if (staffUsers && staffUsers.length > 0) {
+                    const staffUser = staffUsers[0];
+                    console.log('Found staff user:', staffUser.email, 'Role:', staffUser.role);
+                    console.log('[DEBUG] Staff user password_hash:', staffUser.password_hash);
+
+                    // Verify password (base64 encoded like master portal)
+                    const passwordHash = btoa(password);
+                    console.log('[DEBUG] Comparing:', passwordHash, '===', staffUser.password_hash);
+
+                    if (staffUser.password_hash === passwordHash) {
+                        superAdmin = {
+                            email: staffUser.email,
+                            name: staffUser.name || staffUser.email.split('@')[0],
+                            role: staffUser.role
+                        };
+                        console.log('✓ Staff user password verified');
+                    } else {
+                        console.log('✗ Staff user password incorrect');
+                    }
+                } else {
+                    console.log('[DEBUG] No staff users found for email:', username);
                 }
             } catch (err) {
-                console.error('Error fetching super admin:', err);
+                console.error('Error checking newco_staff:', err);
             }
 
-            // Check if it's the super admin
-            if (superAdmin && superAdmin.email === username) {
-                // No password stored - accept email as password for super admin
-                if (superAdmin.email === password) {
-                    user = {
-                        email: superAdmin.email,
-                        name: superAdmin.name || 'Administrator',
-                        role: 'Admin',
-                        username: superAdmin.email.split('@')[0]
-                    };
-                }
+            // If found in newco_staff, use that
+            if (superAdmin) {
+                user = {
+                    email: superAdmin.email,
+                    name: superAdmin.name || 'Administrator',
+                    role: 'Admin', // Map to local role
+                    username: superAdmin.email.split('@')[0]
+                };
+                console.log('Master Portal Admin login successful');
             }
             // Otherwise check staff array
             else {
@@ -1051,7 +1385,18 @@
                 });
             }
 
+            // Debug logging
+            console.log('Login attempt:', {
+                username,
+                superAdminFound: !!superAdmin,
+                superAdminEmail: superAdmin?.email,
+                userFound: !!user,
+                staffCount: staff.length
+            });
+
             if (user) {
+                console.log('✓ Login successful for:', user.email, 'Role:', user.role);
+
                 // Update lastActive timestamp for this staff member
                 if (user.email !== superAdmin?.email) {
                     // This is a regular staff member, update their lastActive

@@ -53,15 +53,88 @@
             height: 100vh;
         }
 
-        /* Header */
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color, #6c5ce7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        /* Header - Two Row Design */
         .header {
             background: var(--primary-color, #6c5ce7);
             border-bottom: 2px solid var(--primary-dark, #5a4fd8);
-            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.75rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header-bottom {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0.5rem 2rem;
+            gap: 0.75rem;
+            background: rgba(0,0,0,0.1);
         }
 
         .header-left {
@@ -76,10 +149,84 @@
             color: white;
         }
 
+        .header-welcome {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
         .header-right {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 0.75rem;
+        }
+
+        .header-points-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .header-points-label {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.875rem;
+        }
+
+        .header-points-value {
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .header-btn {
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-btn-updates {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+        }
+
+        .header-btn-updates:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .header-btn-history {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: white;
+        }
+
+        .header-btn-history:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .header-btn-store {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .header-btn-store:hover {
+            background: #ffcd38;
+        }
+
+        .header-btn-logout {
+            background: white;
+            color: var(--primary-color, #6c5ce7);
+        }
+
+        .header-btn-logout:hover {
+            background: #f8f9fa;
         }
 
         .login-btn {
@@ -208,6 +355,223 @@
 
         .add-to-cart-btn:hover {
             background: #5f4dd8;
+        }
+
+        /* Hero Carousel */
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background: #333;
+        }
+
+        .carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .carousel-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .carousel-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 1.5rem;
+            max-width: 800px;
+        }
+
+        .carousel-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .carousel-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 0.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 3;
+        }
+
+        .carousel-nav {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            font-size: 1.75rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        /* Notification Cards */
+        .sidebar-container {
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid #6c5ce7;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-card-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .notification-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .notification-card-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Card Templates */
+        .notification-card.announcement {
+            border-left-color: #fbbf24;
+            background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+        }
+
+        .notification-card.announcement .notification-card-icon {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .notification-card.reward {
+            border-left-color: #a855f7;
+            background: linear-gradient(135deg, #fae8ff 0%, #ffffff 100%);
+        }
+
+        .notification-card.reward .notification-card-icon {
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .notification-card.event {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
+        }
+
+        .notification-card.event .notification-card-icon {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .notification-card.special {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+        }
+
+        .notification-card.special .notification-card-icon {
+            background: rgba(239, 68, 68, 0.2);
         }
 
         /* Cart Sidebar */
@@ -358,11 +722,15 @@
 
         /* Tablet and below (768px) */
         @media (max-width: 768px) {
-            /* Header - Make compact and stack elements */
-            .header {
-                padding: 0.75rem 1rem;
-                flex-wrap: wrap;
+            /* Header - Make compact */
+            .header-top {
+                padding: 0.5rem 1rem;
+            }
+
+            .header-bottom {
+                padding: 0.4rem 1rem;
                 gap: 0.5rem;
+                flex-wrap: wrap;
             }
 
             .header-left {
@@ -373,8 +741,29 @@
                 font-size: 1.25rem;
             }
 
+            .header-welcome {
+                font-size: 1rem;
+            }
+
             .header-right {
-                gap: 1rem;
+                gap: 0.5rem;
+            }
+
+            .header-btn {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.85rem;
+            }
+
+            .header-points-badge {
+                padding: 0.35rem 0.7rem;
+            }
+
+            .header-points-label {
+                font-size: 0.8rem;
+            }
+
+            .header-points-value {
+                font-size: 0.9rem;
             }
 
             .login-btn {
@@ -479,12 +868,25 @@
 
         /* Mobile only (< 480px) */
         @media (max-width: 480px) {
-            .header {
-                padding: 0.5rem;
+            .header-top {
+                padding: 0.4rem 0.75rem;
+            }
+
+            .header-bottom {
+                padding: 0.3rem 0.75rem;
             }
 
             .logo {
                 font-size: 1.1rem;
+            }
+
+            .header-welcome {
+                font-size: 0.9rem;
+            }
+
+            .header-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
             }
 
             .content {
@@ -554,49 +956,41 @@
         }
     </style>
 
-    <!-- Stripe.js -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Payment Processor -->
+    <script src="newco-payment-processor.js"></script>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div id="loadingLogoContainer" style="display: none;">
+            <!-- Logo will be injected here if available -->
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingOrgName">Loading...</div>
+        <div class="loading-subtext">Preparing your experience</div>
+    </div>
+
     <!-- Milpitas Grid-Based Seat Map -->
     <script src="milpitas-grid-map.js"></script>
 
     <!-- Supabase NewcoData Integration -->
     <script src="newco-supabase.js"></script>
-    <script>
-        // Initialize NewcoData with customer ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const customer = urlParams.get('customer') || 'demo';
-
-        // Initialize asynchronously and wait for it to complete
-        (async () => {
-            // Skip loading transactions and members for faster customer site load
-            await NewcoData.init(customer, { skipHeavyData: true });
-            console.log('Customer Demo initialized for:', customer);
-
-            // Load organization data after init completes
-            loadOrganization();
-            loadSessions();
-            loadCartFromSession();
-            checkLoggedInMember();
-            loadSocialMediaButton();
-            showWelcomePopupIfNeeded();
-        })();
-    </script>
 
     <!-- Header -->
     <div class="header">
-        <div class="header-left">
-            <div id="orgLogo" style="display: none; width: 50px; height: 50px; margin-right: 1rem;">
-                <img id="orgLogoImg" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+        <div class="header-top">
+            <div class="header-left">
+                <div id="orgLogo" style="display: none; width: 50px; height: 50px; margin-right: 0.5rem;">
+                    <img id="orgLogoImg" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                </div>
+                <div class="logo"><span id="orgName">Santa Clara Bingo</span></div>
             </div>
-            <div class="logo"><span id="orgName">Santa Clara Bingo</span></div>
+            <div id="headerWelcome">
+                <!-- Welcome message will be injected here when logged in -->
+            </div>
         </div>
-        <div class="header-right">
-            <div id="socialMediaButton" style="display: none; margin-right: 1rem;">
-                <!-- Social media button will be injected here -->
-            </div>
-            <div id="memberInfo" style="display: inline-flex; align-items: center; gap: 1rem;">
+        <div class="header-bottom" id="headerBottom">
+            <div id="memberActions">
                 <button class="login-btn" onclick="showLogin()">Login / Register</button>
             </div>
         </div>
@@ -608,14 +1002,20 @@
         <div class="content">
             <!-- Event Selection (shown first) -->
             <div id="eventSelection" style="display: block;">
-                <h1 class="page-title" style="text-align: center;" id="welcomeTitle">Welcome!</h1>
-                <p class="page-subtitle" style="text-align: center;">Select your session to get started</p>
-                
-                <div style="margin: 2rem 0;">
-                    <h2 style="margin-bottom: 1.5rem; color: #333;">Available Sessions</h2>
-                    <div id="sessionsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-                        <!-- Sessions will be loaded here -->
+                <!-- Hero Carousel -->
+                <div id="heroCarousel" class="hero-carousel">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Slides will be loaded here -->
                     </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-nav prev" onclick="carouselPrev()" aria-label="Previous slide">‹</button>
+                        <div class="carousel-dots" id="carouselDots"></div>
+                        <button class="carousel-nav next" onclick="carouselNext()" aria-label="Next slide">›</button>
+                    </div>
+                </div>
+
+                <div id="sessionsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <!-- Sessions will be loaded here -->
                 </div>
             </div>
 
@@ -644,22 +1044,30 @@
             </div>
         </div>
 
-        <!-- Cart Sidebar (Right) -->
-        <div class="cart-sidebar">
-            <h2 class="cart-title">🛒 Your Cart</h2>
-            <div id="cartSessionInfo" style="display: none; background: #f0f4f8; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem;">
-                <div style="font-weight: 600; color: #6c5ce7;" id="cartSessionName"></div>
-                <div style="color: #666;" id="cartSessionDetails"></div>
+        <!-- Notification Cards Sidebar (Landing Page) / Cart Sidebar (Package Selection) -->
+        <div class="sidebar-container" id="sidebarContainer">
+            <!-- Notification Cards (shown on landing) -->
+            <div id="notificationCards" class="notification-cards">
+                <!-- Cards will be loaded here -->
             </div>
-            <div class="cart-items" id="cartItems">
-                <div class="cart-empty">Your cart is empty</div>
-            </div>
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <span>Total:</span>
-                    <span id="cartTotal">$0.00</span>
+
+            <!-- Cart Sidebar (shown after session selection) -->
+            <div class="cart-sidebar" id="cartSidebar" style="display: none;">
+                <h2 class="cart-title">🛒 Your Cart</h2>
+                <div id="cartSessionInfo" style="display: none; background: #f0f4f8; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem;">
+                    <div style="font-weight: 600; color: #6c5ce7;" id="cartSessionName"></div>
+                    <div style="color: #666;" id="cartSessionDetails"></div>
                 </div>
-                <button class="checkout-btn" disabled onclick="checkout()">Checkout</button>
+                <div class="cart-items" id="cartItems">
+                    <div class="cart-empty">Your cart is empty</div>
+                </div>
+                <div class="cart-footer">
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="checkout-btn" disabled onclick="checkout()">Checkout</button>
+                </div>
             </div>
         </div>
     </div>
@@ -669,10 +1077,23 @@
         // [INITIALIZATION] - System Setup & Data Management
         // ═══════════════════════════════════════════════════════════
 
-        // Stripe initialization (test mode)
-        const STRIPE_TEST_MODE = true; // Set to false for live mode
-        const stripe = Stripe('pk_test_51QYOPdP3mMHdPznB5zNxrkSMCbZ1jPvmcLBKq1lQTJjnJuGOvADqh5nANhYLa1YC4dg5Nn8G3Tst9OBmN9kNNY5N00oE7r9Zy1');
-        let elements, cardElement;
+        // Payment processor will be initialized from integration settings
+        let paymentProcessorReady = false;
+
+        // Initialize payment processor after NewcoData loads
+        async function initializePaymentProcessor() {
+            try {
+                const initialized = await PaymentProcessor.init();
+                if (initialized) {
+                    paymentProcessorReady = true;
+                    console.log('✅ Payment processor initialized successfully');
+                } else {
+                    console.warn('⚠️ Payment processor not configured');
+                }
+            } catch (error) {
+                console.error('❌ Error initializing payment processor:', error);
+            }
+        }
 
         /*
         // Simple NewcoData reader - REPLACED WITH SUPABASE VERSION
@@ -699,9 +1120,398 @@
         */
 
         // ═══════════════════════════════════════════════════════════
+        // [CAROUSEL-SYSTEM] - Hero Carousel Management
+        // ═══════════════════════════════════════════════════════════
+
+        let currentSlideIndex = 0;
+        let carouselInterval = null;
+        let carouselData = [];
+
+        function initCarousel() {
+            // Get carousel data from NewcoData
+            const marketingConfig = NewcoData.get('marketingConfig') || {};
+
+            // Check if carousel is enabled (default to true)
+            if (marketingConfig.carouselEnabled === false) {
+                document.getElementById('heroCarousel').style.display = 'none';
+                return;
+            }
+
+            // Get slides or use defaults
+            carouselData = marketingConfig.carouselSlides || getDefaultCarouselSlides();
+
+            if (!carouselData || carouselData.length === 0) {
+                document.getElementById('heroCarousel').style.display = 'none';
+                return;
+            }
+
+            renderCarousel();
+            startCarouselAutoplay();
+        }
+
+        function getDefaultCarouselSlides() {
+            const member = JSON.parse(sessionStorage.getItem('newco_current_member') || '{}');
+            const rewardsConfig = NewcoData.get('rewardsConfig') || {};
+            const marketingConfig = NewcoData.get('marketingConfig') || {};
+            const slides = [];
+
+            // Default slide 1: Welcome
+            slides.push({
+                id: 'default-welcome',
+                template: 'hero-center',
+                title: 'Welcome to Bingo!',
+                subtitle: 'Select a session below to get started',
+                duration: 5000,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                action: { type: 'none' }
+            });
+
+            // Default slide 2: Big Jackpots
+            slides.push({
+                id: 'default-jackpots',
+                template: 'hero-center',
+                title: '🎰 Big Jackpots Every Week',
+                subtitle: 'Win up to $10,000 in prizes',
+                duration: 5000,
+                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                action: { type: 'none' }
+            });
+
+            // Default slide 3: Earn Rewards
+            slides.push({
+                id: 'default-rewards',
+                template: 'hero-center',
+                title: '🎁 Earn Rewards',
+                subtitle: 'Get points with every purchase',
+                duration: 5000,
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                action: { type: 'store' }
+            });
+
+            // Conditional slide: Signup bonus (if exists and member has it)
+            const signupBonus = rewardsConfig.signupBonus;
+            if (signupBonus && signupBonus.enabled && signupBonus.points > 0 && member.hasReceivedSignupBonus) {
+                const pointsCurrencyName = rewardsConfig.basicSettings?.pointsCurrencyName || 'Points';
+                slides.push({
+                    id: 'signup-bonus',
+                    template: 'hero-center',
+                    title: '🎉 Congratulations!',
+                    subtitle: `Just for signing up you earned ${signupBonus.points.toLocaleString()} ${pointsCurrencyName}`,
+                    duration: 5000,
+                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    action: { type: 'store' }
+                });
+            }
+
+            // Conditional slide: Rewards store availability
+            if (rewardsConfig.rewardType && rewardsConfig.rewardType !== 'none' && member.currentPoints > 0) {
+                const pointsCurrencyName = rewardsConfig.basicSettings?.pointsCurrencyName || 'Points';
+                const rewardItems = rewardsConfig.rewardItems || [];
+                const affordableItems = rewardItems.filter(item =>
+                    item.enabled && item.pointsCost <= member.currentPoints
+                );
+
+                if (affordableItems.length > 0) {
+                    slides.push({
+                        id: 'rewards-available',
+                        template: 'hero-center',
+                        title: '🎁 Rewards Available!',
+                        subtitle: `You have ${affordableItems.length} ${affordableItems.length === 1 ? 'option' : 'options'} available to buy in the rewards store`,
+                        duration: 5000,
+                        background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                        action: { type: 'store' }
+                    });
+                }
+            }
+
+            // Conditional slide: Follow us on social media
+            const socialMedia = marketingConfig.socialMedia;
+            if (socialMedia && socialMedia.enabled && socialMedia.platforms && socialMedia.platforms.length > 0) {
+                const platformNames = socialMedia.platforms.map(p => p.name).join(', ');
+                slides.push({
+                    id: 'social-media',
+                    template: 'hero-center',
+                    title: '📱 Follow Us on Social Media',
+                    subtitle: `Stay connected: ${platformNames}`,
+                    duration: 5000,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    action: { type: 'url', target: socialMedia.platforms[0].url }
+                });
+            }
+
+            // Conditional slide: Get updates via text
+            const textUpdates = marketingConfig.textUpdates;
+            if (textUpdates && textUpdates.enabled && textUpdates.keyword && textUpdates.shortcode) {
+                slides.push({
+                    id: 'text-updates',
+                    template: 'hero-center',
+                    title: '📲 Get Updates',
+                    subtitle: `Text ${textUpdates.keyword} to ${textUpdates.shortcode} for special offers`,
+                    duration: 5000,
+                    background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                    action: { type: 'none' }
+                });
+            }
+
+            return slides;
+        }
+
+        function renderCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const dotsContainer = document.getElementById('carouselDots');
+
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            carouselData.forEach((slide, index) => {
+                // Create slide
+                const slideEl = document.createElement('div');
+                slideEl.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                slideEl.style.background = slide.imageUrl ?
+                    `url('${slide.imageUrl}')` : slide.background;
+
+                slideEl.innerHTML = `
+                    <div class="carousel-content">
+                        <div class="carousel-title">${slide.title}</div>
+                        <div class="carousel-subtitle">${slide.subtitle || ''}</div>
+                    </div>
+                `;
+
+                // Add click handler
+                if (slide.action && slide.action.type !== 'none') {
+                    slideEl.addEventListener('click', () => handleCarouselClick(slide.action));
+                }
+
+                track.appendChild(slideEl);
+
+                // Create dot
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.carousel-dot');
+
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+
+            currentSlideIndex = index;
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+
+            resetCarouselAutoplay();
+        }
+
+        function carouselNext() {
+            const nextIndex = (currentSlideIndex + 1) % carouselData.length;
+            goToSlide(nextIndex);
+        }
+
+        function carouselPrev() {
+            const prevIndex = (currentSlideIndex - 1 + carouselData.length) % carouselData.length;
+            goToSlide(prevIndex);
+        }
+
+        function startCarouselAutoplay() {
+            if (carouselData.length <= 1) return;
+
+            const duration = carouselData[currentSlideIndex]?.duration || 5000;
+            carouselInterval = setInterval(carouselNext, duration);
+        }
+
+        function resetCarouselAutoplay() {
+            if (carouselInterval) {
+                clearInterval(carouselInterval);
+            }
+            startCarouselAutoplay();
+        }
+
+        function handleCarouselClick(action) {
+            if (!action) return;
+
+            switch (action.type) {
+                case 'session':
+                    if (action.target) {
+                        selectSession(action.target);
+                    }
+                    break;
+                case 'store':
+                    showRewardsStore();
+                    break;
+                case 'url':
+                    if (action.target) {
+                        window.open(action.target, '_blank');
+                    }
+                    break;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // [NOTIFICATION-CARDS] - Sidebar Cards Management
+        // ═══════════════════════════════════════════════════════════
+
+        let notificationCardsData = [];
+
+        function initNotificationCards() {
+            // Get notification cards from NewcoData
+            const marketingConfig = NewcoData.get('marketingConfig') || {};
+
+            // Check if notification cards are enabled (default to true)
+            if (marketingConfig.notificationCardsEnabled === false) {
+                document.getElementById('notificationCards').style.display = 'none';
+                return;
+            }
+
+            // Get cards or use defaults
+            notificationCardsData = marketingConfig.notificationCards || getDefaultNotificationCards();
+
+            renderNotificationCards();
+        }
+
+        function getDefaultNotificationCards() {
+            // Default cards for new installations
+            const member = JSON.parse(sessionStorage.getItem('newco_current_member') || '{}');
+            const rewardsConfig = NewcoData.get('rewardsConfig') || {};
+            const marketingConfig = NewcoData.get('marketingConfig') || {};
+            const pointsCurrencyName = rewardsConfig.basicSettings?.pointsCurrencyName || 'Points';
+            const firstName = member.firstName || 'Friend';
+
+            const cards = [];
+
+            // Personalized welcome
+            cards.push({
+                id: 'personalized-welcome',
+                template: 'announcement',
+                icon: '👋',
+                title: `Welcome back, ${firstName}!`,
+                subtitle: 'Select a session below to start shopping for packages',
+                action: { type: 'none' }
+            });
+
+            // Add rewards card if logged in
+            if (member.id && rewardsConfig.rewardType && rewardsConfig.rewardType !== 'none') {
+                const currentPoints = member.currentPoints || 0;
+                const nextTierPoints = 10000; // Example
+                const pointsNeeded = nextTierPoints - currentPoints;
+
+                cards.push({
+                    id: 'default-rewards',
+                    template: 'reward',
+                    icon: '🎁',
+                    title: 'Your Rewards',
+                    subtitle: `You have ${currentPoints.toLocaleString()} ${pointsCurrencyName}${pointsNeeded > 0 ? `. Only ${pointsNeeded.toLocaleString()} more to next tier!` : '!'}`,
+                    action: { type: 'store' }
+                });
+            }
+
+            // Add text updates card if configured
+            const textUpdates = marketingConfig.textUpdates;
+            if (textUpdates && textUpdates.enabled && textUpdates.keyword && textUpdates.shortcode) {
+                cards.push({
+                    id: 'text-updates',
+                    template: 'event',
+                    icon: '📲',
+                    title: 'Get Updates',
+                    subtitle: `Text ${textUpdates.keyword} to ${textUpdates.shortcode} for special offers & notifications`,
+                    action: { type: 'none' }
+                });
+            }
+
+            // Add social media card if configured
+            const socialMedia = marketingConfig.socialMedia;
+            if (socialMedia && socialMedia.enabled && socialMedia.platforms && socialMedia.platforms.length > 0) {
+                const platformNames = socialMedia.platforms.map(p => p.name).join(', ');
+                cards.push({
+                    id: 'social-media',
+                    template: 'special',
+                    icon: '📱',
+                    title: 'Follow Us',
+                    subtitle: `Stay connected on ${platformNames}`,
+                    action: { type: 'url', target: socialMedia.platforms[0].url }
+                });
+            }
+
+            return cards;
+        }
+
+        function renderNotificationCards() {
+            const container = document.getElementById('notificationCards');
+            container.innerHTML = '';
+
+            // Show up to 4 cards
+            const visibleCards = notificationCardsData.slice(0, 4);
+
+            visibleCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = `notification-card ${card.template || 'announcement'}`;
+
+                cardEl.innerHTML = `
+                    <div class="notification-card-header">
+                        <div class="notification-card-icon">${card.icon || '📌'}</div>
+                        <div class="notification-card-title">${card.title}</div>
+                    </div>
+                    ${card.subtitle ? `<div class="notification-card-subtitle">${card.subtitle}</div>` : ''}
+                `;
+
+                // Add click handler
+                if (card.action && card.action.type !== 'none') {
+                    cardEl.addEventListener('click', () => handleNotificationCardClick(card.action));
+                }
+
+                container.appendChild(cardEl);
+            });
+        }
+
+        function handleNotificationCardClick(action) {
+            if (!action) return;
+
+            switch (action.type) {
+                case 'session':
+                    if (action.target) {
+                        selectSession(action.target);
+                    }
+                    break;
+                case 'store':
+                    showRewardsStore();
+                    break;
+                case 'url':
+                    if (action.target) {
+                        window.open(action.target, '_blank');
+                    }
+                    break;
+                case 'modal':
+                    if (action.modalContent) {
+                        showInfoModal(action.modalContent);
+                    }
+                    break;
+            }
+        }
+
+        function showInfoModal(content) {
+            // Show modal with detailed information
+            notify.info(content.text || '', content.title || 'Information');
+        }
+
+        // Toggle between notification cards and cart sidebar
+        function showCart() {
+            document.getElementById('notificationCards').style.display = 'none';
+            document.getElementById('cartSidebar').style.display = 'flex';
+        }
+
+        function showNotificationCards() {
+            document.getElementById('notificationCards').style.display = 'flex';
+            document.getElementById('cartSidebar').style.display = 'none';
+        }
+
+        // ═══════════════════════════════════════════════════════════
         // [CART-SYSTEM] - Shopping Cart Management
         // ═══════════════════════════════════════════════════════════
-        
+
         let cart = {
             sessionId: null,
             sessionName: null,
@@ -1439,30 +2249,48 @@
                 return;
             }
 
-            // Refresh members from Supabase first
-            const custData = await NewcoData.read_cust();
-            if (custData.members) {
-                NewcoData.cache.members = custData.members;
+            console.log('🔐 Login attempt:', {username, password: '***'});
+
+            // Load ONLY members from Supabase (fast!)
+            // No need to load entire customer data for login
+            const membersList = await NewcoData.readMembersFromTable();
+            console.log('👥 Members loaded:', {
+                count: membersList?.length || 0
+            });
+
+            if (membersList && membersList.length > 0) {
+                NewcoData.cache.members = membersList;
             }
 
             // Check against stored members
             const members = NewcoData.get('members') || [];
-            const member = members.find(m => 
-                (m.email === username || m.memberId === username) && 
+            console.log('👥 Checking login credentials against:', {
+                count: members.length,
+                emails: members.map(m => m.email),
+                ids: members.map(m => m.id)
+            });
+
+            const member = members.find(m =>
+                (m.email === username || m.memberId === username || m.id === username) &&
                 m.password === password
             );
-            
+
+            console.log('🔍 Login result:', {
+                found: !!member,
+                matchedBy: member ? (member.email === username ? 'email' : 'id') : null,
+                member: member ? {id: member.id, email: member.email, firstName: member.firstName} : null
+            });
+
             if (member) {
                 // Update login tracking
                 member.logins = (member.logins || 0) + 1;
-                member.lastLogin = new Date().toISOString();
+                const lastLoginTime = new Date().toISOString();
+                member.lastLogin = lastLoginTime;
 
-                // Save updated member back to database
-                const memberIndex = members.findIndex(m => m.id === member.id || m.memberId === member.memberId);
-                if (memberIndex !== -1) {
-                    members[memberIndex] = member;
-                    await NewcoData.set('members', members);
-                }
+                // Save updated member back to database (fast!)
+                await NewcoData.updateSingleMember(member.id, {
+                    lastVisit: lastLoginTime
+                });
 
                 // Store logged in member
                 sessionStorage.setItem('newco_current_member', JSON.stringify(member));
@@ -1479,20 +2307,23 @@
                 // Normalize points field
                 const points = member.currentPoints || member.loyaltyPoints || 0;
 
-                // Update UI
-                document.getElementById('memberInfo').innerHTML = `
-                    <div style="display: flex; align-items: center; gap: ${loyaltyEnabled ? '3rem' : '2rem'};">
-                        <span style="color: white; font-weight: 600; font-size: 1.1rem; ${loyaltyEnabled ? 'padding-right: 1rem; border-right: 1px solid rgba(255,255,255,0.3);' : ''}">Welcome, ${member.firstName}!</span>
+                // Update UI - Two Row Header
+                document.getElementById('headerWelcome').innerHTML = `
+                    <span class="header-welcome">Welcome, ${member.firstName}!</span>
+                `;
+
+                document.getElementById('memberActions').innerHTML = `
+                    <div class="header-right">
                         ${loyaltyEnabled ? `
-                        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
-                            <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">${pointsCurrencyName}:</span>
-                            <span style="color: white; font-weight: 700; font-size: 1.1rem;">${points.toLocaleString()}</span>
+                        <div class="header-points-badge">
+                            <span class="header-points-label">${pointsCurrencyName}:</span>
+                            <span class="header-points-value">${points.toLocaleString()}</span>
                         </div>
                         ` : ''}
+                        <button onclick="showHistory()" class="header-btn header-btn-history">History</button>
+                        ${loyaltyEnabled ? `<button onclick="showRewardsStore()" class="header-btn header-btn-store">🎁 Store</button>` : ''}
+                        <button onclick="logout()" class="header-btn header-btn-logout">Logout</button>
                     </div>
-                    <button onclick="showHistory()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin: 0 0.5rem;">History</button>
-                    ${loyaltyEnabled ? `<button onclick="showRewardsStore()" style="background: #ffc107; border: none; color: #333; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-weight: 600;">🎁 Store</button>` : ''}
-                    <button onclick="logout()" style="background: white; border: 1px solid white; color: var(--primary-color, #6c5ce7); padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem; font-weight: 500;">Logout</button>
                 `;
                 
                 closeAuthModal();
@@ -1601,13 +2432,15 @@
             }
             
             try {
-                // Check if email already exists
-                const existingMembers = NewcoData.get('members') || [];
-                if (existingMembers.find(m => m.email === email)) {
+                // Check if email already exists in Supabase
+                // IMPORTANT: Customer site uses skipHeavyData, so we must check Supabase directly
+                const emailExists = await NewcoData.checkMemberEmailExists(email);
+
+                if (emailExists) {
                     notify.error('An account with this email already exists');
                     return;
                 }
-                
+
                 // Generate member ID
                 const timestamp = Date.now();
 
@@ -1654,22 +2487,18 @@
                     updatedAt: new Date().toISOString(),
                     lastVisit: new Date().toISOString()
                 };
-                
-                // Add to existing members array
-                existingMembers.push(newMember);
 
-                // Save to Supabase using NewcoData
-                const saved = await NewcoData.set('members', existingMembers);
+                // Save new member to Supabase (fast - single INSERT!)
+                const saved = await NewcoData.addNewMember(newMember);
 
                 if (!saved) {
                     notify.error('Error saving member data. Please try again.');
                     return;
                 }
-                
-                // Create reward transaction for welcome bonus if points were given
+
+                // Create reward transaction for welcome bonus if points were given (fast!)
                 if (welcomeBonus > 0) {
-                    const rewardTransactions = NewcoData.get('rewardsTransactions') || [];
-                    rewardTransactions.push({
+                    const rewardTransaction = {
                         id: 'reward_' + timestamp + '_welcome',
                         date: new Date().toISOString(),
                         memberId: newMember.id,
@@ -1680,8 +2509,8 @@
                         points: welcomeBonus,
                         balance: welcomeBonus,
                         transactionId: null
-                    });
-                    NewcoData.set('rewardsTransactions', rewardTransactions);
+                    };
+                    await NewcoData.appendRewardTransactions([rewardTransaction]);
                 }
                 
                 // Auto-login
@@ -1692,22 +2521,26 @@
                 const wizData = NewcoData.get('wizardData') || {};
                 const loyaltyEnabled = rewards.enabled !== undefined ? rewards.enabled : (wizData.rewards?.enabled !== undefined ? wizData.rewards.enabled : true);
 
-                // Update UI
+                // Update UI - Two Row Header
                 const pointsCurrencyName = rewardsConfig.basicSettings?.pointsCurrencyName || 'Loyalty Points';
                 const points = newMember.currentPoints || newMember.loyaltyPoints || 0;
-                document.getElementById('memberInfo').innerHTML = `
-                    <div style="display: flex; align-items: center; gap: ${loyaltyEnabled ? '3rem' : '2rem'};">
-                        <span style="color: white; font-weight: 600; font-size: 1.1rem; ${loyaltyEnabled ? 'padding-right: 1rem; border-right: 1px solid rgba(255,255,255,0.3);' : ''}">Welcome, ${newMember.firstName}!</span>
+
+                document.getElementById('headerWelcome').innerHTML = `
+                    <span class="header-welcome">Welcome, ${newMember.firstName}!</span>
+                `;
+
+                document.getElementById('memberActions').innerHTML = `
+                    <div class="header-right">
                         ${loyaltyEnabled ? `
-                        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
-                            <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">${pointsCurrencyName}:</span>
-                            <span style="color: white; font-weight: 700; font-size: 1.1rem;">${points.toLocaleString()}</span>
+                        <div class="header-points-badge">
+                            <span class="header-points-label">${pointsCurrencyName}:</span>
+                            <span class="header-points-value">${points.toLocaleString()}</span>
                         </div>
                         ` : ''}
+                        <button onclick="showHistory()" class="header-btn header-btn-history">History</button>
+                        ${loyaltyEnabled ? `<button onclick="showRewardsStore()" class="header-btn header-btn-store">🎁 Store</button>` : ''}
+                        <button onclick="logout()" class="header-btn header-btn-logout">Logout</button>
                     </div>
-                    <button onclick="showHistory()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin: 0 0.5rem;">History</button>
-                    ${loyaltyEnabled ? `<button onclick="showRewardsStore()" style="background: #ffc107; border: none; color: #333; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-weight: 600;">🎁 Store</button>` : ''}
-                    <button onclick="logout()" style="background: white; border: 1px solid white; color: var(--primary-color, #6c5ce7); padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem; font-weight: 500;">Logout</button>
                 `;
                 
                 closeAuthModal();
@@ -1735,10 +2568,9 @@
                 
                 // Clear any previous session selection
                 selectedSession = null;
-                
-                console.log('Member registered successfully:', newMember);
-                console.log('Total members now:', existingMembers.length);
-                
+
+                console.log('✅ Member registered successfully:', newMember.id);
+
             } catch (error) {
                 console.error('Registration error:', error);
                 notify.error('An error occurred during registration. Please try again.');
@@ -1758,7 +2590,8 @@
             sessionStorage.removeItem('newco_cart');
             updateCartDisplay();
             
-            document.getElementById('memberInfo').innerHTML = `
+            document.getElementById('headerWelcome').innerHTML = '';
+            document.getElementById('memberActions').innerHTML = `
                 <button class="login-btn" onclick="showLogin()">Login / Register</button>
             `;
             // Reload packages to hide loyalty pricing
@@ -1859,8 +2692,10 @@
                 return;
             }
 
-            // Refresh data from Supabase to get latest seat reservations
-            const custData = await NewcoData.read_cust();
+            // Refresh data from Supabase to get latest seat reservations and transactions
+            // IMPORTANT: Force load transactions even though we have skipHeavyData enabled
+            // We need them to check which seats are already taken
+            const custData = await NewcoData.read_cust(true); // forceLoadAll = true
             if (custData.seatReservations) {
                 NewcoData.cache.seatReservations = custData.seatReservations;
             }
@@ -1908,53 +2743,181 @@
             `;
             
             // Check if any packages need seat selection
-            const packagesNeedingSeats = cart.items.filter(item => 
+            const packagesNeedingSeats = cart.items.filter(item =>
                 item.type === 'package' && item.requiresSeat
             );
-            
+
             // Check if user already has max seats for this session/day
             const sessionKey = `${cart.sessionId}_${cart.sessionDate}`;
             const userCanSelectSeats = canUserSelectMoreSeats(sessionKey, member.id);
             const userCurrentSeats = getUserSeatsForSession(sessionKey, member.id);
             const maxSeats = getMaxSeatsPerUser();
             const currentSeatCount = userCurrentSeats.size;
-            
-            // If packages need seats but user is at max, show their existing seat(s)
-            const showSeatSelection = packagesNeedingSeats.length > 0 && userCanSelectSeats;
-            const showExistingSeats = packagesNeedingSeats.length > 0 && !userCanSelectSeats && currentSeatCount > 0;
-            
+
+            // Determine if we need to show seat selection stage
+            const needsSeatSelection = packagesNeedingSeats.length > 0 && userCanSelectSeats;
+            const hasExistingSeat = packagesNeedingSeats.length > 0 && !userCanSelectSeats && currentSeatCount > 0;
+
+            // If seats are needed, show seat selection stage FIRST
+            if (needsSeatSelection) {
+                showSeatSelectionStage(member, sessionKey, maxSeats, currentSeatCount, settings);
+                return;
+            }
+
+            // If user has existing seat, auto-select it and proceed to checkout
+            if (hasExistingSeat) {
+                const existingSeat = Array.from(userCurrentSeats)[0];
+                showCheckoutStage(member, existingSeat, settings);
+                return;
+            }
+
+            // No seat needed, go straight to checkout
+            showCheckoutStage(member, null, settings);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // [SEAT-SELECTION-STAGE] - Full-width seat selection modal
+        // ═══════════════════════════════════════════════════════════
+
+        function showSeatSelectionStage(member, sessionKey, maxSeats, currentSeatCount, settings) {
+            const modal = document.createElement('div');
+            modal.id = 'checkoutModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                overflow-y: auto;
+                padding: 1rem;
+            `;
+
             modal.innerHTML = `
-                <div style="background: white; border-radius: 12px; padding: 2rem; width: 95%; max-width: 1800px; max-height: 95vh; overflow-y: auto; position: relative;">
-                    <button onclick="closeCheckoutModal()" style="position: absolute; right: 1rem; top: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                <div style="background: white; border-radius: 12px; padding: 2rem; width: 95%; max-width: 1400px; max-height: 95vh; overflow-y: auto; position: relative;">
+                    <button onclick="closeCheckoutModal()" style="position: absolute; right: 1rem; top: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; z-index: 10;">&times;</button>
+
+                    <h2 style="margin: 0 0 1rem 0; color: #333;">Select Your Seat</h2>
+                    <p style="color: #666; margin-bottom: 1.5rem;">You have ${currentSeatCount} of ${maxSeats} allowed seat(s) for this session.</p>
+
+                    <!-- Full-width seat map -->
+                    <div id="seatMapContainer" style="background: #f9f9f9; padding: 1rem; border-radius: 8px; min-height: 400px;">
+                        <!-- Seat map will be loaded here -->
+                    </div>
+
+                    <!-- Seat selection display and confirm button -->
+                    <div id="selectedSeatDisplay" style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.125rem; color: #999;">
+                        No seat selected
+                    </div>
+
+                    <div style="margin-top: 1.5rem; display: flex; justify-content: center;">
+                        <button id="confirmSeatBtn" onclick="proceedToCheckout()" style="
+                            padding: 1rem 3rem;
+                            background: #4caf50;
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            opacity: 0.5;
+                            pointer-events: none;
+                            transition: all 0.2s;
+                        " disabled>
+                            Confirm Seat & Continue to Payment
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+
+            // Initialize checkout data
+            const defaultPaymentMethod = settings.paymentCard ? 'card' : (settings.paymentCash ? 'cash' : null);
+            window.checkoutData = {
+                member: member,
+                paymentMethod: defaultPaymentMethod,
+                loyaltyPointsUsed: 0,
+                selectedSeat: null,
+                settings: settings // Store for later use
+            };
+
+            // Load seat map
+            const halls = NewcoData.get('halls') || [];
+            const hall = halls[0];
+            const seatingType = hall?.seatingMapType || 'none';
+
+            setTimeout(() => {
+                const container = document.getElementById('seatMapContainer');
+
+                if (seatingType === 'prebuilt' && hall?.prebuiltMapCode && hall?.prebuiltMapFunction) {
+                    // Load prebuilt map
+                    try {
+                        eval(hall.prebuiltMapCode);
+                        if (window[hall.prebuiltMapFunction]) {
+                            window[hall.prebuiltMapFunction]('seatMapContainer');
+                            markReservedSeats();
+                        }
+                    } catch (error) {
+                        console.error('Error loading prebuilt map:', error);
+                        container.innerHTML = '<div style="color: #999; text-align: center; padding: 2rem;">Error loading seat map</div>';
+                    }
+                } else if (seatingType === 'manual' && hall?.layout) {
+                    container.innerHTML = renderSeatMap();
+                } else {
+                    container.innerHTML = '<div style="color: #999; text-align: center; padding: 2rem;">No seating map configured</div>';
+                }
+            }, 100);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // [CHECKOUT-STAGE] - Payment and order completion
+        // ═══════════════════════════════════════════════════════════
+
+        function showCheckoutStage(member, selectedSeat, settings) {
+            // Close any existing modal
+            const existingModal = document.getElementById('checkoutModal');
+            if (existingModal) existingModal.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'checkoutModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                overflow-y: auto;
+                padding: 1rem;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; width: 90%; max-width: 600px; max-height: 95vh; overflow-y: auto; position: relative;">
+                    <button onclick="closeCheckoutModal()" style="position: absolute; right: 1rem; top: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; z-index: 10;">&times;</button>
 
                     <h2 style="margin: 0 0 1.5rem 0; color: #333;">Checkout</h2>
-                    
-                    <!-- Seat Selection (if needed and allowed) -->
-                    ${showSeatSelection ? `
-                        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #2196f3;">
-                            <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem; color: #1976d2;">Select Your Seat</h3>
-                            <div style="color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">
-                                You have ${currentSeatCount} of ${maxSeats} allowed seat(s) for this session.
-                            </div>
-                            <div id="seatMapContainer" style="background: white; padding: 0; border-radius: 8px; overflow: hidden;">
-                                <!-- Hardcoded map will be loaded here -->
-                            </div>
-                        </div>
-                    ` : ''}
-                    
-                    <!-- Show existing seats if at max -->
-                    ${showExistingSeats ? `
-                        <div style="background: #c8e6c9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #4caf50;">
-                            <h3 style="margin: 0 0 0.5rem 0; font-size: 1.125rem; color: #2e7d32;">Your Seat is Already Reserved</h3>
-                            <div style="color: #1b5e20; font-weight: 600;">
-                                Seat(s): ${Array.from(userCurrentSeats).join(', ')}
-                            </div>
-                            <div style="color: #666; font-size: 0.875rem; margin-top: 0.5rem;">
-                                You have reached the maximum of ${maxSeats} seat(s) for this session.
+
+                    ${selectedSeat ? `
+                        <div style="background: #e8f5e9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 2px solid #4caf50;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.5rem;">🪑</span>
+                                <div>
+                                    <div style="font-weight: 600; color: #2e7d32;">Seat Reserved</div>
+                                    <div style="font-size: 1.125rem; font-weight: bold; color: #1b5e20;">${selectedSeat}</div>
+                                </div>
                             </div>
                         </div>
                     ` : ''}
-                    
+
                     <!-- Order Summary -->
                     <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                         <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Order Summary</h3>
@@ -1965,21 +2928,13 @@
                             </div>
                         `).join('')}
                         <div style="border-top: 1px solid #ddd; margin-top: 1rem; padding-top: 1rem;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Subtotal:</span>
-                                <span>$${cart.subtotal.toFixed(2)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Tax:</span>
-                                <span>$${cart.tax.toFixed(2)}</span>
-                            </div>
                             <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.125rem;">
                                 <span>Total:</span>
                                 <span>$${cart.total.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Payment Method -->
                     <div style="margin-bottom: 1.5rem;">
                         <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Payment Method</h3>
@@ -1996,167 +2951,84 @@
                                     <span>Cash at Hall</span>
                                 </label>
                             ` : ''}
-                            ${!settings.paymentCard && !settings.paymentCash ? `
-                                <div style="padding: 1rem; background: #f5f5f5; border-radius: 8px; color: #666;">
-                                    <p style="margin: 0;">No payment methods are enabled. Please contact the administrator.</p>
-                                </div>
-                            ` : ''}
                         </div>
                     </div>
-                    
-                    <!-- Card Details (shown only if card payment is selected) -->
-                    <div id="cardDetails" style="margin-bottom: 1.5rem; ${!settings.paymentCard ? 'display: none;' : ''}">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                            <h3 style="margin: 0; font-size: 1.125rem;">
-                                Card Details <span style="color: #dc3545;">*</span>
-                            </h3>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 25'%3E%3Cpath fill='%23635bff' d='M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 01-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.26-.06 1.48zm-5.92-5.62c-1.03 0-2.17.73-2.17 2.58h4.25c0-1.85-1.07-2.58-2.08-2.58zM40.95 20.3c-1.44 0-2.32-.6-2.9-1.04l-.02 4.63-4.12.87V5.57h3.76l.08 1.02a4.7 4.7 0 013.23-1.29c2.9 0 5.62 2.6 5.62 7.4 0 5.23-2.7 7.6-5.65 7.6zM40 8.95c-.95 0-1.54.34-1.97.81l.02 6.12c.4.44.98.78 1.95.78 1.52 0 2.54-1.65 2.54-3.87 0-2.15-1.04-3.84-2.54-3.84zM28.24 5.57h4.13v14.44h-4.13V5.57zm0-4.7L32.37 0v3.36l-4.13.88V.88zm-4.32 9.35v9.79H19.8V5.57h3.7l.12 1.22c1-1.77 3.07-1.41 3.62-1.22v3.79c-.52-.17-2.29-.43-3.32.86zm-8.55 4.72c0 2.43 2.6 1.68 3.12 1.46v3.36c-.55.3-1.54.54-2.89.54a4.15 4.15 0 01-4.27-4.24l.01-13.17 4.02-.86v3.54h3.14V9.1h-3.13v5.85zm-4.91.7c0 2.97-2.31 4.66-5.73 4.66a11.2 11.2 0 01-4.46-.93v-3.93c1.38.75 3.1 1.31 4.46 1.31.92 0 1.53-.24 1.53-1C6.26 13.77 0 14.51 0 9.95 0 7.04 2.28 5.3 5.62 5.3c1.36 0 2.72.2 4.09.75v3.88a9.23 9.23 0 00-4.1-1.06c-.86 0-1.44.25-1.44.9 0 1.85 6.29.97 6.29 5.88z'/%3E%3C/svg%3E" alt="Stripe" style="height: 20px;">
-                                ${STRIPE_TEST_MODE ? `<span style="background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">TEST MODE</span>` : ''}
-                            </div>
-                        </div>
 
-                        ${STRIPE_TEST_MODE ? `
+                    <!-- Card Details -->
+                    <div id="cardDetails" style="margin-bottom: 1.5rem; ${!settings.paymentCard ? 'display: none;' : ''}">
+                        <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Card Details</h3>
+
+                        ${PaymentProcessor.environment === 'sandbox' ? `
                             <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
                                 <div style="color: #856404; font-size: 0.875rem; margin-bottom: 0.75rem;">
-                                    ⓘ This is a test Stripe integration. No real charges will be made. This will switch to live mode when you upgrade from trial.
+                                    ⓘ Sandbox mode - Use test card: 4111111111111111
                                 </div>
-                                <button onclick="fillTestCardData()" type="button" style="background: #6c5ce7; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; cursor: pointer; font-weight: 500;">
-                                    Fill Details
+                                <button onclick="fillTestCardData()" type="button" style="background: #d32f2f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.875rem; cursor: pointer;">
+                                    Fill Test Card
                                 </button>
                             </div>
                         ` : ''}
 
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.875rem;">
-                                Card Information <span style="color: #dc3545;">*</span>
-                            </label>
-                            ${STRIPE_TEST_MODE ? `
-                                <!-- Fake Stripe look for test mode -->
-                                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; background: white;">
-                                    <input type="text" id="fakeCardNumber" placeholder="1234 1234 1234 1234" maxlength="19" style="width: 100%; border: none; outline: none; font-size: 1rem; margin-bottom: 0.75rem;" oninput="formatCardNumber(this)">
-                                    <div style="display: flex; gap: 1rem;">
-                                        <input type="text" id="fakeCardExpiry" placeholder="MM / YY" maxlength="7" style="flex: 1; border: none; outline: none; font-size: 1rem; border-top: 1px solid #e0e0e0; padding-top: 0.75rem;" oninput="formatExpiry(this)">
-                                        <input type="text" id="fakeCardCVC" placeholder="CVC" maxlength="3" style="flex: 1; border: none; outline: none; font-size: 1rem; border-top: 1px solid #e0e0e0; padding-top: 0.75rem;">
-                                    </div>
-                                </div>
-                            ` : `
-                                <!-- Real Stripe Elements for live mode -->
-                                <div id="card-element" style="padding: 1rem; border: 1px solid #ddd; border-radius: 8px; background: white;"></div>
-                            `}
-                            <div id="card-errors" role="alert" style="color: #dc3545; font-size: 0.875rem; margin-top: 0.5rem;"></div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Card Number *</label>
+                            <input type="text" id="cardNumber" placeholder="1234 1234 1234 1234" maxlength="19" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;" oninput="formatCardNumber(this)">
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Expiry *</label>
+                                <input type="text" id="cardExpiry" placeholder="MM / YY" maxlength="7" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;" oninput="formatExpiry(this)">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">CVV *</label>
+                                <input type="text" id="cardCVV" placeholder="123" maxlength="4" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
                         </div>
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.875rem;">
-                                Cardholder Name <span style="color: #dc3545;">*</span>
-                            </label>
-                            <input type="text" id="cardholderName" placeholder="Name on card" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Cardholder Name *</label>
+                            <input type="text" id="cardholderName" placeholder="Name on card" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
                         </div>
                         <div style="margin-bottom: 1rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.875rem;">
-                                Billing ZIP Code <span style="color: #dc3545;">*</span>
-                            </label>
-                            <input type="text" id="billingZip" placeholder="ZIP Code" maxlength="10" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Billing ZIP Code *</label>
+                            <input type="text" id="billingZip" placeholder="ZIP Code" maxlength="10" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
                         </div>
                     </div>
-                    
-                    <!-- Final Total -->
-                    <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold;">
-                            <span>Amount to Pay:</span>
-                            <span id="finalTotal">$${cart.total.toFixed(2)}</span>
-                        </div>
-                        <div id="pointsDiscount" style="display: none; color: #27ae60; margin-top: 0.5rem;">
-                            <span>Loyalty Discount: -$<span id="discountAmount">0.00</span></span>
-                        </div>
-                    </div>
-                    
+
                     <!-- Place Order Button -->
-                    <button id="placeOrderBtn" onclick="placeOrder()" style="width: 100%; padding: 1rem; background: ${(settings.paymentCard || settings.paymentCash) ? '#27ae60' : '#ccc'}; color: white; border: none; border-radius: 8px; font-size: 1.125rem; font-weight: bold; cursor: ${(settings.paymentCard || settings.paymentCash) ? 'pointer' : 'not-allowed'};" ${!(settings.paymentCard || settings.paymentCash) ? 'disabled' : ''}>
-                        Place Order
+                    <button id="placeOrderBtn" onclick="placeOrder()" style="width: 100%; padding: 1rem; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 1.125rem; font-weight: bold; cursor: pointer;">
+                        Place Order - $${cart.total.toFixed(2)}
                     </button>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
 
-            // Initialize Stripe Elements ONLY in live mode
-            if (settings.paymentCard && !STRIPE_TEST_MODE) {
-                setTimeout(() => {
-                    if (!cardElement) {
-                        elements = stripe.elements();
-                        cardElement = elements.create('card', {
-                            style: {
-                                base: {
-                                    fontSize: '16px',
-                                    color: '#32325d',
-                                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                                    '::placeholder': {
-                                        color: '#aab7c4'
-                                    }
-                                },
-                                invalid: {
-                                    color: '#dc3545'
-                                }
-                            }
-                        });
-                        cardElement.mount('#card-element');
+            // Update checkout data with selected seat
+            if (!window.checkoutData) {
+                const defaultPaymentMethod = settings.paymentCard ? 'card' : (settings.paymentCash ? 'cash' : null);
+                window.checkoutData = {
+                    member: member,
+                    paymentMethod: defaultPaymentMethod,
+                    loyaltyPointsUsed: 0,
+                    selectedSeat: selectedSeat,
+                    settings: settings
+                };
+            } else {
+                window.checkoutData.selectedSeat = selectedSeat;
+            }
+        }
 
-                        // Handle real-time validation errors
-                        cardElement.on('change', (event) => {
-                            const displayError = document.getElementById('card-errors');
-                            if (displayError) {
-                                if (event.error) {
-                                    displayError.textContent = event.error.message;
-                                } else {
-                                    displayError.textContent = '';
-                                }
-                            }
-                        });
-                    }
-                }, 100);
+        // Proceed from seat selection to checkout
+        window.proceedToCheckout = function() {
+            if (!window.checkoutData || !window.checkoutData.selectedSeat) {
+                notify.warning('Please select a seat first');
+                return;
             }
 
-            // Load Milpitas grid-based seat map if seat selection is shown
-            // Load appropriate seat map based on hall configuration
-            if (showSeatSelection) {
-                const halls = NewcoData.get('halls') || [];
-                const hall = halls[0]; // Single hall
-                const seatingType = hall?.seatingMapType || 'none';
+            const selectedSeat = window.checkoutData.selectedSeat;
+            const member = window.checkoutData.member;
+            const settings = window.checkoutData.settings;
 
-                setTimeout(() => {
-                    const container = document.getElementById('seatMapContainer');
-
-                    if (seatingType === 'prebuilt' && hall?.prebuiltMapCode && hall?.prebuiltMapFunction) {
-                        // Load prebuilt map
-                        try {
-                            eval(hall.prebuiltMapCode);
-                            if (window[hall.prebuiltMapFunction]) {
-                                window[hall.prebuiltMapFunction]('seatMapContainer');
-                                // Mark reserved seats only for prebuilt maps (they use data-seat attribute)
-                                markReservedSeats();
-                            }
-                        } catch (error) {
-                            console.error('Error loading prebuilt map:', error);
-                            container.innerHTML = '<div style="color: #999; text-align: center; padding: 2rem;">Error loading seat map</div>';
-                        }
-                    } else if (seatingType === 'manual' && hall?.layout) {
-                        // Render manual grid layout (already handles reserved seats during rendering)
-                        container.innerHTML = renderSeatMap();
-                    } else {
-                        // No seating map configured
-                        container.innerHTML = '<div style="color: #999; text-align: center; padding: 2rem;">No seating map configured</div>';
-                    }
-                }, 100);
-            }
-
-            // Store checkout data globally for access
-            window.checkoutData = {
-                member: member,
-                paymentMethod: 'card',
-                loyaltyPointsUsed: 0,
-                selectedSeat: null // Single seat selection
-            };
+            showCheckoutStage(member, selectedSeat, settings);
         }
         
         // ═══════════════════════════════════════════════════════════
@@ -2406,13 +3278,15 @@
                                 html += `
                                     <div style="
                                         position: relative;
-                                        width: 45px;
-                                        height: 45px;
+                                        width: 47px;
+                                        height: 47px;
                                         background: ${areaColor};
-                                        border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                        margin: -1px;
+                                        border-top: 3px solid rgba(0,0,0,0.3);
+                                        border-left: 3px solid rgba(0,0,0,0.3);
+                                        border-right: 0px;
+                                        border-bottom: 0px;
+                                        box-sizing: border-box;
                                     ">
                                         <div style="
                                             position: absolute;
@@ -2434,16 +3308,18 @@
                                     </div>
                                 `;
                             } else {
-                                // Other cells in area: just colored block with appropriate borders
+                                // Other cells in area: just colored block with seamless connection
                                 html += `
                                     <div style="
-                                        width: 45px;
-                                        height: 45px;
+                                        width: 47px;
+                                        height: 47px;
                                         background: ${areaColor};
-                                        border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
-                                        border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                        margin: -1px;
+                                        border: ${isTopEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                        border-right: ${isRightEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                        border-bottom: ${isBottomEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                        border-left: ${isLeftEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                        box-sizing: border-box;
                                     "></div>
                                 `;
                             }
@@ -2472,13 +3348,15 @@
 
                             html += `
                                 <div style="
-                                    width: 45px;
-                                    height: 45px;
+                                    width: 47px;
+                                    height: 47px;
                                     background: ${areaColor};
-                                    border-top: ${isTopEdge ? `3px solid ${areaColor}` : 'none'};
-                                    border-bottom: ${isBottomEdge ? `3px solid ${areaColor}` : 'none'};
-                                    border-left: ${isLeftEdge ? `3px solid ${areaColor}` : 'none'};
-                                    border-right: ${isRightEdge ? `3px solid ${areaColor}` : 'none'};
+                                    margin: -1px;
+                                    border: ${isTopEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                    border-right: ${isRightEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                    border-bottom: ${isBottomEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                    border-left: ${isLeftEdge ? '3px' : '0px'} solid rgba(0,0,0,0.3);
+                                    box-sizing: border-box;
                                 "></div>
                             `;
                         }
@@ -2499,11 +3377,8 @@
                     <div><span style="display: inline-block; width: 20px; height: 20px; background: #e91e63; border: 1px solid #e91e63; vertical-align: middle;"></span> Reserved</div>
                     <div><span style="display: inline-block; width: 20px; height: 20px; background: #4caf50; border: 1px solid #4caf50; vertical-align: middle;"></span> Your Seat</div>
                 </div>
-                <div id="selectedSeatDisplay" style="margin-top: 1rem; font-weight: 600; color: #1976d2;">
-                    Selected: None (Choose 1 seat)
-                </div>
             `;
-            
+
             return html;
         }
         
@@ -2589,6 +3464,14 @@
                     displayDiv.innerHTML = `Selected: ${seatNumber} ✓`;
                     displayDiv.style.color = '#4CAF50';
                 }
+
+                // Enable confirm button
+                const confirmBtn = document.getElementById('confirmSeatBtn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = '1';
+                    confirmBtn.style.pointerEvents = 'auto';
+                }
             } else {
                 // Deselect
                 window.checkoutData.selectedSeat = null;
@@ -2596,6 +3479,14 @@
                 if (displayDiv) {
                     displayDiv.innerHTML = 'No seat selected';
                     displayDiv.style.color = '#999';
+                }
+
+                // Disable confirm button
+                const confirmBtn = document.getElementById('confirmSeatBtn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.style.opacity = '0.5';
+                    confirmBtn.style.pointerEvents = 'none';
                 }
             }
         }
@@ -2626,13 +3517,48 @@
                 seatBtn.style.background = '#ffffff';
                 seatBtn.style.border = '2px solid #ddd';
                 seatBtn.style.color = '#333';
+
+                // Update seat display
+                const displayDiv = document.getElementById('selectedSeatDisplay');
+                if (displayDiv) {
+                    displayDiv.innerHTML = 'Selected: None (Choose 1 seat)';
+                    displayDiv.style.color = '#1976d2';
+                }
+
+                // Disable confirm button
+                const confirmBtn = document.getElementById('confirmSeatBtn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.style.opacity = '0.5';
+                    confirmBtn.style.pointerEvents = 'none';
+                }
             } else {
                 // Select this seat
                 window.checkoutData.selectedSeat = seatId;
                 seatBtn.style.background = '#1976d2';
                 seatBtn.style.border = '2px solid #1976d2';
                 seatBtn.style.color = 'white';
+
+                // Update seat display
+                const displayDiv = document.getElementById('selectedSeatDisplay');
+                if (displayDiv) {
+                    displayDiv.innerHTML = `Selected: ${seatId} ✓`;
+                    displayDiv.style.color = '#4caf50';
+                }
+
+                // Enable confirm button
+                const confirmBtn = document.getElementById('confirmSeatBtn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = '1';
+                    confirmBtn.style.pointerEvents = 'auto';
+                }
             }
+        }
+
+        // Legacy function - redirects to new two-stage checkout
+        window.confirmSeatSelection = function() {
+            proceedToCheckout();
         }
 
         // Mark already reserved seats on the hardcoded map
@@ -2712,12 +3638,10 @@
         }
 
         window.fillTestCardData = function() {
-            // Fill test card data
-            if (STRIPE_TEST_MODE) {
-                document.getElementById('fakeCardNumber').value = '4242 4242 4242 4242';
-                document.getElementById('fakeCardExpiry').value = '12 / 25';
-                document.getElementById('fakeCardCVC').value = '123';
-            }
+            // Fill Authorize.Net test card data
+            document.getElementById('cardNumber').value = '4111 1111 1111 1111';
+            document.getElementById('cardExpiry').value = '12 / 25';
+            document.getElementById('cardCVV').value = '123';
             document.getElementById('cardholderName').value = 'Test User';
             document.getElementById('billingZip').value = '12345';
         }
@@ -2760,17 +3684,24 @@
         }
         
         window.placeOrder = async function() {
+            console.log('🎯 === PLACE ORDER STARTED ===');
+            console.log('Cart:', cart);
+            console.log('Checkout data:', window.checkoutData);
+
             // Check if payment method is selected
             if (!window.checkoutData || !window.checkoutData.paymentMethod) {
                 notify.warning('Please select a payment method');
                 return;
             }
 
-            // If card payment, validate fields
+            // If card payment, validate and process
             if (window.checkoutData.paymentMethod === 'card') {
                 // Validate required fields
                 const cardholderName = document.getElementById('cardholderName')?.value.trim();
                 const billingZip = document.getElementById('billingZip')?.value.trim();
+                const cardNumber = document.getElementById('cardNumber')?.value.replace(/\s/g, '');
+                const cardExpiry = document.getElementById('cardExpiry')?.value.trim();
+                const cardCVV = document.getElementById('cardCVV')?.value.trim();
 
                 if (!cardholderName) {
                     notify.error('Please enter the cardholder name');
@@ -2784,80 +3715,114 @@
                     return;
                 }
 
-                // Validate card fields based on mode
-                if (STRIPE_TEST_MODE) {
-                    // Test mode - validate fake fields
-                    const cardNumber = document.getElementById('fakeCardNumber')?.value.trim();
-                    const cardExpiry = document.getElementById('fakeCardExpiry')?.value.trim();
-                    const cardCVC = document.getElementById('fakeCardCVC')?.value.trim();
+                if (!cardNumber) {
+                    notify.error('Please enter a card number');
+                    document.getElementById('cardNumber')?.focus();
+                    return;
+                }
 
-                    if (!cardNumber) {
-                        notify.error('Please enter a card number');
-                        document.getElementById('fakeCardNumber')?.focus();
-                        return;
+                if (!cardExpiry) {
+                    notify.error('Please enter the expiry date');
+                    document.getElementById('cardExpiry')?.focus();
+                    return;
+                }
+
+                if (!cardCVV) {
+                    notify.error('Please enter the CVV');
+                    document.getElementById('cardCVV')?.focus();
+                    return;
+                }
+
+                // Check if payment processor is ready
+                if (!paymentProcessorReady) {
+                    notify.error('Payment processor not initialized. Please contact support.');
+                    return;
+                }
+
+                // Calculate final amount
+                const discount = window.checkoutData.loyaltyPointsUsed / 100;
+                const finalTotal = Math.max(0, cart.total - discount);
+
+                // Parse expiry date
+                const expiryParts = cardExpiry.split('/').map(p => p.trim());
+                if (expiryParts.length !== 2) {
+                    notify.error('Invalid expiry date format. Use MM / YY');
+                    return;
+                }
+
+                try {
+                    // Save checkout data before closing modal (modal close clears window.checkoutData!)
+                    const savedCheckoutData = { ...window.checkoutData };
+
+                    // Close modal immediately before processing
+                    console.log('🚪 Closing checkout modal (processing payment in background)...');
+                    closeCheckoutModal();
+
+                    // Restore checkout data for processing
+                    window.checkoutData = savedCheckoutData;
+
+                    // Show processing notification
+                    notify.info('Processing your payment...', 'Please Wait');
+
+                    // Process payment through Authorize.Net
+                    const paymentResult = await PaymentProcessor.processPayment({
+                        cardNumber: cardNumber,
+                        expiryMonth: expiryParts[0],
+                        expiryYear: '20' + expiryParts[1],
+                        cvv: cardCVV,
+                        amount: finalTotal.toFixed(2),
+                        description: `${cart.sessionName} - ${cart.items.length} items`,
+                        customerId: window.checkoutData.member.id,
+                        customerEmail: window.checkoutData.member.email,
+                        invoiceNumber: 'INV_' + Date.now()
+                    });
+
+                    if (!paymentResult.success) {
+                        throw new Error(paymentResult.message || 'Payment failed');
                     }
-                    if (!cardExpiry) {
-                        notify.error('Please enter the expiry date');
-                        document.getElementById('fakeCardExpiry')?.focus();
-                        return;
-                    }
-                    if (!cardCVC) {
-                        notify.error('Please enter the CVC');
-                        document.getElementById('fakeCardCVC')?.focus();
-                        return;
-                    }
 
-                    // Store test payment info
-                    window.checkoutData.stripePaymentMethodId = 'pm_test_' + Date.now();
-                } else {
-                    // Live mode - process with real Stripe
-                    if (!cardElement) {
-                        notify.error('Card details not loaded. Please try again.');
-                        return;
-                    }
+                    // Store payment info for transaction record
+                    window.checkoutData.paymentTransactionId = paymentResult.transactionId;
+                    window.checkoutData.paymentAuthCode = paymentResult.authCode;
+                    window.checkoutData.cardLast4 = paymentResult.accountNumber ? paymentResult.accountNumber.slice(-4) : null;
+                    window.checkoutData.cardBrand = paymentResult.accountType;
+                    window.checkoutData.avsResultCode = paymentResult.avsResultCode;
+                    window.checkoutData.cvvResultCode = paymentResult.cvvResultCode;
+                    window.checkoutData.networkTransId = paymentResult.networkTransId;
+                    console.log('✅ Payment processed:', paymentResult.transactionId);
 
-                    const discount = window.checkoutData.loyaltyPointsUsed / 100;
-                    const finalTotal = Math.max(0, cart.total - discount);
-
-                    try {
-                        const {paymentMethod, error} = await stripe.createPaymentMethod({
-                            type: 'card',
-                            card: cardElement,
-                            billing_details: {
-                                name: cardholderName,
-                                email: window.checkoutData.member.email,
-                                address: {
-                                    postal_code: billingZip
-                                }
-                            }
-                        });
-
-                        if (error) {
-                            notify.error(error.message);
-                            return;
-                        }
-
-                        // Store payment method ID for transaction record
-                        window.checkoutData.stripePaymentMethodId = paymentMethod.id;
-                        console.log('Stripe payment method created:', paymentMethod.id);
-                    } catch (error) {
-                        notify.error('Payment processing failed: ' + error.message);
-                        return;
-                    }
+                } catch (error) {
+                    console.error('❌ Payment processing error:', error);
+                    notify.error('Payment failed: ' + error.message);
+                    // Note: Modal already closed, cannot reset button
+                    // User will need to checkout again if payment fails
+                    return;
                 }
             }
             
             // Check if seats need to be selected
-            const packagesNeedingSeats = cart.items.filter(item => 
+            const packagesNeedingSeats = cart.items.filter(item =>
                 item.type === 'package' && item.requiresSeat
             );
-            
+
+            console.log('🪑 Seat validation:', {
+                packagesNeedingSeats: packagesNeedingSeats.length,
+                sessionKey: `${cart.sessionId}_${cart.sessionDate}`,
+                memberId: window.checkoutData.member.id
+            });
+
             // Get user's current seat status
             const sessionKey = `${cart.sessionId}_${cart.sessionDate}`;
             const userCanSelectSeats = canUserSelectMoreSeats(sessionKey, window.checkoutData.member.id);
-            
+
+            console.log('🪑 Seat selection status:', {
+                userCanSelectSeats,
+                selectedSeat: window.checkoutData.selectedSeat
+            });
+
             // Validate seat selection only if user can select more seats
             if (packagesNeedingSeats.length > 0 && userCanSelectSeats && !window.checkoutData.selectedSeat) {
+                console.log('❌ Seat validation failed - no seat selected');
                 notify.warning('Please select a seat');
                 return;
             }
@@ -2871,7 +3836,14 @@
                     console.log('Using existing seat:', window.checkoutData.selectedSeat);
                 }
             }
-            
+
+            // For cash payments, close modal and show processing
+            if (window.checkoutData.paymentMethod === 'cash') {
+                console.log('🚪 Closing checkout modal (cash payment)...');
+                closeCheckoutModal();
+                notify.info('Processing your order...', 'Please Wait');
+            }
+
             // Calculate final amount
             const discount = window.checkoutData.loyaltyPointsUsed / 100;
             const finalTotal = Math.max(0, cart.total - discount);
@@ -2909,8 +3881,16 @@
                 loyaltyPointsUsed: window.checkoutData.loyaltyPointsUsed,
                 loyaltyPointsEarned: 0, // Will be updated after calculation
                 paymentMethod: window.checkoutData.paymentMethod,
-                stripePaymentMethodId: window.checkoutData.stripePaymentMethodId || null,
-                isTestTransaction: STRIPE_TEST_MODE && window.checkoutData.paymentMethod === 'card',
+                paymentTransactionId: window.checkoutData.paymentTransactionId || null,
+                paymentAuthCode: window.checkoutData.paymentAuthCode || null,
+                cardLast4: window.checkoutData.cardLast4 || null,
+                cardBrand: window.checkoutData.cardBrand || null,
+                authorizationCode: window.checkoutData.paymentAuthCode || null,
+                avsResultCode: window.checkoutData.avsResultCode || null,
+                cvvResultCode: window.checkoutData.cvvResultCode || null,
+                networkTransId: window.checkoutData.networkTransId || null,
+                paymentProcessor: window.checkoutData.paymentMethod === 'card' ? 'authorize_net' : null,
+                isTestTransaction: PaymentProcessor.environment === 'sandbox' && window.checkoutData.paymentMethod === 'card',
                 status: window.checkoutData.paymentMethod === 'card' ? 'purchased' : 'pending',
                 source: 'website',
                 salesperson: 'Online',
@@ -2919,52 +3899,56 @@
                 processedAt: new Date().toISOString()
             };
             
-            // Update member's loyalty points
-            const members = NewcoData.get('members') || [];
-            const memberIndex = members.findIndex(m => m.id === window.checkoutData.member.id);
-            
+            // Update member's loyalty points and stats (FAST - single member update!)
             let pointsEarned = 0;
-            if (memberIndex !== -1) {
-                // Deduct used points (from currentPoints)
-                members[memberIndex].currentPoints = (members[memberIndex].currentPoints || 0) - window.checkoutData.loyaltyPointsUsed;
+            const memberId = window.checkoutData.member.id;
 
-                // Update lifetimeSpend
-                members[memberIndex].lifetimeSpend = (members[memberIndex].lifetimeSpend || 0) + finalTotal;
+            // Get current member data from cache
+            const currentMember = window.checkoutData.member;
+            const currentPoints = (currentMember.currentPoints || 0) - window.checkoutData.loyaltyPointsUsed;
 
-                // Add points earned from this purchase (only if rewards are enabled)
-                const rewardsConfig = NewcoData.get('rewardsConfig') || {};
-                if (rewardsConfig.rewardType && rewardsConfig.rewardType !== 'none') {
-                    const pointsPerDollar = rewardsConfig.basicSettings?.webPointsPerDollar || rewardsConfig.webPointsPerDollar || 10;
-                    pointsEarned = Math.floor(finalTotal * pointsPerDollar);
-                    members[memberIndex].currentPoints += pointsEarned;
-                    members[memberIndex].lifetimePoints = (members[memberIndex].lifetimePoints || 0) + pointsEarned;
+            // Calculate points earned (only if rewards are enabled)
+            const rewardsConfig = NewcoData.get('rewardsConfig') || {};
+            if (rewardsConfig.rewardType && rewardsConfig.rewardType !== 'none') {
+                const pointsPerDollar = rewardsConfig.basicSettings?.webPointsPerDollar || rewardsConfig.webPointsPerDollar || 10;
+                pointsEarned = Math.floor(finalTotal * pointsPerDollar);
 
-                    // Update transaction with points earned
-                    transaction.loyaltyPointsEarned = pointsEarned;
-                }
-                
-                // Update spending stats
-                members[memberIndex].totalSpent = (members[memberIndex].totalSpent || 0) + finalTotal;
-                members[memberIndex].visits = (members[memberIndex].visits || 0) + 1;
-                members[memberIndex].lastVisit = new Date().toISOString();
-
-                await NewcoData.set('members', members);
-
-                // Update session
-                window.checkoutData.member.currentPoints = members[memberIndex].currentPoints;
-                sessionStorage.setItem('newco_current_member', JSON.stringify(window.checkoutData.member));
+                // Update transaction with points earned
+                transaction.loyaltyPointsEarned = pointsEarned;
             }
+
+            // Build the update object
+            const memberUpdates = {
+                currentPoints: currentPoints + pointsEarned,
+                lifetimePoints: (currentMember.lifetimePoints || 0) + pointsEarned,
+                lifetimeSpend: (currentMember.lifetimeSpend || 0) + finalTotal,
+                totalSpent: (currentMember.totalSpent || 0) + finalTotal,
+                lastVisit: new Date().toISOString()
+            };
+
+            console.log('👤 Updating member:', memberId, memberUpdates);
+
+            // Update single member record (fast!)
+            const memberUpdateResult = await NewcoData.updateSingleMember(memberId, memberUpdates);
+
+            if (!memberUpdateResult) {
+                console.error('❌ Failed to update member - transaction will still be saved');
+                notify.warning('Member points may not have updated. Check your account after purchase.');
+            }
+
+            // Update session storage with new points
+            window.checkoutData.member.currentPoints = memberUpdates.currentPoints;
+            window.checkoutData.member.lifetimePoints = memberUpdates.lifetimePoints;
+            window.checkoutData.member.lifetimeSpend = memberUpdates.lifetimeSpend;
+            window.checkoutData.member.lastVisit = memberUpdates.lastVisit;
+            sessionStorage.setItem('newco_current_member', JSON.stringify(window.checkoutData.member));
             
             // Save transaction with updated loyaltyPointsEarned
+            console.log('💾 Saving transaction...', transaction.id);
             try {
-                // IMPORTANT: Customer site uses skipHeavyData, so transactions aren't in cache
-                // Must fetch fresh from Supabase before appending new transaction
-                const custData = await NewcoData.read_cust(true);  // Force load all data
-                const transactions = custData.transactions || [];
-
-                transactions.push(transaction);
-
-                const saveResult = await NewcoData.set('transactions', transactions);
+                // Use appendTransaction to avoid loading all transactions (fast!)
+                const saveResult = await NewcoData.appendTransaction(transaction);
+                console.log('💾 Transaction save result:', saveResult);
 
                 if (!saveResult) {
                     console.error('❌ Transaction save failed - data may not have persisted');
@@ -2973,6 +3957,7 @@
 
                 // Also update seat reservations for this session/day in database
                 if (transaction.selectedSeat) {
+                    console.log('🪑 Saving seat reservation:', transaction.selectedSeat);
                     const seatReservations = NewcoData.get('seatReservations') || {};
                     const sessionKey = `${transaction.sessionId}_${transaction.sessionDate}`;
 
@@ -2984,20 +3969,21 @@
                     if (!seatReservations[sessionKey].includes(transaction.selectedSeat)) {
                         seatReservations[sessionKey].push(transaction.selectedSeat);
                         await NewcoData.set('seatReservations', seatReservations);
+                        console.log('🪑 Seat reservation saved');
                     }
                 }
             } catch (error) {
                 console.error('❌ Error saving transaction:', error);
                 notify.error('Error saving transaction: ' + error.message);
+                return; // Stop if transaction save fails
             }
             
-            // Create reward transactions - fetch fresh from Supabase since not in cache
-            const custData2 = await NewcoData.read_cust(true);  // Force load all data
-            const rewardTransactions = custData2.rewardsTransactions || [];
+            // Create reward transactions (fast - no full data load!)
+            const rewardTransactionsToAdd = [];
 
             // If points were redeemed
             if (window.checkoutData.loyaltyPointsUsed > 0) {
-                rewardTransactions.push({
+                rewardTransactionsToAdd.push({
                     id: 'reward_' + Date.now() + '_redeem',
                     date: new Date().toISOString(),
                     memberId: window.checkoutData.member.id,
@@ -3006,14 +3992,14 @@
                     source: 'website',
                     description: 'Points used for purchase',
                     points: -window.checkoutData.loyaltyPointsUsed,
-                    balance: members[memberIndex]?.currentPoints || 0,
+                    balance: memberUpdates.currentPoints,
                     transactionId: transaction.id
                 });
             }
 
             // If points were earned
             if (pointsEarned > 0) {
-                rewardTransactions.push({
+                rewardTransactionsToAdd.push({
                     id: 'reward_' + Date.now() + '_earn',
                     date: new Date().toISOString(),
                     memberId: window.checkoutData.member.id,
@@ -3022,13 +4008,19 @@
                     source: 'website',
                     description: 'Points earned from purchase',
                     points: pointsEarned,
-                    balance: members[memberIndex]?.currentPoints || 0,
+                    balance: memberUpdates.currentPoints,
                     transactionId: transaction.id
                 });
             }
 
-            await NewcoData.set('rewardsTransactions', rewardTransactions);
-            
+            if (rewardTransactionsToAdd.length > 0) {
+                console.log('🎁 Saving reward transactions...', rewardTransactionsToAdd.length);
+                await NewcoData.appendRewardTransactions(rewardTransactionsToAdd);
+                console.log('🎁 Reward transactions saved');
+            }
+
+            console.log('🛒 Clearing cart...');
+
             // Clear cart
             cart = {
                 items: [],
@@ -3038,14 +4030,14 @@
             };
             sessionStorage.removeItem('newco_cart');
             updateCartDisplay();
-            
-            // Close modal and show success
-            closeCheckoutModal();
 
+            // Show success notification
             notify.success(`Transaction ID: ${transaction.id}<br>${pointsEarned ? `You earned ${pointsEarned} loyalty points!` : ''}`, 'Order Placed Successfully!');
-            
+
             // Refresh member info in header
             checkLoggedInMember();
+
+            console.log('🎯 === PLACE ORDER COMPLETED ===');
         }
 
         // Debug function to check localStorage
@@ -3589,7 +4581,7 @@
             if (modal) modal.remove();
         }
         
-        window.redeemReward = function(rewardId) {
+        window.redeemReward = async function(rewardId) {
             const memberData = sessionStorage.getItem('newco_current_member');
             if (!memberData) return;
             
@@ -3631,20 +4623,16 @@
             
             // Update member points locally (will be finalized at checkout)
             member.currentPoints -= reward.pointsCost;
-            
-            // Save updated member
-            const members = NewcoData.get('members') || [];
-            const memberIndex = members.findIndex(m => m.id === member.id);
-            if (memberIndex !== -1) {
-                members[memberIndex].loyaltyPoints = member.currentPoints;
-                NewcoData.set('members', members);
-            }
-            
+
+            // Save updated member (fast!)
+            await NewcoData.updateSingleMember(member.id, {
+                currentPoints: member.currentPoints
+            });
+
             sessionStorage.setItem('newco_current_member', JSON.stringify(member));
-            
-            // Create reward transaction for redemption
-            const rewardTransactions = NewcoData.get('rewardsTransactions') || [];
-            rewardTransactions.push({
+
+            // Create reward transaction for redemption (fast!)
+            const rewardTransaction = {
                 id: 'reward_redeem_' + Date.now(),
                 date: new Date().toISOString(),
                 memberId: member.id,
@@ -3656,8 +4644,8 @@
                 balance: member.currentPoints,
                 rewardId: reward.id,
                 rewardName: reward.name
-            });
-            NewcoData.set('rewardsTransactions', rewardTransactions);
+            };
+            await NewcoData.appendRewardTransactions([rewardTransaction]);
             
             updateCartDisplay();
             saveCartToSession();
@@ -3686,20 +4674,25 @@
                     }
                     const points = member.currentPoints || member.loyaltyPoints || 0;
 
-                    // Build member info HTML with conditional loyalty points display
-                    document.getElementById('memberInfo').innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 2rem;">
-                            <span style="color: white; font-weight: 600; font-size: 1.1rem;">Welcome, ${member.firstName}!</span>
+                    // Build member info HTML with conditional loyalty points display - Two Row Header
+                    const pointsCurrencyName = NewcoData.get('rewardsConfig')?.basicSettings?.pointsCurrencyName || 'Loyalty Points';
+
+                    document.getElementById('headerWelcome').innerHTML = `
+                        <span class="header-welcome">Welcome, ${member.firstName}!</span>
+                    `;
+
+                    document.getElementById('memberActions').innerHTML = `
+                        <div class="header-right">
                             ${loyaltyEnabled ? `
-                            <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
-                                <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">${NewcoData.get('rewardsConfig')?.basicSettings?.pointsCurrencyName || 'Loyalty Points'}:</span>
-                                <span style="color: white; font-weight: 700; font-size: 1.1rem;">${points.toLocaleString()}</span>
+                            <div class="header-points-badge">
+                                <span class="header-points-label">${pointsCurrencyName}:</span>
+                                <span class="header-points-value">${points.toLocaleString()}</span>
                             </div>
                             ` : ''}
+                            <button onclick="showHistory()" class="header-btn header-btn-history">History</button>
+                            ${loyaltyEnabled ? `<button onclick="showRewardsStore()" class="header-btn header-btn-store">🎁 Store</button>` : ''}
+                            <button onclick="logout()" class="header-btn header-btn-logout">Logout</button>
                         </div>
-                        <button onclick="showHistory()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin: 0 0.5rem;">History</button>
-                        ${loyaltyEnabled ? `<button onclick="showRewardsStore()" style="background: #ffc107; border: none; color: #333; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-weight: 600;">🎁 Store</button>` : ''}
-                        <button onclick="logout()" style="background: white; border: 1px solid white; color: var(--primary-color, #6c5ce7); padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem; font-weight: 500;">Logout</button>
                     `;
                 } catch (e) {
                     console.error('Error loading member data:', e);
@@ -3985,7 +4978,10 @@
                 // Hide event selection, show package selection
                 document.getElementById('eventSelection').style.display = 'none';
                 document.getElementById('packageSelection').style.display = 'block';
-                
+
+                // Switch from notification cards to cart sidebar
+                showCart();
+
                 // Load filtered packages and items
                 loadFilteredPackages();
                 loadFilteredItems();
@@ -4009,7 +5005,10 @@
             };
             updateCartDisplay();
             sessionStorage.removeItem('newco_cart');
-            
+
+            // Switch back to notification cards from cart
+            showNotificationCards();
+
             document.getElementById('eventSelection').style.display = 'block';
             document.getElementById('packageSelection').style.display = 'none';
             selectedSession = null;
@@ -5213,9 +6212,76 @@
             }
         };
         
-        // Initialize marketing alerts when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            MarketingAlerts.init();
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize NewcoData with customer ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const customer = urlParams.get('customer') || 'demo';
+
+                // Skip loading transactions and members for faster customer site load
+                await NewcoData.init(customer, { skipHeavyData: true });
+                console.log('Customer Demo initialized for:', customer);
+
+                // Update loading screen with org name if available
+                const org = NewcoData.get('organization');
+                if (org && org.name) {
+                    document.getElementById('loadingOrgName').textContent = org.name;
+
+                    // Show logo in loading screen if available
+                    if (org.logoArtId) {
+                        const logoContainer = document.getElementById('loadingLogoContainer');
+                        logoContainer.style.display = 'block';
+                        logoContainer.innerHTML = `<img src="" id="tempLoadingLogo" class="loading-logo" style="border-radius: 12px;">`;
+
+                        // Fetch logo
+                        try {
+                            const response = await fetch(
+                                `${SUPABASE_URL}/rest/v1/art_library?id=eq.${org.logoArtId}&select=*`,
+                                {
+                                    headers: {
+                                        'apikey': SUPABASE_ANON_KEY,
+                                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                    }
+                                }
+                            );
+                            const artData = await response.json();
+                            if (artData && artData.length > 0 && artData[0].image_url) {
+                                document.getElementById('tempLoadingLogo').src = artData[0].image_url;
+                            }
+                        } catch (e) {
+                            console.log('Could not load logo for loading screen');
+                        }
+                    }
+                }
+
+                // Load organization data after init completes
+                await loadOrganization();
+                loadSessions();
+                loadCartFromSession();
+                checkLoggedInMember();
+                showWelcomePopupIfNeeded();
+
+                // Initialize carousel and notification cards
+                initCarousel();
+                initNotificationCards();
+
+                // Initialize marketing alerts
+                MarketingAlerts.init();
+
+                // Initialize payment processor after data loads
+                await initializePaymentProcessor();
+
+                // Hide loading screen with smooth fade
+                setTimeout(() => {
+                    const loadingScreen = document.getElementById('loadingScreen');
+                    loadingScreen.classList.add('hidden');
+                }, 300); // Small delay to ensure everything is rendered
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                // Hide loading screen even if there's an error
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }
         });
     </script>
 </body>

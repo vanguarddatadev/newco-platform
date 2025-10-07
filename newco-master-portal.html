@@ -1292,7 +1292,10 @@
                     let totalRevenue = 0;
                     if (transData[0]?.value && Array.isArray(transData[0].value)) {
                         const transactions = transData[0].value;
-                        totalRevenue = transactions.reduce((sum, t) => sum + (t.finalTotal || t.total || t.amount || 0), 0);
+                        totalRevenue = transactions.reduce((sum, t) => {
+                            const amount = parseFloat(t.finalTotal || t.total || t.amount || 0);
+                            return sum + (isNaN(amount) ? 0 : amount);
+                        }, 0);
                     }
 
                     return {
