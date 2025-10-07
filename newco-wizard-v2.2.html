@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NewCo - Setup Wizard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Load Supabase adapter -->
     <script src="newco-supabase.js"></script>
     <style>
@@ -1149,47 +1151,47 @@
                 </div>
                 <div class="progress-steps">
                     <div class="progress-step" data-step="1" style="display: none;">
-                        <div class="step-circle">🎉</div>
+                        <div class="step-circle"><i data-lucide="sparkles" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Welcome</div>
                     </div>
                     <div class="progress-step active" data-step="2">
-                        <div class="step-circle">🏢</div>
+                        <div class="step-circle"><i data-lucide="building-2" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Organization</div>
                     </div>
                     <div class="progress-step" data-step="3">
-                        <div class="step-circle">⚙️</div>
+                        <div class="step-circle"><i data-lucide="settings" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Preferences</div>
                     </div>
                     <div class="progress-step" data-step="4">
-                        <div class="step-circle">📱</div>
+                        <div class="step-circle"><i data-lucide="smartphone" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Apps</div>
                     </div>
                     <div class="progress-step" data-step="5">
-                        <div class="step-circle">🏛️</div>
+                        <div class="step-circle"><i data-lucide="building" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Hall</div>
                     </div>
                     <div class="progress-step" data-step="6">
-                        <div class="step-circle">📅</div>
+                        <div class="step-circle"><i data-lucide="calendar" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Schedule</div>
                     </div>
                     <div class="progress-step" data-step="7">
-                        <div class="step-circle">📜</div>
-                        <div class="step-label">Layout</div>
+                        <div class="step-circle"><i data-lucide="plug" style="width: 16px; height: 16px;"></i></div>
+                        <div class="step-label">Integrations</div>
                     </div>
                     <div class="progress-step" data-step="8">
-                        <div class="step-circle">🏆</div>
+                        <div class="step-circle"><i data-lucide="trophy" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Rewards</div>
                     </div>
                     <div class="progress-step" data-step="9">
-                        <div class="step-circle">🎨</div>
+                        <div class="step-circle"><i data-lucide="palette" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Branding</div>
                     </div>
                     <div class="progress-step" data-step="10">
-                        <div class="step-circle">👥</div>
+                        <div class="step-circle"><i data-lucide="users" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Staff</div>
                     </div>
                     <div class="progress-step" data-step="11">
-                        <div class="step-circle">✅</div>
+                        <div class="step-circle"><i data-lucide="check-circle" style="width: 16px; height: 16px;"></i></div>
                         <div class="step-label">Review</div>
                     </div>
                 </div>
@@ -1200,7 +1202,7 @@
         <div class="wizard-content">
             <!-- Step 1: Welcome (HIDDEN - License skip) -->
             <div class="step-content" data-step="1" style="display: none;">
-                <h2 class="step-title">🎉 Welcome to NewCo!</h2>
+                <h2 class="step-title"><i data-lucide="sparkles" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Welcome to NewCo!</h2>
                 <p class="step-subtitle">Let's get your bingo hall set up in just a few minutes</p>
                 
                 <div class="form-group">
@@ -1215,19 +1217,19 @@
                 <div class="button-group">
                     <div></div>
                     <button type="button" class="btn btn-primary btn-large" onclick="validateAndNext(1)">
-                        💾 Save & Get Started <span>→</span>
+                        Save & Get Started <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 2: Organization Info -->
             <div class="step-content active" data-step="2">
-                <h2 class="step-title">🏢 Organization Information</h2>
+                <h2 class="step-title"><i data-lucide="building-2" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Organization Information</h2>
                 <p class="step-subtitle">Tell us about your bingo hall</p>
                 
                 <div class="form-grid">
                     <div class="form-group full-width">
-                        <label class="form-label">🏢 Organization Name <span class="required">*</span></label>
+                        <label class="form-label"><i data-lucide="building-2" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Organization Name <span class="required">*</span></label>
                         <input type="text" class="form-input" id="orgName" 
                                placeholder="e.g., Santa Clara Community Bingo">
                     </div>
@@ -1292,7 +1294,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">📧 Email (Super Admin) <span class="required">*</span></label>
+                        <label class="form-label"><i data-lucide="mail" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Email (Super Admin) <span class="required">*</span></label>
                         <input type="email" class="form-input" id="orgEmail"
                                placeholder="admin@yourbingo.com">
                         <small style="color: var(--gray); display: block; margin-top: 0.25rem;">
@@ -1306,14 +1308,14 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(2)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 3: System Preferences -->
             <div class="step-content" data-step="3">
-                <h2 class="step-title">⚙️ System Preferences</h2>
+                <h2 class="step-title"><i data-lucide="settings" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> System Preferences</h2>
                 <p class="step-subtitle">Configure tax rates, payment methods, and system settings</p>
                 
                 <div class="form-grid">
@@ -1406,12 +1408,12 @@
 
             <!-- Step 4: Additional Apps -->
             <div class="step-content" data-step="4">
-                <h2 class="step-title">📱 Additional Apps and Functions</h2>
+                <h2 class="step-title"><i data-lucide="smartphone" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Additional Apps and Functions</h2>
                 <p class="step-subtitle">Enable companion applications to extend your bingo management system</p>
                 
                 <div class="form-section" style="max-width: 700px; margin: 0 auto;">
                     <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; color: white;">
-                        <h3 style="margin: 0 0 0.5rem 0; color: white;">🚀 Expand Your System</h3>
+                        <h3 style="margin: 0 0 0.5rem 0; color: white;"><i data-lucide="rocket" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Expand Your System</h3>
                         <p style="margin: 0; opacity: 0.95;">Enable specialized apps for different parts of your operation. These can be turned on/off anytime.</p>
                     </div>
                     
@@ -1419,7 +1421,7 @@
                         <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
                             <input type="checkbox" id="enableRedemptionApp" style="margin-top: 0.25rem;">
                             <div>
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">🛒 Redemption App</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;"><i data-lucide="shopping-cart" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Redemption App</div>
                                 <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
                                     Allow customers to redeem their online purchases at the hall. Staff can scan QR codes or enter confirmation numbers to validate and fulfill web orders.
                                 </p>
@@ -1431,9 +1433,9 @@
                         <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer;">
                             <input type="checkbox" id="enableDesktopApp" style="margin-top: 0.25rem;">
                             <div>
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">💻 Purchase App</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;"><i data-lucide="monitor" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> In-Store POS</div>
                                 <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
-                                    Point-of-sale system for in-person transactions at the bingo hall. Process walk-in purchases, handle cash/card payments, and print receipts.
+                                    Point-of-sale system for in-person transactions at the bingo hall. Process walk-in purchases, handle cash/card payments, and print receipts. Requires 2Accept merchant account + Authorize.Net integration.
                                 </p>
                             </div>
                         </label>
@@ -1501,7 +1503,7 @@
                 </div>
 
                 <div style="padding: 1rem; background: var(--primary-light); border-radius: 8px; border-left: 4px solid var(--primary);">
-                    <strong style="color: var(--primary-dark);">💺 Seating Map Configuration</strong>
+                    <strong style="color: var(--primary-dark);"><i data-lucide="armchair" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Seating Map Configuration</strong>
                     <p style="margin: 0.5rem 0 0; color: var(--gray); font-size: 0.9rem;">
                         You can configure your seating map and seat selection in the admin portal after completing setup.
                     </p>
@@ -1512,19 +1514,19 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(5)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 6: Schedule -->
             <div class="step-content" data-step="6">
-                <h2 class="step-title">📅 Operating Schedule</h2>
+                <h2 class="step-title"><i data-lucide="calendar" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Operating Schedule</h2>
                 <p class="step-subtitle">Set the starting schedule for each hall</p>
                 
                 <div style="background: linear-gradient(135deg, var(--primary-light), #e3f4fd); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
                     <div style="color: var(--primary-dark); font-size: 0.95rem;">
-                        <strong>✨ Don't worry, everything can be changed later!</strong><br>
+                        <strong><i data-lucide="sparkles" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Don't worry, everything can be changed later!</strong><br>
                         <span style="color: var(--gray); font-size: 0.9rem;">This is just to get you started - you can adjust schedules anytime from the admin dashboard</span>
                     </div>
                 </div>
@@ -1538,22 +1540,113 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(6)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Step 7: Hall Layout (Auto-skipped) -->
+            <!-- Step 7: Integrations -->
             <div class="step-content" data-step="7">
-                <h2 class="step-title">📜 Hall Seating Map</h2>
-                <p class="step-subtitle">Configure your seating map in the admin portal after setup</p>
+                <h2 class="step-title"><i data-lucide="plug" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Integrations</h2>
+                <p class="step-subtitle">Connect third-party services to enhance your operations</p>
 
-                <div style="padding: 3rem; text-align: center; background: var(--gray-lighter); border-radius: 12px;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
-                    <h3 style="margin-bottom: 0.5rem;">Seating Map Configuration</h3>
-                    <p style="color: var(--gray); max-width: 500px; margin: 0 auto;">
-                        You can configure your seating map and seat selection in the admin portal after completing setup. This step will be automatically skipped.
-                    </p>
+                <!-- Notice when integrations are enabled -->
+                <div id="integrationsSetupNotice" style="display: none; background: linear-gradient(135deg, #fff3cd 0%, #fff9e6 100%); border: 2px solid #ffc107; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="font-size: 1.5rem;"><i data-lucide="alert-triangle" style="width: 28px; height: 28px; color: #856404;"></i></div>
+                        <div>
+                            <div style="font-weight: 700; color: #856404; margin-bottom: 0.5rem; font-size: 1rem;">Additional Setup Required</div>
+                            <p style="margin: 0; color: #856404; font-size: 0.9rem; line-height: 1.6;">
+                                You've enabled one or more integrations. After completing this wizard, additional setup steps are required inside <strong>Admin → Integrations</strong> to complete your configuration.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Processing -->
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 1.5rem; border-left: 5px solid #4caf50;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 40px; height: 40px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i data-lucide="credit-card" style="width: 24px; height: 24px; color: #4caf50;"></i></div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700;">Payment Processing</h3>
+                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.95rem;">Accept payments online and in-person</p>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="paymentProcessingToggle" onchange="toggleWizardPaymentProcessing()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Marketing Box (Always Visible in Wizard) -->
+                    <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.08), rgba(255,255,255,0.95)); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(76, 175, 80, 0.2);">
+                        <ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8; font-size: 0.9rem;">
+                            <li><strong>Accept Credit & Debit Cards</strong> - Visa, Mastercard, Amex, Discover</li>
+                            <li><strong>In-Store POS & Online</strong> - Unified processing across all channels</li>
+                            <li><strong>Automatic Reconciliation</strong> - Transactions sync instantly</li>
+                            <li><strong>PCI Compliant</strong> - Industry-leading security</li>
+                        </ul>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1);">
+                            <p style="margin: 0; color: var(--gray-dark); font-size: 0.85rem;">
+                                <strong>Requires:</strong> 2Accept merchant account + Authorize.Net integration
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QuickBooks -->
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 1.5rem; border-left: 5px solid #2ca01c;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 40px; height: 40px; background: rgba(44, 160, 28, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i data-lucide="bar-chart" style="width: 24px; height: 24px; color: #2ca01c;"></i></div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700;">QuickBooks</h3>
+                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.95rem;">Accounting & bookkeeping integration</p>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="quickbooksToggle" onchange="toggleWizardQuickBooks()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Marketing Box (Always Visible in Wizard) -->
+                    <div style="background: linear-gradient(135deg, rgba(44, 160, 28, 0.08), rgba(255,255,255,0.95)); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(44, 160, 28, 0.2);">
+                        <ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8; font-size: 0.9rem;">
+                            <li><strong>Automatic Sync</strong> - Transactions and payments sync automatically</li>
+                            <li><strong>Accurate Books</strong> - Eliminate manual entry errors</li>
+                            <li><strong>Real-Time Reporting</strong> - Up-to-date financial data</li>
+                            <li><strong>Tax Ready</strong> - All transactions categorized for tax filing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SAR -->
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 1.5rem; border-left: 5px solid #9c27b0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 40px; height: 40px; background: rgba(156, 39, 176, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i data-lucide="trending-up" style="width: 24px; height: 24px; color: #9c27b0;"></i></div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700;">SAR - Stand Alone Reporting</h3>
+                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.95rem;">Advanced session reporting for bingo halls</p>
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sarToggle" onchange="toggleWizardSAR()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Marketing Box (Always Visible in Wizard) -->
+                    <div style="background: linear-gradient(135deg, rgba(156, 39, 176, 0.08), rgba(255,255,255,0.95)); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(156, 39, 176, 0.2);">
+                        <ul style="margin: 0; padding-left: 1.25rem; line-height: 1.8; font-size: 0.9rem;">
+                            <li><strong>Session Analytics</strong> - Detailed insights into each session</li>
+                            <li><strong>Attendance Tracking</strong> - Monitor player counts and trends</li>
+                            <li><strong>Revenue Analysis</strong> - Track income per session and day</li>
+                            <li><strong>Custom Reports</strong> - Export data for compliance</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="button-group">
@@ -1561,14 +1654,14 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(7)">
-                        💾 Save & Continue <span>→</span>
+                        Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 8: Rewards -->
             <div class="step-content" data-step="8">
-                <h2 class="step-title">🏆 Rewards & Loyalty Program</h2>
+                <h2 class="step-title"><i data-lucide="trophy" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Rewards & Loyalty Program</h2>
                 <p class="step-subtitle">Configure your customer rewards program</p>
                 
                 <div class="form-group">
@@ -1644,14 +1737,14 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(8)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 9: Branding -->
             <div class="step-content" data-step="9">
-                <h2 class="step-title">🎨 Branding & Styling</h2>
+                <h2 class="step-title"><i data-lucide="palette" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Branding & Styling</h2>
                 <p class="step-subtitle">Customize the look and feel (optional)</p>
                 
                 <div class="preview-card" style="margin-bottom: 2rem;">
@@ -1722,14 +1815,14 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(9)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
 
             <!-- Step 10: Staff -->
             <div class="step-content" data-step="10">
-                <h2 class="step-title">👥 Staff Setup</h2>
+                <h2 class="step-title"><i data-lucide="users" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Staff Setup</h2>
                 <p class="step-subtitle">Add your team members</p>
 
                 <!-- Super Admin Info -->
@@ -1742,7 +1835,7 @@
                         </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem; padding-left: 3rem;">
-                        <span style="opacity: 0.9;">📧</span>
+                        <i data-lucide="mail" style="width: 18px; height: 18px; opacity: 0.9; display: inline-block; vertical-align: middle;"></i>
                         <span id="superAdminEmail" style="opacity: 0.9;">Loading...</span>
                     </div>
                 </div>
@@ -1765,13 +1858,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary" onclick="addStaff()">👥 Add Staff Member</button>
+                        <button type="button" class="btn btn-primary" onclick="addStaff()"><i data-lucide="user-plus" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Add Staff Member</button>
                     </div>
                 </div>
                 
                 <div class="notice-box" style="margin-top: 1rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                        <span style="font-size: 1.25rem;">📧</span>
+                        <i data-lucide="mail" style="width: 22px; height: 22px; display: inline-block; vertical-align: middle;"></i>
                         <strong>Automatic Invitations</strong>
                     </div>
                     <p style="margin: 0; font-size: 0.875rem; color: #6c757d;">
@@ -1790,7 +1883,7 @@
                         <span>←</span> Back
                     </button>
                     <button type="button" class="btn btn-primary" onclick="validateAndNext(10)">
-                        💾 Save & Continue <span>→</span>
+                        Save & Continue <span>→</span>
                     </button>
                 </div>
             </div>
@@ -1799,46 +1892,46 @@
             <div class="step-content" data-step="11">
                 <div class="success-container">
                     <div class="success-icon">✓</div>
-                    <h2 class="success-title">✅ All Set! 🎉</h2>
+                    <h2 class="success-title"><i data-lucide="check-circle" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle;"></i> All Set! <i data-lucide="party-popper" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle;"></i></h2>
                     <p class="success-message">Your NewCo system is ready to go!</p>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">📋 Organization Details</div>
+                        <div class="preview-title"><i data-lucide="clipboard-list" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Organization Details</div>
                         <div class="preview-content" id="orgSummary">
                             <!-- Organization summary will be populated here -->
                         </div>
                     </div>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">⚙️ System Preferences</div>
+                        <div class="preview-title"><i data-lucide="settings" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> System Preferences</div>
                         <div class="preview-content" id="preferencesSummary">
                             <!-- System preferences summary will be populated here -->
                         </div>
                     </div>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">📱 Additional Apps</div>
+                        <div class="preview-title"><i data-lucide="smartphone" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Additional Apps</div>
                         <div class="preview-content" id="appsSummary">
                             <!-- Apps configuration summary will be populated here -->
                         </div>
                     </div>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">🏛️ Bingo Halls</div>
+                        <div class="preview-title"><i data-lucide="building" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Bingo Halls</div>
                         <div class="preview-content" id="hallsSummary">
                             <!-- Halls summary will be populated here -->
                         </div>
                     </div>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">🎨 Branding & Style</div>
+                        <div class="preview-title"><i data-lucide="palette" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Branding & Style</div>
                         <div class="preview-content" id="brandingSummary">
                             <!-- Branding summary will be populated here -->
                         </div>
                     </div>
                     
                     <div class="preview-card" style="margin-bottom: 2rem;">
-                        <div class="preview-title">👥 Team Members</div>
+                        <div class="preview-title"><i data-lucide="users" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Team Members</div>
                         <div class="preview-content" id="staffSummary">
                             <!-- Staff summary will be populated here -->
                         </div>
@@ -1849,7 +1942,7 @@
                             <span>←</span> Back to Edit
                         </button>
                         <button type="button" class="btn btn-primary btn-large" onclick="launchDashboard()">
-                            🚀 💾 Save & Launch Dashboard
+                            <i data-lucide="rocket" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Save & Launch Dashboard
                         </button>
                     </div>
                 </div>
@@ -2027,13 +2120,10 @@
                 if (step + 1 === 6) {
                     generateHallSchedules();
                 }
-                
-                // Auto-skip hall layouts step (moved to admin portal)
+
+                // Load integrations state when entering integrations step
                 if (step + 1 === 7) {
-                    // Auto-advance to next step after a brief moment
-                    setTimeout(() => {
-                        validateAndNext(7);
-                    }, 100);
+                    loadWizardIntegrations();
                 }
 
                 // Update branding preview when entering branding step
@@ -2323,7 +2413,7 @@
                     overflow-y: auto;
                     animation: slideUp 0.3s ease;
                 ">
-                    <h2 style="margin-bottom: 1rem; color: var(--primary);">📧 Sending Invitation Email</h2>
+                    <h2 style="margin-bottom: 1rem; color: var(--primary);"><i data-lucide="mail" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;"></i> Sending Invitation Email</h2>
                     
                     <div style="
                         background: #f8f9fa;
@@ -2387,7 +2477,7 @@
                         align-items: center;
                         gap: 0.5rem;
                     ">
-                        <span style="font-size: 1.5rem;">✅</span>
+                        <i data-lucide="check-circle" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle; color: var(--success);"></i>
                         <span>Email queued for delivery! The invitation will be sent shortly.</span>
                     </div>
                     
@@ -2479,6 +2569,89 @@
             // Hall form is now static HTML in step 5
         }
 
+        // Integrations Functions
+        function loadWizardIntegrations() {
+            const integrations = NewcoData.get('integrations') || {};
+
+            // Load saved states
+            if (integrations.paymentProcessing?.enabled) {
+                document.getElementById('paymentProcessingToggle').checked = true;
+            }
+            if (integrations.quickbooks?.enabled) {
+                document.getElementById('quickbooksToggle').checked = true;
+            }
+            if (integrations.sar?.enabled) {
+                document.getElementById('sarToggle').checked = true;
+            }
+
+            // Update notice visibility
+            updateIntegrationsNotice();
+        }
+
+        function updateIntegrationsNotice() {
+            const integrations = NewcoData.get('integrations') || {};
+            const hasAnyIntegration =
+                integrations.paymentProcessing?.enabled ||
+                integrations.quickbooks?.enabled ||
+                integrations.sar?.enabled;
+
+            const notice = document.getElementById('integrationsSetupNotice');
+            if (notice) {
+                notice.style.display = hasAnyIntegration ? 'block' : 'none';
+            }
+        }
+
+        function toggleWizardPaymentProcessing() {
+            const toggle = document.getElementById('paymentProcessingToggle');
+            const integrations = NewcoData.get('integrations') || {};
+            integrations.paymentProcessing = { enabled: toggle.checked };
+            NewcoData.set('integrations', integrations);
+
+            // Reset "viewed" flag so badge appears in admin portal if enabled
+            if (toggle.checked) {
+                localStorage.removeItem('newco_integrations_viewed');
+            }
+
+            // Update notice visibility
+            updateIntegrationsNotice();
+
+            saveProgress();
+        }
+
+        function toggleWizardQuickBooks() {
+            const toggle = document.getElementById('quickbooksToggle');
+            const integrations = NewcoData.get('integrations') || {};
+            integrations.quickbooks = { enabled: toggle.checked };
+            NewcoData.set('integrations', integrations);
+
+            // Reset "viewed" flag so badge appears in admin portal if enabled
+            if (toggle.checked) {
+                localStorage.removeItem('newco_integrations_viewed');
+            }
+
+            // Update notice visibility
+            updateIntegrationsNotice();
+
+            saveProgress();
+        }
+
+        function toggleWizardSAR() {
+            const toggle = document.getElementById('sarToggle');
+            const integrations = NewcoData.get('integrations') || {};
+            integrations.sar = { enabled: toggle.checked };
+            NewcoData.set('integrations', integrations);
+
+            // Reset "viewed" flag so badge appears in admin portal if enabled
+            if (toggle.checked) {
+                localStorage.removeItem('newco_integrations_viewed');
+            }
+
+            // Update notice visibility
+            updateIntegrationsNotice();
+
+            saveProgress();
+        }
+
         function updateWizardSeatingMapType() {
             // Update subtitle based on selection
             const seatingType = document.getElementById('hall-seating-type-0')?.value || 'none';
@@ -2505,7 +2678,7 @@
                 html += `
                     <div class="hall-schedule-section">
                         <div class="hall-schedule-header">
-                            <div class="hall-icon">🏢</div>
+                            <div class="hall-icon"><i data-lucide="building-2" style="width: 28px; height: 28px;"></i></div>
                             <div class="hall-info">
                                 <div class="hall-name">${hall.name}</div>
                                 <div class="hall-address">${hall.address}, ${hall.city}</div>
@@ -2711,7 +2884,7 @@
                         <div class="layout-tools" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1rem;">
                             <div style="flex: 1; min-width: 200px;">
                                 <button class="tool-btn active" onclick="selectLayoutTool('seat', ${index})" title="Place seats">
-                                    💺 Place Seat
+                                    <i data-lucide="armchair" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Place Seat
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('directional', ${index})" title="Place directional seats">
                                     🪑 Place Directional Seat
@@ -2726,13 +2899,13 @@
                                     🚻 Restroom
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('vip', ${index})" title="VIP areas">
-                                    ⭐ VIP
+                                    <i data-lucide="star" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> VIP
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('custom', ${index})" title="Create custom area">
-                                    🎨 Custom Area
+                                    <i data-lucide="palette" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Custom Area
                                 </button>
                                 <button class="tool-btn" onclick="selectLayoutTool('clear', ${index})" title="Clear cells">
-                                    🗑️ Clear
+                                    <i data-lucide="trash-2" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Clear
                                 </button>
                             </div>
 
@@ -2849,7 +3022,7 @@
                     const previewContainer = document.getElementById('wizard-map-preview');
                     previewContainer.innerHTML = `
                         <div style="padding: 1rem; background: white; border-radius: 8px; border: 2px solid var(--success);">
-                            <h5 style="color: var(--success); margin-bottom: 0.5rem;">✅ Prebuilt Map Loaded</h5>
+                            <h5 style="color: var(--success); margin-bottom: 0.5rem;"><i data-lucide="check-circle" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Prebuilt Map Loaded</h5>
                             <p style="margin-bottom: 0.5rem;"><strong>Function Name:</strong> ${functionName}</p>
                             <div id="wizard-map-preview-render" style="margin-top: 1rem; max-height: 400px; overflow: auto;"></div>
                         </div>
@@ -3406,8 +3579,8 @@
             if (wizardData.additionalApps && document.getElementById('appsSummary')) {
                 const apps = wizardData.additionalApps;
                 const enabledApps = [];
-                if (apps.enableRedemptionApp) enabledApps.push('🛒 Redemption App');
-                if (apps.enableDesktopApp) enabledApps.push('💻 Purchase App');
+                if (apps.enableRedemptionApp) enabledApps.push('<i data-lucide="shopping-cart" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Redemption App');
+                if (apps.enableDesktopApp) enabledApps.push('<i data-lucide="monitor" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> In-Store POS <span style="color: var(--gray); font-size: 0.85em;">(Requires 2Accept + Authorize.Net)</span>');
                 if (apps.enableFloorRunnerApp) {
                     let floorRunner = '🏃 Floor Runner Rewards App';
                     const features = [];
@@ -3707,7 +3880,7 @@
             const notification = document.createElement('div');
             notification.className = 'save-notification';
             notification.innerHTML = `
-                <span style="margin-right: 0.5rem;">✅</span>
+                <i data-lucide="check-circle" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 0.5rem; color: var(--success);"></i>
                 <span>${message}</span>
             `;
             notification.style.cssText = `
@@ -3754,6 +3927,30 @@
                 }, 300);
             }, 3000);
         }
+        // Initialize Lucide icons
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Initialize icons on page load
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Refresh icons whenever content changes
+        const originalValidateAndNext = validateAndNext;
+        validateAndNext = function(currentStep) {
+            originalValidateAndNext(currentStep);
+            setTimeout(refreshIcons, 100);
+        };
+
+        const originalPreviousStep = previousStep;
+        previousStep = function(currentStep) {
+            originalPreviousStep(currentStep);
+            setTimeout(refreshIcons, 100);
+        };
     </script>
 </body>
 </html>

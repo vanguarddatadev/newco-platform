@@ -1549,104 +1549,97 @@
 
             <div class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Choose Your Template</h2>
-                    <p class="section-subtitle">Select a template design for your booking page</p>
+                    <h2 class="section-title">Choose Your Template Style</h2>
+                    <p class="section-subtitle">Select which features to include on your booking page</p>
                 </div>
-                
-                <!-- Template Carousel -->
-                <div style="position: relative; overflow: hidden; border-radius: 12px; background: var(--gray-lighter); padding: 2rem 0;">
-                    <div id="templateCarousel" style="display: flex; transition: transform 0.4s ease-in-out; align-items: center; justify-content: center;">
-                        
-                        <!-- Template 1: Classic -->
-                        <div class="template-card" data-template="classic" onclick="showComingSoon('Web Templates')" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
-                            <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.85); opacity: 0.6;">
-                                <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; display: flex; align-items: center; justify-content: center;">
-                                    <div style="text-align: center; color: white;">
-                                        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Classic Bingo</h3>
-                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Traditional Design</p>
-                                    </div>
-                                </div>
-                                <div style="padding: 1.5rem;">
-                                    <div style="margin-bottom: 1rem;">
-                                        <div style="height: 8px; background: var(--gray-light); border-radius: 4px; margin-bottom: 0.5rem;"></div>
-                                        <div style="height: 8px; background: var(--gray-light); border-radius: 4px; width: 80%;"></div>
-                                    </div>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <div style="flex: 1; height: 40px; background: #667eea; border-radius: 6px; opacity: 0.8;"></div>
-                                        <div style="flex: 1; height: 40px; background: #764ba2; border-radius: 6px; opacity: 0.8;"></div>
-                                    </div>
+
+                <!-- Template Options -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1200px; margin: 0 auto;">
+
+                    <!-- Modern Components (Center) -->
+                    <div id="templateModernComponents" class="template-option selected" onclick="selectTemplate('modern-components')" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; border: 3px solid var(--primary);">
+                        <div style="background: white; overflow: hidden;">
+                            <!-- Header Preview -->
+                            <div style="height: 50px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); display: flex; align-items: center; padding: 0 1rem; gap: 0.5rem;">
+                                <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.3); border-radius: 4px;"></div>
+                                <div style="flex: 1; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; max-width: 100px;"></div>
+                            </div>
+
+                            <!-- Hero Carousel Preview -->
+                            <div style="height: 80px; background: linear-gradient(to right, #667eea, #764ba2); position: relative;">
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 0.75rem;">
+                                    📸 Hero Carousel
                                 </div>
                             </div>
-                            <div style="text-align: center; margin-top: 1rem;">
-                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Classic</h4>
-                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.875rem;">Traditional purple & gold theme</p>
+
+                            <div style="padding: 1rem; display: flex; gap: 0.75rem;">
+                                <!-- Sessions (6 cards) -->
+                                <div style="flex: 3; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 40px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                </div>
+
+                                <!-- Side Alerts (4 cards) -->
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <div style="height: 20px; background: #fef3c7; border-radius: 4px; border: 1px solid #fbbf24;"></div>
+                                    <div style="height: 20px; background: #dbeafe; border-radius: 4px; border: 1px solid #60a5fa;"></div>
+                                    <div style="height: 20px; background: #d1fae5; border-radius: 4px; border: 1px solid #34d399;"></div>
+                                    <div style="height: 20px; background: #fee2e2; border-radius: 4px; border: 1px solid #f87171;"></div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Template 2: Modern (Center - Featured) -->
-                        <div class="template-card featured-template" data-template="modern" style="min-width: 350px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
-                            <div style="background: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); overflow: hidden; transform: scale(1); border: 3px solid var(--primary);">
-                                <div style="height: 240px; background: linear-gradient(135deg, #2ea3f2 0%, #1a5f8a 100%); position: relative; display: flex; align-items: center; justify-content: center;">
-                                    <div style="text-align: center; color: white;">
-                                        <h3 style="margin: 0; font-size: 1.8rem; font-weight: 700;">Modern Bingo</h3>
-                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Clean & Professional</p>
-                                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">RECOMMENDED</div>
-                                    </div>
-                                </div>
-                                <div style="padding: 2rem;">
-                                    <div style="margin-bottom: 1.5rem;">
-                                        <div style="height: 10px; background: var(--gray-light); border-radius: 5px; margin-bottom: 0.75rem;"></div>
-                                        <div style="height: 10px; background: var(--gray-light); border-radius: 5px; width: 85%;"></div>
-                                    </div>
-                                    <div style="display: flex; gap: 0.75rem;">
-                                        <div style="flex: 1; height: 50px; background: #2ea3f2; border-radius: 8px;"></div>
-                                        <div style="flex: 1; height: 50px; background: #1a5f8a; border-radius: 8px;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="text-align: center; margin-top: 1rem;">
-                                <h4 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--primary);">Modern</h4>
-                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.875rem;">Sleek blue design with clean lines</p>
-                            </div>
-                        </div>
-
-                        <!-- Template 3: Vibrant -->
-                        <div class="template-card" data-template="vibrant" onclick="showComingSoon('Web Templates')" style="min-width: 300px; margin: 0 1rem; cursor: pointer; transition: all 0.3s ease;">
-                            <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.85); opacity: 0.6;">
-                                <div style="height: 200px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); position: relative; display: flex; align-items: center; justify-content: center;">
-                                    <div style="text-align: center; color: white;">
-                                        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Vibrant Bingo</h3>
-                                        <p style="margin: 0.5rem 0 0; opacity: 0.9;">Bright & Fun</p>
-                                    </div>
-                                </div>
-                                <div style="padding: 1.5rem;">
-                                    <div style="margin-bottom: 1rem;">
-                                        <div style="height: 8px; background: var(--gray-light); border-radius: 4px; margin-bottom: 0.5rem;"></div>
-                                        <div style="height: 8px; background: var(--gray-light); border-radius: 4px; width: 75%;"></div>
-                                    </div>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <div style="flex: 1; height: 40px; background: #fa709a; border-radius: 6px; opacity: 0.8;"></div>
-                                        <div style="flex: 1; height: 40px; background: #fee140; border-radius: 6px; opacity: 0.8;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="text-align: center; margin-top: 1rem;">
-                                <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Vibrant</h4>
-                                <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.875rem;">Colorful pink & yellow theme</p>
-                            </div>
+                        <div style="padding: 1.5rem; background: white; border-top: 1px solid var(--gray-light); text-align: center;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.2rem; font-weight: 700; color: var(--primary);">Modern Components</h4>
+                            <p style="margin: 0; color: var(--gray); font-size: 0.875rem;">Full-featured with carousel & alerts</p>
+                            <div style="margin-top: 0.75rem; display: inline-block; background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">DEFAULT</div>
                         </div>
                     </div>
-                    
-                    <!-- Carousel Navigation -->
-                    <div style="position: absolute; top: 50%; left: 1rem; transform: translateY(-50%);">
-                        <button onclick="rotateTemplateCarousel(-1)" style="background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 40px; height: 40px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            ←
-                        </button>
+
+                    <!-- Minimal Modern (Right) -->
+                    <div id="templateMinimalModern" class="template-option" onclick="selectTemplate('minimal-modern')" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; border: 3px solid transparent;">
+                        <div style="background: white; overflow: hidden;">
+                            <!-- Header Preview -->
+                            <div style="height: 50px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); display: flex; align-items: center; padding: 0 1rem; gap: 0.5rem;">
+                                <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.3); border-radius: 4px;"></div>
+                                <div style="flex: 1; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; max-width: 100px;"></div>
+                            </div>
+
+                            <!-- No Carousel - Clean Space -->
+                            <div style="height: 30px; background: #f9fafb;"></div>
+
+                            <div style="padding: 1rem;">
+                                <!-- Sessions Only (6 cards, full width) -->
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                    <div style="height: 50px; background: var(--primary-light); border-radius: 6px; border: 1px solid var(--primary);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 1.5rem; background: white; border-top: 1px solid var(--gray-light); text-align: center;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.2rem; font-weight: 700; color: var(--gray-dark);">Minimal Modern</h4>
+                            <p style="margin: 0; color: var(--gray); font-size: 0.875rem;">Clean & simple - sessions only</p>
+                        </div>
                     </div>
-                    <div style="position: absolute; top: 50%; right: 1rem; transform: translateY(-50%);">
-                        <button onclick="rotateTemplateCarousel(1)" style="background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 40px; height: 40px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                            →
-                        </button>
+                </div>
+
+                <!-- Current Selection Display -->
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--primary-light); border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--primary);">Current Template:</strong>
+                            <span id="currentTemplateLabel" style="margin-left: 0.5rem; font-weight: 600;">Modern Components</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--gray);">
+                            <span id="templateFeaturesLabel">Includes: Header, Carousel, Sessions, Side Alerts</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -9821,6 +9814,13 @@ Note: This is safe to use in client-side code. It only allows creating payment t
         function toggleWelcomePopupSettings() {
             const enabled = document.getElementById('enableWelcomePopup').checked;
             document.getElementById('welcomePopupSettings').style.display = enabled ? 'block' : 'none';
+
+            // Save the enabled state immediately
+            const settings = NewcoData.get('welcomePopupSettings') || {};
+            settings.enabled = enabled;
+            NewcoData.set('welcomePopupSettings', settings);
+
+            showAutoSave();
         }
 
         function handleWelcomePopupImageUpload(input) {
@@ -11979,56 +11979,53 @@ Note: This is safe to use in client-side code. It only allows creating payment t
         // ═══════════════════════════════════════════════════════════════════
         
         let selectedTemplate = 'modern';
-        let currentTemplateIndex = 1; // Start with modern in center
-        
-        function rotateTemplateCarousel(direction) {
-            const carousel = document.getElementById('templateCarousel');
-            const templates = carousel.querySelectorAll('.template-card');
-            const totalTemplates = templates.length;
-            
-            currentTemplateIndex += direction;
-            if (currentTemplateIndex < 0) currentTemplateIndex = totalTemplates - 1;
-            if (currentTemplateIndex >= totalTemplates) currentTemplateIndex = 0;
-            
-            // Update template selection and styling
-            templates.forEach((template, index) => {
-                const card = template.querySelector('div');
-                if (index === currentTemplateIndex) {
-                    // Featured template (center)
-                    card.style.transform = 'scale(1)';
-                    card.style.opacity = '1';
-                    card.style.border = '3px solid var(--primary)';
-                    template.classList.add('featured-template');
-                    selectedTemplate = template.dataset.template;
-                } else {
-                    // Side templates
-                    card.style.transform = 'scale(0.85)';
-                    card.style.opacity = '0.6';
-                    card.style.border = 'none';
-                    template.classList.remove('featured-template');
-                }
+        let selectedTemplateStyle = 'modern-components'; // Default template
+
+        function selectTemplate(templateStyle) {
+            selectedTemplateStyle = templateStyle;
+
+            // Update visual selection
+            const modernCard = document.getElementById('templateModernComponents');
+            const minimalCard = document.getElementById('templateMinimalModern');
+
+            if (templateStyle === 'modern-components') {
+                modernCard.style.borderColor = 'var(--primary)';
+                minimalCard.style.borderColor = 'transparent';
+                document.getElementById('currentTemplateLabel').textContent = 'Modern Components';
+                document.getElementById('templateFeaturesLabel').textContent = 'Includes: Header, Carousel, Sessions, Side Alerts';
+            } else {
+                modernCard.style.borderColor = 'transparent';
+                minimalCard.style.borderColor = 'var(--primary)';
+                document.getElementById('currentTemplateLabel').textContent = 'Minimal Modern';
+                document.getElementById('templateFeaturesLabel').textContent = 'Includes: Header, Sessions';
+            }
+
+            // Save to storage
+            const webBuilder = NewcoData.get('webBuilder') || {};
+            webBuilder.templateStyle = templateStyle;
+            webBuilder.carouselEnabled = (templateStyle === 'modern-components');
+            webBuilder.alertsEnabled = (templateStyle === 'modern-components');
+            NewcoData.set('webBuilder', webBuilder);
+
+            // Update preview if function exists
+            if (typeof generateTemplatePreview === 'function') {
+                generateTemplatePreview();
+            }
+
+            showModal({
+                title: '✅ Template Selected',
+                message: `Your booking page will now use the "${templateStyle === 'modern-components' ? 'Modern Components' : 'Minimal Modern'}" layout.`,
+                type: 'success'
             });
-            
-            // Update preview
-            generateTemplatePreview();
         }
-        
-        // Template click handlers
+
+        // Initialize template selection on load
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.template-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const templates = document.querySelectorAll('.template-card');
-                    const clickedIndex = Array.from(templates).indexOf(this);
-                    
-                    if (clickedIndex !== currentTemplateIndex) {
-                        const direction = clickedIndex > currentTemplateIndex ? 1 : -1;
-                        rotateTemplateCarousel(direction * Math.abs(clickedIndex - currentTemplateIndex));
-                    }
-                });
-            });
-            
-            // Initialize template preview
-            generateTemplatePreview();
+            // Load saved template style
+            const webBuilder = NewcoData.get('webBuilder') || {};
+            if (webBuilder.templateStyle) {
+                selectTemplate(webBuilder.templateStyle);
+            }
         });
         
         function updateApplyToHallButtons() {
@@ -13701,90 +13698,97 @@ Note: This is safe to use in client-side code. It only allows creating payment t
             `;
 
             overlay.innerHTML = `
-                <div style="background: white; border-radius: 12px; width: 100%; max-width: 1400px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;">
-                    <!-- Header -->
-                    <div style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h2 style="margin: 0; font-size: 1.5rem; color: var(--gray-dark);">👤 ${name}</h2>
-                            <p style="margin: 0.25rem 0 0; color: var(--gray); font-size: 0.875rem;">${member.email}</p>
+                <div style="background: white; border-radius: 12px; width: 100%; max-width: 1400px; max-height: 90vh; overflow: hidden; display: flex;">
+                    <!-- Sidebar -->
+                    <div style="width: 260px; background: #f9fafb; border-right: 2px solid var(--gray-light); display: flex; flex-direction: column; overflow-y: auto;">
+                        <div style="padding: 1.5rem;">
+                            <!-- Member Info -->
+                            <div style="margin-bottom: 1.5rem;">
+                                <h2 style="margin: 0; font-size: 1.1rem; color: var(--gray-dark);">${name}</h2>
+                                <p style="margin: 0.25rem 0 0; font-size: 0.8rem; color: var(--gray); word-break: break-word;">${member.email}</p>
+                            </div>
+
+                            <!-- Stats Cards -->
+                            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; border-left: 3px solid #2196f3;">
+                                    <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Loyalty Points</div>
+                                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary);">${loyaltyPoints.toLocaleString()}</div>
+                                </div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; border-left: 3px solid #4caf50;">
+                                    <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Lifetime Spend</div>
+                                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">$${lifetimeSpend.toLocaleString()}</div>
+                                </div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; border-left: 3px solid #ff9800;">
+                                    <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Monthly Spend</div>
+                                    <div style="font-size: 1.25rem; font-weight: 700; color: #ff9800;">$${monthlySpend.toLocaleString()}</div>
+                                </div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; border-left: 3px solid #9c27b0;">
+                                    <div style="font-size: 0.7rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Lifetime Loyalty</div>
+                                    <div style="font-size: 1.25rem; font-weight: 700; color: #9c27b0;">${lifetimeLoyalty.toLocaleString()}</div>
+                                </div>
+                            </div>
+
+                            <!-- Barcode -->
+                            <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center; margin-top: auto;">
+                                <div style="font-size: 0.7rem; color: var(--gray); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 600;">Member ID</div>
+                                <svg id="memberBarcode${memberId}" style="width: 100%; height: auto;"></svg>
+                                <div style="margin-top: 0.25rem; font-size: 0.7rem; color: var(--gray); font-family: monospace; word-break: break-all;">${member.id}</div>
+                                <button onclick="printMemberCard('${memberId}')" class="btn btn-outline" style="width: 100%; margin-top: 0.75rem; font-size: 0.75rem; padding: 0.5rem;">
+                                    🖨️ Print Card
+                                </button>
+                            </div>
                         </div>
-                        <button onclick="this.closest('[style*=fixed]').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray); padding: 0.5rem;">&times;</button>
                     </div>
 
-                    <!-- Stats Cards -->
-                    <div style="padding: 1.5rem 2rem; background: var(--gray-lighter);">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                            <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #2196f3;">
-                                <div style="font-size: 0.75rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Loyalty Points</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${loyaltyPoints.toLocaleString()}</div>
+                    <!-- Main Content -->
+                    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                        <!-- Header -->
+                        <div style="padding: 1rem 1.5rem; border-bottom: 2px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary btn-sm" id="memberTabTransactions" onclick="switchMemberTab('transactions', '${memberId}')" style="border-radius: 20px; padding: 0.35rem 0.75rem; font-size: 0.875rem;">
+                                    <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i> Transactions (${memberTransactions.length})
+                                </button>
+                                <button class="btn btn-outline btn-sm" id="memberTabRewards" onclick="switchMemberTab('rewards', '${memberId}')" style="border-radius: 20px; padding: 0.35rem 0.75rem; font-size: 0.875rem;">
+                                    <i data-lucide="star" style="width: 16px; height: 16px;"></i> Rewards (${memberRewards.length})
+                                </button>
                             </div>
-                            <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #4caf50;">
-                                <div style="font-size: 0.75rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Lifetime Spend</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">$${lifetimeSpend.toLocaleString()}</div>
-                            </div>
-                            <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #ff9800;">
-                                <div style="font-size: 0.75rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Monthly Spend</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: #ff9800;">$${monthlySpend.toLocaleString()}</div>
-                            </div>
-                            <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                                <div style="font-size: 0.75rem; color: var(--gray); text-transform: uppercase; margin-bottom: 0.25rem;">Lifetime Loyalty</div>
-                                <div style="font-size: 1.5rem; font-weight: 700; color: #9c27b0;">${lifetimeLoyalty.toLocaleString()}</div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-success btn-sm" onclick="showCreateTransactionModalForMember('${memberId}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Transaction
+                                </button>
+                                <button class="btn btn-primary btn-sm" id="createRewardBtn${memberId}" onclick="showCreateRewardTransactionModalForMember('${memberId}')" style="display: ${(NewcoData.get('rewards') || {}).enabled ? 'inline-block' : 'none'}; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    <i data-lucide="star" style="width: 16px; height: 16px;"></i> Reward
+                                </button>
+                                <button onclick="this.closest('[style*=fixed]').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray); padding: 0.5rem;">&times;</button>
                             </div>
                         </div>
 
-                        <!-- Member Barcode Card -->
-                        <div style="background: white; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 1rem; text-transform: uppercase; font-weight: 600;">Member Barcode</div>
-                            <svg id="memberBarcode${memberId}" style="max-width: 100%; height: auto;"></svg>
-                            <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray); font-family: monospace;">${member.id}</div>
-                            <button onclick="printMemberCard('${memberId}')" class="btn btn-outline" style="margin-top: 1rem;">
-                                🖨️ Print Member Card
-                            </button>
+                        <!-- Content Area -->
+                        <div id="memberDetailContent" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+                            <!-- Content will be loaded here -->
                         </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div style="padding: 1rem 2rem; border-bottom: 1px solid var(--gray-light); display: flex; gap: 1rem;">
-                        <button class="btn btn-success" onclick="showCreateTransactionModalForMember('${memberId}')">
-                            ➕ Create Transaction
-                        </button>
-                        <button class="btn btn-primary" id="createRewardBtn${memberId}" onclick="showCreateRewardTransactionModalForMember('${memberId}')" style="display: ${(NewcoData.get('rewards') || {}).enabled ? 'inline-block' : 'none'};">
-                            ⭐ Create Reward Transaction
-                        </button>
-                    </div>
-
-                    <!-- Tabs -->
-                    <div style="padding: 0 2rem; border-bottom: 1px solid var(--gray-light); display: flex; gap: 0.5rem;">
-                        <button class="btn btn-primary" id="memberTabTransactions" onclick="switchMemberTab('transactions', '${memberId}')" style="border-radius: 8px 8px 0 0; border-bottom: none;">
-                            💳 Transactions (${memberTransactions.length})
-                        </button>
-                        <button class="btn btn-outline" id="memberTabRewards" onclick="switchMemberTab('rewards', '${memberId}')" style="border-radius: 8px 8px 0 0; border-bottom: none;">
-                            ⭐ Rewards (${memberRewards.length})
-                        </button>
-                    </div>
-
-                    <!-- Content Area -->
-                    <div id="memberDetailContent" style="flex: 1; overflow-y: auto; padding: 2rem;">
-                        <!-- Content will be loaded here -->
                     </div>
                 </div>
             `;
 
             document.body.appendChild(overlay);
 
-            // Generate barcode after modal is displayed
+            // Generate barcode and refresh icons after modal is displayed
             setTimeout(() => {
                 try {
                     JsBarcode(`#memberBarcode${memberId}`, member.id, {
                         format: 'CODE128',
-                        width: 2,
-                        height: 80,
+                        width: 1.2,
+                        height: 35,
                         displayValue: false,
-                        margin: 10
+                        margin: 3
                     });
                 } catch (error) {
                     console.error('Barcode generation error:', error);
                 }
+
+                // Refresh Lucide icons
+                refreshIcons();
             }, 100);
 
             // Load default tab
@@ -14065,7 +14069,7 @@ Note: This is safe to use in client-side code. It only allows creating payment t
             if (!member) return;
 
             showModal({
-                title: '➕ Create Transaction',
+                title: '<i data-lucide="credit-card" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Create Transaction',
                 message: `
                     <div style="text-align: left;">
                         <div style="margin-bottom: 1rem; padding: 1rem; background: var(--gray-lighter); border-radius: 8px;">
@@ -14168,6 +14172,9 @@ Note: This is safe to use in client-side code. It only allows creating payment t
                     loadMembers();
                 }
             });
+
+            // Refresh icons after modal is displayed
+            setTimeout(refreshIcons, 100);
         }
 
         function showCreateRewardTransactionModalForMember(memberId) {
@@ -14177,7 +14184,7 @@ Note: This is safe to use in client-side code. It only allows creating payment t
             const currentPoints = member.points || member.loyaltyPoints || 0;
 
             showModal({
-                title: '⭐ Create Reward Transaction',
+                title: '<i data-lucide="star" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;"></i> Create Reward Transaction',
                 message: `
                     <div style="text-align: left;">
                         <div style="margin-bottom: 1rem; padding: 1rem; background: var(--gray-lighter); border-radius: 8px;">
@@ -14290,8 +14297,11 @@ Note: This is safe to use in client-side code. It only allows creating payment t
                     loadMembers();
                 }
             });
+
+            // Refresh icons after modal is displayed
+            setTimeout(refreshIcons, 100);
         }
-        
+
         function exportMembers() {
             // Use the generic CSV export helper
             const columns = [
@@ -21097,12 +21107,25 @@ Note: This is safe to use in client-side code. It only allows creating payment t
             }
         }
 
-        // Check if user has viewed integrations
+        // Check if user has viewed integrations (conditional on if any integration is enabled)
         function checkIntegrationsNotice() {
             const viewed = localStorage.getItem('newco_integrations_viewed');
             const badge = document.getElementById('integrationsImportantBadge');
-            if (!viewed && badge) {
+
+            if (!badge) return;
+
+            // Check if ANY integration is enabled
+            const integrations = NewcoData.get('integrations') || {};
+            const hasAnyIntegration =
+                integrations.paymentProcessing?.enabled ||
+                integrations.quickbooks?.enabled ||
+                integrations.sar?.enabled;
+
+            // Show badge if: (1) user hasn't viewed integrations AND (2) at least one integration is enabled
+            if (!viewed && hasAnyIntegration) {
                 badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
             }
         }
 
