@@ -126,12 +126,12 @@ const NewcoData = {
                 data[row.key] = row.value;
             });
 
-            // Load members from members table (skip if heavy data mode)
-            if (!this.skipHeavyData) {
-                const membersData = await this.readMembersFromTable();
-                if (membersData && membersData.length > 0) {
-                    data.members = membersData;
-                }
+            // Load members from members table
+            // ALWAYS load members (needed for login) regardless of skipHeavyData
+            // Members are in a separate optimized table and needed for authentication
+            const membersData = await this.readMembersFromTable();
+            if (membersData && membersData.length > 0) {
+                data.members = membersData;
             }
 
             return data;
@@ -418,6 +418,152 @@ const NewcoData = {
         }
     },
 
+    // Update a single member record (fast - no array processing!)
+    async updateSingleMember(memberId, updates) {
+        try {
+            console.log('📝 Updating single member:', memberId);
+
+            // Build the member object with only the fields that can be updated
+            const dbMember = {
+                updated_at: new Date().toISOString()
+            };
+
+            // Map common field names to DB column names
+            const fieldMap = {
+                email: 'email',
+                password: 'password_hash',
+                firstName: 'first_name',
+                lastName: 'last_name',
+                phone: 'phone',
+                dateOfBirth: 'date_of_birth',
+                address: 'address',
+                tier: 'tier',
+                lifetimePoints: 'lifetime_points',
+                currentPoints: 'current_points',
+                lifetimeSpend: 'lifetime_spend',
+                totalSpent: 'lifetime_spend', // Alias
+                barcode: 'barcode',
+                status: 'status',
+                preferredHall: 'preferred_hall',
+                emailOptIn: 'email_opt_in',
+                smsOptIn: 'sms_opt_in',
+                notes: 'notes',
+                lastVisit: 'last_visit'
+            };
+
+            // Map updates to DB columns
+            for (const [key, value] of Object.entries(updates)) {
+                const dbColumn = fieldMap[key];
+                if (dbColumn) {
+                    dbMember[dbColumn] = value;
+                }
+            }
+
+            // Update the member record
+            const updateResponse = await fetch(
+                `${SUPABASE_URL}/rest/v1/members?id=eq.${memberId}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(dbMember)
+                }
+            );
+
+            if (!updateResponse.ok) {
+                const errorText = await updateResponse.text();
+                console.error('❌ Failed to update member:', errorText);
+                return false;
+            }
+
+            console.log('✅ Member updated successfully');
+
+            // Also update the cache if we have members loaded
+            if (this.cache.members) {
+                const memberIndex = this.cache.members.findIndex(m => m.id === memberId);
+                if (memberIndex !== -1) {
+                    // Update cache with new values
+                    Object.assign(this.cache.members[memberIndex], updates);
+                    console.log('✅ Cache updated');
+                }
+            }
+
+            return true;
+        } catch (err) {
+            console.error('❌ Error updating single member:', err);
+            return false;
+        }
+    },
+
+    // Add a new member (fast - single INSERT!)
+    async addNewMember(member) {
+        try {
+            console.log('➕ Adding new member:', member.id);
+
+            const dbMember = {
+                id: member.id,
+                customer_id: this.customer,
+                email: member.email,
+                password_hash: member.password || '',
+                first_name: member.firstName || '',
+                last_name: member.lastName || '',
+                phone: member.phone || '',
+                date_of_birth: member.dateOfBirth || null,
+                address: member.address || { street: '', city: '', state: '', zip: '' },
+                tier: member.tier || 'bronze',
+                lifetime_points: member.lifetimePoints || 0,
+                current_points: member.currentPoints || 0,
+                lifetime_spend: member.lifetimeSpend || 0,
+                barcode: member.barcode || '',
+                status: member.status || 'active',
+                preferred_hall: member.preferredHall || null,
+                email_opt_in: member.emailOptIn !== false,
+                sms_opt_in: member.smsOptIn === true,
+                notes: member.notes || '',
+                created_at: member.createdAt || new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                last_visit: member.lastVisit || new Date().toISOString()
+            };
+
+            const insertResponse = await fetch(
+                `${SUPABASE_URL}/rest/v1/members`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(dbMember)
+                }
+            );
+
+            if (!insertResponse.ok) {
+                const errorText = await insertResponse.text();
+                console.error('❌ Failed to insert member:', errorText);
+                return false;
+            }
+
+            console.log('✅ Member added successfully');
+
+            // Update cache if we have members loaded
+            if (this.cache.members) {
+                this.cache.members.push(member);
+                console.log('✅ Cache updated');
+            }
+
+            return true;
+        } catch (err) {
+            console.error('❌ Error adding new member:', err);
+            return false;
+        }
+    },
+
     // Delete from Supabase only
     async delete(key) {
         try {
@@ -458,6 +604,133 @@ const NewcoData = {
         } catch (err) {
             console.error('Error clearing customer data:', err);
             return false;
+        }
+    },
+
+    // Append a single transaction without loading all transactions (fast!)
+    async appendTransaction(transaction) {
+        try {
+            console.log('📥 Fetching current transactions from Supabase...');
+
+            // Get current transactions value from Supabase
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${this.customer}&key=eq.transactions&select=value`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Fetch error: ${response.status}`);
+            }
+
+            const rows = await response.json();
+            console.log('📥 Fetched rows:', rows);
+
+            const currentTransactions = rows.length > 0 && rows[0].value ? rows[0].value : [];
+            console.log('📥 Current transactions count:', currentTransactions.length);
+
+            // Validate that transactions is an array
+            if (!Array.isArray(currentTransactions)) {
+                console.error('❌ Transactions is not an array!', currentTransactions);
+                throw new Error('Invalid transactions data - not an array');
+            }
+
+            // SAFETY CHECK: Never save if we're about to reduce the count
+            // This prevents accidental data loss from race conditions or bugs
+            const originalCount = currentTransactions.length;
+
+            // Append new transaction
+            const updatedTransactions = [...currentTransactions, transaction];
+            console.log('📥 After append, count:', updatedTransactions.length);
+
+            // Final safety check before saving
+            if (updatedTransactions.length <= originalCount) {
+                console.error('❌ SAFETY: Refusing to save - transaction count did not increase!');
+                throw new Error('Transaction append failed - count did not increase');
+            }
+
+            // Save back
+            const result = await this.set('transactions', updatedTransactions);
+            console.log('💾 Save result:', result);
+            return result;
+        } catch (err) {
+            console.error('❌ Error appending transaction:', err);
+            return false;
+        }
+    },
+
+    // Append reward transactions without loading all (fast!)
+    async appendRewardTransactions(rewardTransactionsToAdd) {
+        try {
+            console.log('📥 Fetching current reward transactions from Supabase...');
+
+            // Get current rewardsTransactions value from Supabase
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/newco_data?customer=eq.${this.customer}&key=eq.rewardsTransactions&select=value`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Fetch error: ${response.status}`);
+            }
+
+            const rows = await response.json();
+            console.log('📥 Fetched reward rows:', rows);
+
+            const rewardTransactions = rows.length > 0 && rows[0].value ? rows[0].value : [];
+            console.log('📥 Current reward transactions count:', rewardTransactions.length);
+
+            // Validate that it's an array
+            if (!Array.isArray(rewardTransactions)) {
+                console.error('❌ Reward transactions is not an array!', rewardTransactions);
+                throw new Error('Invalid reward transactions data - not an array');
+            }
+
+            // Append new transactions
+            rewardTransactions.push(...rewardTransactionsToAdd);
+            console.log('📥 After append, reward count:', rewardTransactions.length);
+
+            // Save back
+            const result = await this.set('rewardsTransactions', rewardTransactions);
+            console.log('💾 Reward save result:', result);
+            return result;
+        } catch (err) {
+            console.error('Error appending reward transactions:', err);
+            return false;
+        }
+    },
+
+    // Check if member email already exists for this customer
+    async checkMemberEmailExists(email) {
+        try {
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/members?customer_id=eq.${this.customer}&email=eq.${encodeURIComponent(email)}&select=id`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Fetch error: ${response.status}`);
+            }
+
+            const members = await response.json();
+            return members.length > 0;
+        } catch (err) {
+            console.error('Error checking member email:', err);
+            return false; // Assume doesn't exist if error (safer to allow registration)
         }
     },
 
