@@ -735,9 +735,9 @@
         })();
 
         // Apply saved branding on load
-        function applyBrandingColors() {
+        async function applyBrandingColors() {
             const org = NewcoData.get('organization') || {};
-            
+
             // Apply colors
             if (org?.colors) {
                 document.documentElement.style.setProperty('--primary', org.colors.primary || '#2ea3f2');
@@ -746,31 +746,29 @@
                 document.documentElement.style.setProperty('--secondary', org.colors.secondary || '#9c27b0');
                 document.documentElement.style.setProperty('--accent', org.colors.accent || org.colors.secondary || '#9c27b0');
             }
-            
+
             // Apply logo to sidebar
             const sidebarLogo = document.getElementById('sidebarLogo');
             if (sidebarLogo) {
                 if (org?.logoArtId) {
                     // Load logo from art library
-                    (async () => {
-                        try {
-                            const response = await fetch(
-                                `${SUPABASE_URL}/rest/v1/art_library?id=eq.${org.logoArtId}&select=*`,
-                                {
-                                    headers: {
-                                        'apikey': SUPABASE_ANON_KEY,
-                                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                                    }
+                    try {
+                        const response = await fetch(
+                            `${NewcoData.supabaseUrl}/rest/v1/art_library?id=eq.${org.logoArtId}&select=*`,
+                            {
+                                headers: {
+                                    'apikey': NewcoData.supabaseKey,
+                                    'Authorization': `Bearer ${NewcoData.supabaseKey}`
                                 }
-                            );
-                            const art = await response.json();
-                            if (art && art.length > 0) {
-                                sidebarLogo.innerHTML = `<img src="${art[0].file_data}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">`;
                             }
-                        } catch (err) {
-                            console.error('Error loading sidebar logo:', err);
+                        );
+                        const art = await response.json();
+                        if (art && art.length > 0) {
+                            sidebarLogo.innerHTML = `<img src="${art[0].file_data}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">`;
                         }
-                    })();
+                    } catch (err) {
+                        console.error('Error loading sidebar logo:', err);
+                    }
                 } else if (org?.name) {
                     // Show initials if no logo
                     const initials = org.name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
@@ -779,7 +777,7 @@
                     sidebarLogo.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 1.5rem; font-weight: bold; color: white; background: var(--primary); border-radius: 8px;">NC</div>';
                 }
             }
-            
+
             // Apply organization name to sidebar
             const sidebarOrgName = document.getElementById('sidebarOrgName');
             if (sidebarOrgName && org?.name) {
@@ -15688,9 +15686,9 @@ Note: This is safe to use in client-side code. It only allows creating payment t
             // Initialize art storage first
             initializeArtStorage();
 
-            // Apply saved branding colors
-            applyBrandingColors();
-            
+            // Note: applyBrandingColors() is called later after NewcoData is fully initialized
+            // See line ~21079 where it waits for organization data to be loaded
+
             // Load and apply organization settings including logo
             const org = NewcoData.get('organization');
             const sidebarLogo = document.getElementById('sidebarLogo');
@@ -21063,12 +21061,12 @@ Note: This is safe to use in client-side code. It only allows creating payment t
                 document.getElementById('adminMainPanel').style.display = 'flex';
 
                 // Load dashboard data on initial page load - wait for NewcoData to be ready
-                const waitForData = setInterval(() => {
-                    // Check if NewcoData is initialized by checking if we can get data
+                const waitForData = setInterval(async () => {
+                    // Check if organization data has been loaded
                     const testData = NewcoData.get('organization');
-                    if (testData !== null || NewcoData._initialized) {
+                    if (testData && testData.name) {
                         clearInterval(waitForData);
-                        applyBrandingColors();
+                        await applyBrandingColors();
                         loadDashboard();
                     }
                 }, 50);
