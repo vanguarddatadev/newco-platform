@@ -161,13 +161,26 @@ body {
 }
 
 .nav-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     padding: 0.75rem 1.5rem;
     color: white;
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
     cursor: pointer;
+}
+
+.nav-item i {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
 }
 
 .nav-item:hover {
@@ -1104,33 +1117,319 @@ input:checked + .toggle-slider:before {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE NAVIGATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10001;
+    width: 44px;
+    height: 44px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.mobile-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Mobile overlay */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+    opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCESSIBILITY & FOCUS STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Better focus indicators without changing layout */
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.3);
+}
+
+.nav-item:focus-visible {
+    outline: 2px solid white;
+    outline-offset: -2px;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TABLE IMPROVEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Alternating row colors for better readability */
+.data-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.data-table tbody tr:hover {
+    background: #f0f9ff;
+}
+
+/* Sortable column indicators */
+.data-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.data-table th.sortable::after {
+    content: '↕';
+    position: absolute;
+    right: 0.5rem;
+    opacity: 0.3;
+    font-size: 0.75rem;
+}
+
+.data-table th.sorted-asc::after {
+    content: '↑';
+    opacity: 1;
+}
+
+.data-table th.sorted-desc::after {
+    content: '↓';
+    opacity: 1;
+}
+
+/* Sticky table headers - only for large tables */
+.data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f9fafb;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORM INPUT STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Error state */
+.form-input.error,
+.form-select.error {
+    border-color: #f44336;
+}
+
+.form-input.error:focus,
+.form-select.error:focus {
+    border-color: #f44336;
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+}
+
+/* Success state */
+.form-input.success,
+.form-select.success {
+    border-color: #4CAF50;
+}
+
+.form-input.success:focus,
+.form-select.success:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Helper text */
+.form-helper {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+.form-helper.error {
+    color: #f44336;
+}
+
+.form-helper.success {
+    color: #4CAF50;
+}
+
+.form-helper.muted {
+    color: #666;
+}
+
+/* Disabled state */
+.form-input:disabled,
+.form-select:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border: 2px dashed #e0e0e0;
+}
+
+.empty-state__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.empty-state__description {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOADING STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(72, 187, 120, 0.3);
+    border-top-color: #48bb78;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENHANCED ACTIVE STATES (without changing spacing)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid white;
+    font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVE DESIGN
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .mobile-overlay {
+        display: block;
+    }
+
     .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
+        z-index: 10000;
     }
 
     .sidebar.open {
         transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.15);
     }
 
     .main-content {
         margin-left: 0;
+        width: 100%;
+        padding: 1rem;
     }
 
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .offerings-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Tablet improvements */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .offerings-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
